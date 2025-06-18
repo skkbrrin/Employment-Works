@@ -11,14 +11,14 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{40b8bd76-3fd4-458b-80b2-4044e9021d1f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\UI">
-      <UniqueIdentifier>{80e23211-2047-4eb0-958d-7f90a6a522e3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ItoLib">
       <UniqueIdentifier>{f00c3f20-3ba4-4b3a-a8bb-8d51d1439d68}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scene">
       <UniqueIdentifier>{e8607489-49e4-4ee3-a158-4669e6cf3760}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{97b9040f-0556-473f-940f-0a1c69c6b54e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +30,54 @@
     <ClInclude Include="DeviceResources.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="DebugDraw.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ResultScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\TutorialScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\DebugCamera.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\DebugFont.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\DisplayCollision.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\ResourceManager.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\SceneManager.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\TaskManager.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\UserResources.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\BinaryFile.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\FloorModel.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Menu.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Particle.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\UserInterface.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -37,6 +85,48 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="DeviceResources.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDraw.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ResultScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\TutorialScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\DebugCamera.cpp">
+      <Filter>ItoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\DebugFont.cpp">
+      <Filter>ItoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\DisplayCollision.cpp">
+      <Filter>ItoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\ResourceManager.cpp">
+      <Filter>ItoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\TaskManager.cpp">
+      <Filter>ItoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\BinaryFile.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\FloorModel.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Menu.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Particle.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\UserInterface.cpp">
+      <Filter>GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

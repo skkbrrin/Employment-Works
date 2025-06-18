@@ -179,14 +179,41 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject\BinaryFile.h" />
+    <ClInclude Include="GameObject\FloorModel.h" />
+    <ClInclude Include="GameObject\Menu.h" />
+    <ClInclude Include="GameObject\Particle.h" />
+    <ClInclude Include="GameObject\UserInterface.h" />
+    <ClInclude Include="ItoLib\DebugCamera.h" />
+    <ClInclude Include="ItoLib\DebugFont.h" />
+    <ClInclude Include="ItoLib\DisplayCollision.h" />
+    <ClInclude Include="ItoLib\ResourceManager.h" />
+    <ClInclude Include="ItoLib\SceneManager.h" />
+    <ClInclude Include="ItoLib\TaskManager.h" />
+    <ClInclude Include="ItoLib\UserResources.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Scene\ResultScene.h" />
+    <ClInclude Include="Scene\TitleScene.h" />
+    <ClInclude Include="Scene\TutorialScene.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject\BinaryFile.cpp" />
+    <ClCompile Include="GameObject\FloorModel.cpp" />
+    <ClCompile Include="GameObject\Menu.cpp" />
+    <ClCompile Include="GameObject\Particle.cpp" />
+    <ClCompile Include="GameObject\UserInterface.cpp" />
+    <ClCompile Include="ItoLib\DebugCamera.cpp" />
+    <ClCompile Include="ItoLib\DebugFont.cpp" />
+    <ClCompile Include="ItoLib\DisplayCollision.cpp" />
+    <ClCompile Include="ItoLib\ResourceManager.cpp" />
+    <ClCompile Include="ItoLib\TaskManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -194,6 +221,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Scene\ResultScene.cpp" />
+    <ClCompile Include="Scene\TitleScene.cpp" />
+    <ClCompile Include="Scene\TutorialScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

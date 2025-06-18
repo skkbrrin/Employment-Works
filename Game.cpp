@@ -5,6 +5,11 @@
 #include "pch.h"
 #include "Game.h"
 
+// シーンのインクルード
+#include "Scene/TitleScene.h"
+#include "Scene/TutorialScene.h"
+#include "Scene/ResultScene.h"
+
 extern void ExitGame() noexcept;
 
 using namespace DirectX;
@@ -37,6 +42,9 @@ void Game::Initialize(HWND window, int width, int height)
     m_timer.SetFixedTimeStep(true);
     m_timer.SetTargetElapsedSeconds(1.0 / 60);
     */
+
+    // 始まりのシーンセット
+    m_sceneManager->SetScene<TitleScene>();
 }
 
 #pragma region Frame Update
@@ -58,6 +66,19 @@ void Game::Update(DX::StepTimer const& timer)
 
     // TODO: Add your game logic here.
     elapsedTime;
+
+    // シーンマネージャーの更新
+    m_sceneManager->Update(elapsedTime);
+
+    // キーボード、マウス設定
+    auto kb = DirectX::Keyboard::Get().GetState();
+    m_kbTracker.Update(kb);
+    auto ms = DirectX::Mouse::Get().GetState();
+    m_msTracker.Update(ms);
+
+    if (kb.A) m_sceneManager->SetNextScene<TitleScene>();
+    if (kb.S) m_sceneManager->SetNextScene<TutorialScene>();
+    if (kb.D) m_sceneManager->SetNextScene<ResultScene>();
 }
 #pragma endregion
 
@@ -78,6 +99,14 @@ void Game::Render()
 
     // TODO: Add your rendering code here.
     context;
+
+    m_sceneManager->Render();
+
+    std::wostringstream oss;
+    oss << "fps:" << m_timer.GetFramesPerSecond();
+    m_debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 0.0f));
+
+    m_debugFont->Render(m_states.get());
 
     m_deviceResources->PIXEndEvent();
 
@@ -166,9 +195,28 @@ void Game::GetDefaultSize(int& width, int& height) const noexcept
 void Game::CreateDeviceDependentResources()
 {
     auto device = m_deviceResources->GetD3DDevice();
+    auto context = m_deviceResources->GetD3DDeviceContext();
 
     // TODO: Initialize device dependent objects here (independent of window size).
     device;
+
+    // ポインタの作成
+    m_states = std::make_unique<CommonStates>(device);
+
+    if (!m_userResources)m_userResources = std::make_unique<UserResources>();
+    if (!m_sceneManager)m_sceneManager = std::make_unique<Ito::SceneManager<UserResources>>(m_userResources.get());
+
+    m_debugFont = std::make_unique<Ito::DebugFont>
+        (device, context, L"Resources/Font/SegoeUI_18.spritefont");
+
+    m_userResources->SetCommonStates(m_states.get());
+    m_userResources->SetDebugFont(m_debugFont.get());
+    m_userResources->SetDeviceResources(m_deviceResources.get());
+    m_userResources->SetKeyboardStateTracker(&m_kbTracker);
+    m_userResources->SetMouseStateTracker(&m_msTracker);
+    m_userResources->SetStepTimerStates(&m_timer);
+
+    m_sceneManager->CreateDeviceDependentResources();
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

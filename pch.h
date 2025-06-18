@@ -84,6 +84,12 @@ namespace DX
     }
 }
 
+#include <sstream>
 #include <Keyboard.h>
 #include <Mouse.h>
 #include <CommonStates.h>
+#include <Effects.h>
+#include <SimpleMath.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <DirectXHelpers.h>

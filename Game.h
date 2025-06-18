@@ -7,6 +7,10 @@
 #include "DeviceResources.h"
 #include "StepTimer.h"
 
+#include "ItoLib/DebugFont.h"
+#include "ItoLib/SceneManager.h"
+#include "ItoLib/UserResources.h"
+
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -64,6 +68,18 @@ private:
     // トラッカー
     DirectX::Keyboard::KeyboardStateTracker m_kbTracker;
     DirectX::Mouse::ButtonStateTracker m_msTracker;
+
+    // 共通ステート
+    std::unique_ptr<DirectX::CommonStates> m_states;
+
+    // フォント
+    std::unique_ptr<Ito::DebugFont> m_debugFont;
+
+    // シーンマネージャー
+    std::unique_ptr<Ito::SceneManager<UserResources>> m_sceneManager;
+
+    // ユーザー定義のリソース
+    std::unique_ptr<UserResources> m_userResources;
 
 public:
     // 画面モード
