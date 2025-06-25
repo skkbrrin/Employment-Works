@@ -42,21 +42,11 @@ void kHorikawa::Menu::Initialize(DX::DeviceResources* pDR,int width,int height)
     //  背景となるウィンドウ画像を読み込む
     m_baseTexturePath = L"Resources/Textures/window.png";
 
-    //  草画像を読み込む
-    Add(L"Resources/Textures/grass.png"
-        , DirectX::SimpleMath::Vector2(100, 100)
-        , DirectX::SimpleMath::Vector2(0.5f,0.5f)
-        , kHorikawa::ANCHOR::MIDDLE_CENTER);
-    //  くさ文字画像を読み込む
-    Add(L"Resources/Textures/grass2.png"
-        , DirectX::SimpleMath::Vector2(600, 100)
-        , DirectX::SimpleMath::Vector2(0.5f, 0.5f)
-        , kHorikawa::ANCHOR::MIDDLE_CENTER);
-    //  トムの画像を読み込む
-    Add(L"Resources/Textures/image01.png"
-        , DirectX::SimpleMath::Vector2(800, 100)
-        , DirectX::SimpleMath::Vector2(0.5f, 0.5f)
-        , kHorikawa::ANCHOR::MIDDLE_CENTER);
+    ////  草画像を読み込む
+    //Add(L"Resources/Textures/grass.png"
+    //    , DirectX::SimpleMath::Vector2(100, 100)
+    //    , DirectX::SimpleMath::Vector2(0.5f,0.5f)
+    //    , kHorikawa::ANCHOR::MIDDLE_CENTER);
 
 }
 

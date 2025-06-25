@@ -20,6 +20,9 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{97b9040f-0556-473f-940f-0a1c69c6b54e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders">
+      <UniqueIdentifier>{71e48db0-8835-4595-b3ce-c2ce12549864}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -144,5 +147,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Resources\Shaders\UI.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\UIGS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIPS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIVS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
