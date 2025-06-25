@@ -81,6 +81,9 @@
     <ClInclude Include="GameObject\UserInterface.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="ItoLib\GridFloor.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -130,6 +133,9 @@
     </ClCompile>
     <ClCompile Include="GameObject\UserInterface.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\GridFloor.cpp">
+      <Filter>ItoLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

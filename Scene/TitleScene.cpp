@@ -7,6 +7,8 @@ void TitleScene::Initialize()
 {
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
+
+	//m_menu->Initialize(m_deviceresources.get(), width, heigth);
 }
 
 void TitleScene::Update(float elapsedTime)

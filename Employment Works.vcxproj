@@ -190,6 +190,7 @@
     <ClInclude Include="ItoLib\DebugCamera.h" />
     <ClInclude Include="ItoLib\DebugFont.h" />
     <ClInclude Include="ItoLib\DisplayCollision.h" />
+    <ClInclude Include="ItoLib\GridFloor.h" />
     <ClInclude Include="ItoLib\ResourceManager.h" />
     <ClInclude Include="ItoLib\SceneManager.h" />
     <ClInclude Include="ItoLib\TaskManager.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="ItoLib\DebugCamera.cpp" />
     <ClCompile Include="ItoLib\DebugFont.cpp" />
     <ClCompile Include="ItoLib\DisplayCollision.cpp" />
+    <ClCompile Include="ItoLib\GridFloor.cpp" />
     <ClCompile Include="ItoLib\ResourceManager.cpp" />
     <ClCompile Include="ItoLib\TaskManager.cpp" />
     <ClCompile Include="Main.cpp" />

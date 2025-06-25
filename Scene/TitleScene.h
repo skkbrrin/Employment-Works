@@ -3,6 +3,8 @@
 #include "../ItoLib/SceneManager.h"
 #include "../ItoLib/DebugCamera.h"
 #include "../ItoLib/UserResources.h"
+#include "../GameObject/Menu.h"
+#include "DeviceResources.h"
 
 class TitleScene : public Ito::Scene<UserResources>
 {
@@ -11,7 +13,7 @@ public:
 	~TitleScene() = default;
 
 	// 初期化
-	void Initialize() override; 
+	void Initialize() override;
 
 	// 更新
 	void Update(float elapsedTime) override; 
@@ -35,6 +37,11 @@ private:
 	// カメラのポインタ
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
 
+	// メニューポインタ
+	std::unique_ptr<kHorikawa::Menu> m_menu;
+
+	// デバイスリソース
+	std::unique_ptr<DX::DeviceResources> m_deviceresources;
 public:
 
 };
