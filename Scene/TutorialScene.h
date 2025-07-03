@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../ItoLib/SceneManager.h"
-#include "../ItoLib/DebugCamera.h"
-#include "../ItoLib/UserResources.h"
-#include "../ItoLib/GridFloor.h
+#include "ItoLib/SceneManager.h"
+#include "ItoLib/DebugCamera.h"
+#include "ItoLib/UserResources.h"
+#include "ItoLib/GridFloor.h"
 
 class TutorialScene : public Ito::Scene<UserResources>
 {
@@ -36,10 +36,6 @@ public:
 private:
 	// カメラのポインタ
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
-
-	// モデル
-	std::unique_ptr<DirectX::Model> m_player;
-	std::unique_ptr<DirectX::Model> m_enemy;
 
 	// グリッド床
 	//std::unique_ptr<Ito::

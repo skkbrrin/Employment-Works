@@ -23,6 +23,21 @@
     <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{71e48db0-8835-4595-b3ce-c2ce12549864}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Charactors">
+      <UniqueIdentifier>{881cf129-8cbf-44a3-8ea8-95c6da029228}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactors\Player">
+      <UniqueIdentifier>{2f8e583a-0300-4043-85b2-c301d1466d02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactors\Player\State">
+      <UniqueIdentifier>{f3ffb9b3-a58c-4f21-8374-60d35290109b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactors\Enemy">
+      <UniqueIdentifier>{528ce7ac-9d3b-4333-b8dd-7cc78c582f65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactors\Enemy\State">
+      <UniqueIdentifier>{6587bbbe-63d3-4d31-b6ad-e579009289bc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -84,6 +99,21 @@
     <ClInclude Include="ItoLib\GridFloor.h">
       <Filter>ItoLib</Filter>
     </ClInclude>
+    <ClInclude Include="Charactor\Player\Player.h">
+      <Filter>Charactors\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\State\PlayerIdling.h">
+      <Filter>Charactors\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\Enemy.h">
+      <Filter>Charactors\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\State\EnemyIdling.h">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\State\TrackingPlayer.h">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -136,6 +166,21 @@
     </ClCompile>
     <ClCompile Include="ItoLib\GridFloor.cpp">
       <Filter>ItoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\Player.cpp">
+      <Filter>Charactors\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\State\PlayerIdling.cpp">
+      <Filter>Charactors\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\Enemy.cpp">
+      <Filter>Charactors\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\State\EnemyIdling.cpp">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\State\TrackingPlayer.cpp">
+      <Filter>Charactors\Enemy\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

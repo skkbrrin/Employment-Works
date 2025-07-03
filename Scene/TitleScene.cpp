@@ -8,7 +8,9 @@ void TitleScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-	//m_menu->Initialize(m_deviceresources.get(), width, heigth);
+	auto deviceResouces = GetUserResources()->GetDeviceResources();
+
+	//m_menu->Initialize(deviceResouces, 1280, 720);
 }
 
 void TitleScene::Update(float elapsedTime)
@@ -17,12 +19,15 @@ void TitleScene::Update(float elapsedTime)
 
 	auto kb = DirectX::Keyboard::Get().GetState();
 
+	//m_menu->Update();
 }
 
 void TitleScene::Render()
 {
 	auto debugFont = GetUserResources()->GetDebugFont();
 	debugFont->AddString(L"TitleScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()));
+
+	//m_menu->Render();
 }
 
 void TitleScene::Finalize()
@@ -31,6 +36,7 @@ void TitleScene::Finalize()
 
 void TitleScene::CreateDeviceDependentResources()
 {
+	m_menu = std::make_unique<kHorikawa::Menu>();
 }
 
 void TitleScene::CreateWindowSizeDependentResources()
