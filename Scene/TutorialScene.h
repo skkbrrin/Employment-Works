@@ -4,6 +4,8 @@
 #include "ItoLib/DebugCamera.h"
 #include "ItoLib/UserResources.h"
 #include "ItoLib/GridFloor.h"
+#include "GameObject/FloorPrimitive.h"
+#include "GameObject/FloorModel.h"
 
 class TutorialScene : public Ito::Scene<UserResources>
 {
@@ -38,6 +40,41 @@ private:
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
 
 	// グリッド床
-	//std::unique_ptr<Ito::
+	std::unique_ptr<Ito::GridFloor> m_gridFloor;
+
+	// 空
+	std::unique_ptr<DirectX::Model> m_skyModel;
+
+	// ビュー行列
+	DirectX::SimpleMath::Matrix m_view;
+
+	// 射影行列
+	DirectX::SimpleMath::Matrix m_proj;
+
+	// ベーシックエフェクトへのポインタ
+	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
+
+	// プリミティブバッチへのポインタ
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionTexture>> m_primitiveBatch;
+
+	// 入力レイアウトへのポインタ
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
+	std::unique_ptr<kHorikawa::FloorPrimitive> m_floorPrimitive;
+	std::unique_ptr<kHorikawa::FloorModel> m_floorModel;
+
+
+	std::unique_ptr<DirectX::Model> m_player;
+	DirectX::SimpleMath::Vector3 m_posP;
+
+	std::unique_ptr<DirectX::Model> m_enemy;
+	DirectX::SimpleMath::Vector3 m_posE;
+
+private:
+	float m_skyRotate = 0.0f;
+
+public :
+	float GetSkyRotation() { return m_skyRotate; }
+
 };
 

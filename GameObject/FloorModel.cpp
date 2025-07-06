@@ -40,7 +40,7 @@ void kHorikawa::FloorModel::Render(ID3D11DeviceContext1* context,SimpleMath::Mat
 {
     SimpleMath::Matrix world = SimpleMath::Matrix::Identity;
 
-//    world *= DirectX::SimpleMath::Matrix::CreateRotationX(90.0f / 180.0f * 3.14f);
+    world = DirectX::SimpleMath::Matrix::CreateRotationX(90.0f / 180.0f * 3.14f) * DirectX::SimpleMath::Matrix::CreateScale(10.0f) * DirectX::SimpleMath::Matrix::CreateTranslation(0.0f ,-10.0f, 0.0f);
 
     // °‚Ì•`‰æ
     m_floorModel->Draw(context, *m_states.get(), world, view, proj, false, [&]()

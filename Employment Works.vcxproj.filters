@@ -114,6 +114,9 @@
     <ClInclude Include="Charactor\Enemy\State\TrackingPlayer.h">
       <Filter>Charactors\Enemy\State</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\FloorPrimitive.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -181,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="Charactor\Enemy\State\TrackingPlayer.cpp">
       <Filter>Charactors\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\FloorPrimitive.cpp">
+      <Filter>GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

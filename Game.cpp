@@ -217,6 +217,7 @@ void Game::CreateDeviceDependentResources()
     m_userResources->SetStepTimerStates(&m_timer);
 
     m_sceneManager->CreateDeviceDependentResources();
+
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.

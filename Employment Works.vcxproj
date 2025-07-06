@@ -189,6 +189,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject\BinaryFile.h" />
     <ClInclude Include="GameObject\FloorModel.h" />
+    <ClInclude Include="GameObject\FloorPrimitive.h" />
     <ClInclude Include="GameObject\Menu.h" />
     <ClInclude Include="GameObject\Particle.h" />
     <ClInclude Include="GameObject\UserInterface.h" />
@@ -217,6 +218,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject\BinaryFile.cpp" />
     <ClCompile Include="GameObject\FloorModel.cpp" />
+    <ClCompile Include="GameObject\FloorPrimitive.cpp" />
     <ClCompile Include="GameObject\Menu.cpp" />
     <ClCompile Include="GameObject\Particle.cpp" />
     <ClCompile Include="GameObject\UserInterface.cpp" />
