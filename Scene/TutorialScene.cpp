@@ -45,7 +45,6 @@ void TutorialScene::Render()
 	auto states = GetUserResources()->GetCommonStates();
 
 	m_floorPrimitive->Render(context, m_view, m_proj);
-	//m_floorModel->Render(context, m_view, m_proj);
 
 	// “V‹…-------------------------------------------------------------------------------------------------
 	DirectX::SimpleMath::Matrix baseRotation = DirectX::SimpleMath::Matrix::CreateFromAxisAngle(
@@ -69,14 +68,16 @@ void TutorialScene::Render()
 			if (lights)
 			{
 				lights->SetLightEnabled(0, true);
+				lights->SetLightEnabled(1, true);
+				lights->SetLightEnabled(2, true);
 
-				DirectX::SimpleMath::Vector3 dir(0.0f, 1.0f, -1.0f);  // ‹tŒü‚«‚É
+				DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, -1.0f);  // ‹tŒü‚«‚É
 				dir.Normalize();
 				lights->SetLightDirection(0, DirectX::XMVectorSet(dir.x, dir.y, dir.z, 0.0f));
 
 				lights->SetLightDiffuseColor(0, DirectX::Colors::White);
 				lights->SetLightSpecularColor(0, DirectX::Colors::White);
-				lights->SetAmbientLightColor(DirectX::Colors::DimGray);
+				lights->SetAmbientLightColor(DirectX::Colors::WhiteSmoke);
 			}
 		});
 
@@ -110,7 +111,6 @@ void TutorialScene::CreateDeviceDependentResources()
 	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionTexture>>(context);
 
 	m_floorPrimitive = std::make_unique<kHorikawa::FloorPrimitive>(device);
-	//m_floorModel = std::make_unique<kHorikawa::FloorModel>(device, L"Resources/Models/Floor.sdkmesh");
 
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");

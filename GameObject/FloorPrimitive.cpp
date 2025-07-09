@@ -18,10 +18,10 @@ using namespace DirectX;
 //			※初期状態は1枚がベタ張りされる設定
 const VertexPositionTexture kHorikawa::FloorPrimitive::VERTICES[4] =
 {
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 5.0f, 0.0f, -5.0f), DirectX::SimpleMath::Vector2( 30.0f,  0.0f)),  // 0:左上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 5.0f, 0.0f,  5.0f), DirectX::SimpleMath::Vector2( 30.0f,  30.0f)),  // 1:右上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3(-5.0f, 0.0f,  5.0f), DirectX::SimpleMath::Vector2( 0.0f,  30.0f)),  // 3:右下
-	VertexPositionTexture(DirectX::SimpleMath::Vector3(-5.0f, 0.0f, -5.0f), DirectX::SimpleMath::Vector2( 0.0f,  0.0f)),  // 2:左下
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 30.0f, 0.0f, -30.0f), DirectX::SimpleMath::Vector2( 30.0f,  0.0f)),  // 0:左上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 30.0f, 0.0f,  30.0f), DirectX::SimpleMath::Vector2( 30.0f,  30.0f)),  // 1:右上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3(-30.0f, 0.0f,  30.0f), DirectX::SimpleMath::Vector2( 0.0f,  30.0f)),  // 3:右下
+	VertexPositionTexture(DirectX::SimpleMath::Vector3(-30.0f, 0.0f, -30.0f), DirectX::SimpleMath::Vector2( 0.0f,  0.0f)),  // 2:左下
 };
 
 /// <summary>
@@ -54,9 +54,7 @@ kHorikawa::FloorPrimitive::FloorPrimitive(ID3D11Device1* device)
 	//					第三引数がnullptr、第四引数がnullptr以外、となる
 	DirectX::CreateWICTextureFromFile(
 		device, //< ID3D11Device*の変数　引数で受け取り
-		//L"Resources/Textures/floor.png", //< 画像のファイル名
-		L"Resources/Textures/floor2.png", //< 画像のファイル名
-		//L"Resources/Textures/image01.png", //< 画像のファイル名
+		L"Resources/Textures/Floor.png", //< 画像のファイル名
 		nullptr,
 		m_Texture.GetAddressOf()//< テクスチャのアドレス
 		);

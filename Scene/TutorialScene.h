@@ -5,7 +5,6 @@
 #include "ItoLib/UserResources.h"
 #include "ItoLib/GridFloor.h"
 #include "GameObject/FloorPrimitive.h"
-#include "GameObject/FloorModel.h"
 
 class TutorialScene : public Ito::Scene<UserResources>
 {
@@ -61,7 +60,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	std::unique_ptr<kHorikawa::FloorPrimitive> m_floorPrimitive;
-	std::unique_ptr<kHorikawa::FloorModel> m_floorModel;
 
 
 	std::unique_ptr<DirectX::Model> m_player;
