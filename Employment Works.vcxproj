@@ -182,6 +182,8 @@
     <ClInclude Include="Charactor\Enemy\Enemy.h" />
     <ClInclude Include="Charactor\Enemy\State\EnemyIdling.h" />
     <ClInclude Include="Charactor\Enemy\State\TrackingPlayer.h" />
+    <ClInclude Include="Charactor\Field.h" />
+    <ClInclude Include="Charactor\Object.h" />
     <ClInclude Include="Charactor\Player\Player.h" />
     <ClInclude Include="Charactor\Player\State\PlayerIdling.h" />
     <ClInclude Include="DebugDraw.h" />
@@ -193,9 +195,11 @@
     <ClInclude Include="GameObject\Menu.h" />
     <ClInclude Include="GameObject\Particle.h" />
     <ClInclude Include="GameObject\UserInterface.h" />
+    <ClInclude Include="ItoLib\Camera.h" />
     <ClInclude Include="ItoLib\DebugCamera.h" />
     <ClInclude Include="ItoLib\DebugFont.h" />
     <ClInclude Include="ItoLib\DisplayCollision.h" />
+    <ClInclude Include="ItoLib\GameCamera.h" />
     <ClInclude Include="ItoLib\GridFloor.h" />
     <ClInclude Include="ItoLib\ResourceManager.h" />
     <ClInclude Include="ItoLib\SceneManager.h" />
@@ -206,11 +210,21 @@
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Scene\TutorialScene.h" />
     <ClInclude Include="StepTimer.h" />
+    <ClInclude Include="TanakaLib\Geometry.h" />
+    <ClInclude Include="TanakaLib\Graphics.h" />
+    <ClInclude Include="TanakaLib\IMoving.h" />
+    <ClInclude Include="TanakaLib\IObject.h" />
+    <ClInclude Include="TanakaLib\IObserver.h" />
+    <ClInclude Include="TanakaLib\IState.h" />
+    <ClInclude Include="TanakaLib\Message.h" />
+    <ClInclude Include="TanakaLib\Messenger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Charactor\Enemy\Enemy.cpp" />
     <ClCompile Include="Charactor\Enemy\State\EnemyIdling.cpp" />
     <ClCompile Include="Charactor\Enemy\State\TrackingPlayer.cpp" />
+    <ClCompile Include="Charactor\Field.cpp" />
+    <ClCompile Include="Charactor\Object.cpp" />
     <ClCompile Include="Charactor\Player\Player.cpp" />
     <ClCompile Include="Charactor\Player\State\PlayerIdling.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
@@ -222,9 +236,11 @@
     <ClCompile Include="GameObject\Menu.cpp" />
     <ClCompile Include="GameObject\Particle.cpp" />
     <ClCompile Include="GameObject\UserInterface.cpp" />
+    <ClCompile Include="ItoLib\Camera.cpp" />
     <ClCompile Include="ItoLib\DebugCamera.cpp" />
     <ClCompile Include="ItoLib\DebugFont.cpp" />
     <ClCompile Include="ItoLib\DisplayCollision.cpp" />
+    <ClCompile Include="ItoLib\GameCamera.cpp" />
     <ClCompile Include="ItoLib\GridFloor.cpp" />
     <ClCompile Include="ItoLib\ResourceManager.cpp" />
     <ClCompile Include="ItoLib\TaskManager.cpp" />
@@ -238,6 +254,8 @@
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Scene\TutorialScene.cpp" />
+    <ClCompile Include="TanakaLib\Graphics.cpp" />
+    <ClCompile Include="TanakaLib\Messenger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

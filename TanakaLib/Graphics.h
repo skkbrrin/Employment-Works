@@ -1,15 +1,13 @@
 #pragma once
 #ifndef GRAPHICS_DEFINED
 #define GRAPHICS_DEFINED
-
 #include "DeviceResources.h"
-//#include "Animation.h"
 
 // DirectX Graphicsクラス
 class Graphics final
 {
 public:
-	// DirectX Graphicsクラスのインスタンスを取得する
+	// Graphicsクラスのインスタンスを取得する
 	static Graphics* const GetInstance();
 
 	// スクリーンサイズを取得する
@@ -18,19 +16,19 @@ public:
 	void SetScreenSize(const int& width, const int& height) { m_screenW = width; m_screenH = height; }
 	// デバイスリソースを取得する
 	DX::DeviceResources* GetDeviceResources() const { return m_deviceResources.get(); }
-	// PrimitiveBatchクラスのインスタンスを取得する
+	// プリミティブバッチを取得する
 	DirectX::PrimitiveBatch<DirectX::VertexPositionColor>* GetPrimitiveBatch() const { return m_primitiveBatch.get(); }
-	// InputLayoutクラスのインスタンスを取得する
+	// インプットレイアウトを取得する
 	ID3D11InputLayout* GetInputLayout() const { return m_inputLayout.Get(); }
-	// BasicEffectクラスのインスタンス取得する
+	// ベイシックエフェクトを取得する
 	DirectX::BasicEffect* GetBasicEffect() { return m_basicEffect.get(); }
-	// CommonStatesクラスのインスタンスを取得する
+	// コモンステートを取得する
 	DirectX::CommonStates* GetCommonStates() const { return m_commonStates.get(); }
-	// SpriteBatchクラスのインスタンスを取得する
+	// スプライトバッチを取得する
 	DirectX::SpriteBatch* GetSpriteBatch() { return m_spriteBatch.get(); }
-	// SpriteFontクラスのインスタンスを取得する
+	// スプライトフォントを取得する
 	DirectX::SpriteFont* GetFont() { return m_spriteFont.get(); }
-	// EffectFactoryクラスのインスタンスを取得する
+	// エフェクトファクトリを取得する
 	DirectX::EffectFactory* GetFX() const { return m_effectFactory.get(); }
 	// ビュー行列を設定する
 	void SetViewMatrix(const DirectX::SimpleMath::Matrix& view) { m_view = view; }
@@ -69,13 +67,6 @@ public:
 	void DrawQuad(const DirectX::FXMVECTOR& point1, const DirectX::FXMVECTOR& point2, const DirectX::FXMVECTOR& point3, const DirectX::FXMVECTOR& point4, const DirectX::HXMVECTOR& color);
 	// モデルを描画する
 	void DrawModel(const DirectX::Model* model, const DirectX::SimpleMath::Matrix& world, const bool& depthBuffer = true);
-	//// アニメーションモデルを描画する
-	//void DrawModel(
-	//	const DirectX::Model* model,
-	//	const DX::AnimationSDKMESH* animationSDKMESH,
-	//	const DirectX::ModelBone::TransformArray* transformArray,
-	//	const DirectX::SimpleMath::Matrix& world
-	//);
 
 private:
 	// コンストラクタ
@@ -110,8 +101,7 @@ private:
 	// 入力レイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	// スクリーンサイズ
-	int m_screenW;
-	int m_screenH;
+	int m_screenW, m_screenH;
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 	// 射影行列

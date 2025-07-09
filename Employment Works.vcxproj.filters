@@ -38,6 +38,9 @@
     <Filter Include="Charactors\Enemy\State">
       <UniqueIdentifier>{6587bbbe-63d3-4d31-b6ad-e579009289bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TanakaLib">
+      <UniqueIdentifier>{9ec88e79-bb97-4c73-a47d-320b67d0ba21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -117,6 +120,42 @@
     <ClInclude Include="GameObject\FloorPrimitive.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="TanakaLib\Geometry.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TanakaLib\Graphics.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TanakaLib\Message.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TanakaLib\Messenger.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TanakaLib\IObserver.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TanakaLib\IState.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TanakaLib\IMoving.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="TanakaLib\IObject.h">
+      <Filter>TanakaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Field.h">
+      <Filter>Charactors</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Object.h">
+      <Filter>Charactors</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\Camera.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\GameCamera.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -187,6 +226,24 @@
     </ClCompile>
     <ClCompile Include="GameObject\FloorPrimitive.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TanakaLib\Graphics.cpp">
+      <Filter>TanakaLib</Filter>
+    </ClCompile>
+    <ClCompile Include="TanakaLib\Messenger.cpp">
+      <Filter>TanakaLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Field.cpp">
+      <Filter>Charactors</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Object.cpp">
+      <Filter>Charactors</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\Camera.cpp">
+      <Filter>ItoLib</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\GameCamera.cpp">
+      <Filter>ItoLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

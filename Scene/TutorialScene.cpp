@@ -9,6 +9,7 @@ void TutorialScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
+	m_camera.SetPlayer(m_posP, m_rotateP);
 }
 
 void TutorialScene::Update(float elapsedTime)
@@ -17,7 +18,7 @@ void TutorialScene::Update(float elapsedTime)
 
 	m_debugCamera->Update();
 
-	float rotateSpeed = 10.0f;
+	float rotateSpeed = 1.0f;
 	m_skyRotate += rotateSpeed * elapsedTime;
 
 	if (m_skyRotate > 360.0f)
@@ -26,10 +27,17 @@ void TutorialScene::Update(float elapsedTime)
 	}
 
 	//Player
-	if (kb.Left) m_posP.x -= 0.1f;
-	if (kb.Right) m_posP.x += 0.1f;
-	if (kb.Up) m_posP.z -= 0.1f;
-	if (kb.Down) m_posP.z += 0.1f;
+	m_posP.y = -1.0f;
+	if (kb.A) m_rotateP = m_rotateP * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(0.5f));
+	if (kb.D) m_rotateP = m_rotateP * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
+
+	if (kb.W) m_posP += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotateP);
+	if (kb.S) m_posP -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotateP);
+
+	if (kb.Space) act = true;
+
+	if (act) m_camera.Update(elapsedTime, 1);
+	else m_camera.Update(elapsedTime, 2);
 }
 
 void TutorialScene::Render()
@@ -43,6 +51,12 @@ void TutorialScene::Render()
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetUserResources()->GetCommonStates();
+
+	m_view = SimpleMath::Matrix::CreateLookAt(
+		m_camera.GetEyePosition(),
+		m_camera.GetTargetPosition(),
+		SimpleMath::Vector3::UnitY
+	);
 
 	m_floorPrimitive->Render(context, m_view, m_proj);
 
@@ -68,8 +82,6 @@ void TutorialScene::Render()
 			if (lights)
 			{
 				lights->SetLightEnabled(0, true);
-				lights->SetLightEnabled(1, true);
-				lights->SetLightEnabled(2, true);
 
 				DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, -1.0f);  // ‹tŒü‚«‚É
 				dir.Normalize();
@@ -85,10 +97,11 @@ void TutorialScene::Render()
 	// “V‹…-------------------------------------------------------------------------------------------------
 
 	SimpleMath::Matrix p_world;
-	p_world = SimpleMath::Matrix::CreateTranslation(m_posP);
+	p_world = SimpleMath::Matrix::CreateFromQuaternion(m_rotateP) * SimpleMath::Matrix::CreateTranslation(m_posP);
 
 	m_player->Draw(context, *states, p_world, m_view, m_proj);
-
+	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(5.0f, 1.0f, 5.0f));
+	m_enemy->Draw(context, *states, world, m_view, m_proj);
 }
 
 void TutorialScene::Finalize()

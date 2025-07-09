@@ -1,4 +1,5 @@
 #pragma once
+#include "pch.h"
 #include "SimpleMath.h"
 #include "Common.h"
 
@@ -6,8 +7,7 @@
 inline bool IntersectRayPlane(
 	const DirectX::SimpleMath::Ray& ray,
 	const DirectX::SimpleMath::Plane& plane,
-	DirectX::SimpleMath::Vector3* const intersection
-)
+	DirectX::SimpleMath::Vector3* const intersection)
 {
 	/*
 	無限平面と交点の式　t = normal * (position - origin) / (normal * direction)
@@ -34,7 +34,7 @@ inline bool IntersectRayPlane(
 }
 
 // 点が円の内部にあるかどうかを判定する
-inline bool InsideCircle(const int& radius, const DirectX::SimpleMath::Vector2& center, const DirectX::SimpleMath::Vector2& point)
+inline bool InsideCircle(const float& radius, const DirectX::SimpleMath::Vector2& center, const DirectX::SimpleMath::Vector2& point)
 {
 	// 2点間の距離を計算する
 	float distance = (center.x - point.x) * (center.x - point.x) + (center.y - point.y) * (center.y - point.y);
@@ -48,10 +48,9 @@ inline bool InsideCircle(const int& radius, const DirectX::SimpleMath::Vector2& 
 // 円と線分の交差判定を行う
 inline bool IntersectCircleLine(
 	const DirectX::SimpleMath::Vector2& center,					// 中心点
-	const float& radius,																// 半径
+	const float& radius,																			// 半径
 	const DirectX::SimpleMath::Vector2& start,						// 線分の開始
-	const DirectX::SimpleMath::Vector2& end							// 線分の終了
-)
+	const DirectX::SimpleMath::Vector2& end)							// 線分の終了
 {
 	// 線分の開始位置から終了位置へのベクトル
 	DirectX::SimpleMath::Vector2 vectorV1 = end - start;
@@ -80,8 +79,7 @@ inline bool IntersectLines2D
 	const DirectX::SimpleMath::Vector2& v1,
 	const DirectX::SimpleMath::Vector2& v2,
 	const DirectX::SimpleMath::Vector2& v3,
-	const DirectX::SimpleMath::Vector2& v4
-)
+	const DirectX::SimpleMath::Vector2& v4)
 {
 	DirectX::SimpleMath::Vector2 fromV1ToV2 = v2 - v1;
 	DirectX::SimpleMath::Vector2 fromV1ToV3 = v3 - v1;

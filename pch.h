@@ -95,3 +95,6 @@ namespace DX
 #include <DirectXHelpers.h>
 
 #include <Model.h>
+
+#include <SpriteBatch.h>
+#include <SpriteFont.h>

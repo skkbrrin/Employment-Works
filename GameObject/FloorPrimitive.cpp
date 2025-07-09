@@ -102,7 +102,7 @@ void kHorikawa::FloorPrimitive::Render(ID3D11DeviceContext1* context,SimpleMath:
 	context->OMSetDepthStencilState(m_States->DepthDefault(), 0);
 
 	//	— –Ê‚Í•`‰æ‚µ‚È‚¢
-	context->RSSetState(m_States->CullCounterClockwise());
+	context->RSSetState(m_States->CullNone());
 
 	//	•s“§–¾‚Ì‚Ý•`‰æ‚·‚éÝ’è 
 	m_BatchEffect->SetAlphaFunction(D3D11_COMPARISON_NOT_EQUAL);

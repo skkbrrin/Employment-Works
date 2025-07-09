@@ -3,53 +3,50 @@
 
 std::unique_ptr<Graphics> Graphics::m_graphics = nullptr;
 
-// DirectX Graphicsクラスのインスタンスを取得する
+// グラフィックスのインスタンスを取得する
 Graphics* const Graphics::GetInstance()
 {
 	if (m_graphics == nullptr)
 	{
-		// DirectX Graphicsクラスのインスタンスを生成する
+		// グラフィックスのインスタンスを生成する
 		m_graphics.reset(new Graphics());
 	}
-	// DirectX Graphicsクラスのインスタンスを返す
+	// グラフィックスのインスタンスを返す
 	return m_graphics.get();
 }
 
 // コンストラクタ
 Graphics::Graphics()
 	:
-	m_deviceResources(nullptr),			// デバイスリソース
-	m_commonStates(nullptr),				// コモンステート
-	m_spriteBatch(nullptr),					// スプライトバッチ
-	m_spriteFont(nullptr),						// スプライトフォント
-	m_basicEffect(nullptr),					// ベーシックエフェクト
-	m_primitiveBatch(nullptr),				// プリミティブバッチ
-	m_rasterrizerState(nullptr),				// ラスタライザーステート
-	m_effectFactory(nullptr),				// エフェクトファクトリ
-	m_inputLayout(nullptr),					// 入力レイアウト
+	m_deviceResources{},				// デバイスリソース
+	m_commonStates{},					// コモンステート
+	m_spriteBatch{},							// スプライトバッチ
+	m_spriteFont{},								// スプライトフォント
+	m_basicEffect{},							// ベーシックエフェクト
+	m_primitiveBatch{},						// プリミティブバッチ
+	m_rasterrizerState{},					// ラスタライザーステート
+	m_effectFactory{},						// エフェクトファクトリ
+	m_inputLayout{},							// 入力レイアウト
 	m_screenW(0),								// スクリーン幅
-	m_screenH(0),									// スクリーン高
+	m_screenH(0),								// スクリーン高
 	m_view{},											// ビュー行列
 	m_projection{},								// 射影行列
-	m_device(nullptr),							// デバイス
-	m_context(nullptr)							// デバイスコンテキスト
+	m_device{},										// デバイス
+	m_context{}									// デバイスコンテキスト
 {
-	// DeviceResourcesクラスのインスタンスを生成する
+	// デバイスリソースのインスタンスを生成する
 	m_deviceResources = std::make_unique<DX::DeviceResources>();
 }
 
 // デストラクタ
 Graphics::~Graphics()
 {
+
 }
 
 // 初期化する
 void Graphics::Initialize()
 {
-	// スクリーンサイズを設定する
-	//SetScreenSize(width, height);
-	// デバイスリソースを設定する
-	//m_deviceResources = deviceResources;
 	// デバイスを取得する
 	m_device = m_deviceResources->GetD3DDevice();
 	// デバイスコンテキストを取得する
@@ -65,14 +62,13 @@ void Graphics::Initialize()
 	m_spriteFont = std::make_unique<DirectX::SpriteFont>(m_device, L"resources\\font\\SegoeUI_18.spritefont");
 	// プリミティブバッチを生成する
 	m_primitiveBatch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>>(m_context);
-	// 入力レイアウトを生成する
+	// 頂点カラーを有効にする
 	m_basicEffect->SetVertexColorEnabled(true);
 	// テクスチャを無効にする
 	m_basicEffect->SetTextureEnabled(false);
-
 	void const* shaderByteCode;
 	size_t byteCodeLength;
-
+	// 頂点シェーダーを取得する
 	m_basicEffect->GetVertexShaderBytecode(&shaderByteCode, &byteCodeLength);
 	// 入力レイアウトを生成する
 	m_device->CreateInputLayout(
@@ -81,6 +77,7 @@ void Graphics::Initialize()
 		shaderByteCode, byteCodeLength,
 		m_inputLayout.ReleaseAndGetAddressOf()
 	);
+	// ラスタライザーディスクリプション
 	CD3D11_RASTERIZER_DESC rasterizerStateDesc(
 		D3D11_FILL_SOLID, D3D11_CULL_NONE, FALSE,
 		D3D11_DEFAULT_DEPTH_BIAS, D3D11_DEFAULT_DEPTH_BIAS_CLAMP,
@@ -90,8 +87,6 @@ void Graphics::Initialize()
 	m_device->CreateRasterizerState(&rasterizerStateDesc, m_rasterrizerState.ReleaseAndGetAddressOf());
 	// エフェクトファクトリを生成する
 	m_effectFactory = std::make_unique<DirectX::EffectFactory>(m_device);
-	// リソースディレクトリを設定する
-	//m_fx->SetDirectory(L"resources\\cmo");
 }
 
 // 文字列を描画する
@@ -101,13 +96,17 @@ void Graphics::DrawString(const float& x, const float& y, const wchar_t* str)
 	m_spriteFont->DrawString(m_spriteBatch.get(), str, DirectX::SimpleMath::Vector2(x, y));
 }
 
-// 描画プリミティブを開始する
+// プリミティブ描画を開始する
 void Graphics::DrawPrimitiveBegin(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
+	// ブレンディング状態を設定する
 	m_context->OMSetBlendState(m_commonStates->Opaque(), nullptr, 0xFFFFFFFF);
+	// 深度ステンシル状態を設定する
 	m_context->OMSetDepthStencilState(m_commonStates->DepthNone(), 0);
+	// カリングを行わない
 	m_context->RSSetState(m_commonStates->CullNone());
-	//m_context->RSSetState(m_rasterrizeState.Get());
+	// ラスタライザー状態を設定する
+	m_context->RSSetState(m_rasterrizerState.Get());
 
 	// ビュー行列を設定する
 	m_basicEffect->SetView(view);
@@ -115,12 +114,7 @@ void Graphics::DrawPrimitiveBegin(const DirectX::SimpleMath::Matrix& view, const
 	m_basicEffect->SetProjection(projection);
 	// ワールド行列を設定する
 	m_basicEffect->SetWorld(DirectX::SimpleMath::Matrix::Identity);
-
-	// 頂点カラーを有効にする
-	m_basicEffect->SetVertexColorEnabled(true);
-	// テクスチャを有効にする
-	m_basicEffect->SetTextureEnabled(false);
-	// 入力レイアウトを設定する
+	// コンテキストを設定する
 	m_basicEffect->Apply(m_context);
 	// 入力レイアウトを設定する
 	m_context->IASetInputLayout(m_inputLayout.Get());
@@ -173,7 +167,7 @@ void Graphics::DrawVector(const DirectX::SimpleMath::Vector2& position, const Di
 	// 正規化する
 	arrow.Normalize();
 	// 矢印のサイズを設定する
-	arrow *= 3.0f;
+	arrow *= 0.5f;
 	// 右矢 X: (xcosθ- ysinθ)  Y: (xsinθ+ ycosθ)
 	Vector2 arrowR = Vector2(arrow.x * cosTheta - arrow.y * sinTheta, arrow.x * sinTheta + arrow.y * cosTheta);
 	// 左矢 X: (xcosθ- ysinθ)  Y: (xsinθ+ ycosθ)
@@ -198,7 +192,7 @@ void Graphics::DrawVector(const DirectX::SimpleMath::Vector3& position, const Di
 	// 正規化する
 	arrow.Normalize();
 	// 矢印のサイズを設定する
-	arrow *= 3.0f;
+	arrow *= 0.5f;
 	// 右矢 X: (xcosθ- zsinθ)  Z: (xsinθ+ zcosθ)
 	Vector3 arrowR = Vector3(arrow.x * cosTheta - arrow.z * sinTheta, arrow.y, arrow.x * sinTheta + arrow.z * cosTheta);
 	// 左矢 X: (xcosθ- zsinθ)  Z: (xsinθ+ zcosθ)
@@ -210,7 +204,6 @@ void Graphics::DrawVector(const DirectX::SimpleMath::Vector3& position, const Di
 	// 左矢を描画する
 	DrawLine(position + vector, arrowL, color);
 }
-
 
 // 円を描画する(XZ平面)
 void Graphics::DrawCircle(	const DirectX::SimpleMath::Vector2& center, const float& radius, const DirectX::FXMVECTOR& color, const int& split)
@@ -294,38 +287,14 @@ void Graphics::DrawModel(const DirectX::Model* model, const DirectX::SimpleMath:
 	if (depthBuffer)
 	{
 		// モデルを描画する
-		model->Draw(m_context, *m_commonStates.get(), world, m_view, m_projection);
+		model->Draw(m_context, *m_commonStates.get(), world, m_view, m_projection, false);
 	}
 	else
 	{
 		// モデルを描画する
-		model->Draw(
-			m_context,
-			*m_commonStates.get(),
-			world,
-			m_view,
-			m_projection,
-			false,
+		model->Draw(	m_context, *m_commonStates.get(), 	world, m_view, m_projection, false,
 			[&]() { 	m_context->OMSetDepthStencilState(m_commonStates->DepthNone(), 0); }
 		);
 	}
-}
-
-// アニメーションモデルを描画する
-void Graphics::DrawModel(
-	const DirectX::Model* model,
-	const DX::AnimationSDKMESH* animationSDKMESH,
-	const DirectX::ModelBone::TransformArray* transformArray,
-	const DirectX::SimpleMath::Matrix& world
-)
-{
-	// ボーン配列のサイズを取得する
-	size_t bones = model->bones.size();
-	// アニメーションにモデル、ボーン数、ボーンを適用する
-	animationSDKMESH->Apply(*model, bones, transformArray->get());
-	// コモンステートを取得する
-	DirectX::CommonStates* commonState = Graphics::GetInstance()->GetCommonStates();
-	// スキンメッシュアニメーションを描画する
-	model->DrawSkinned(m_context, *commonState, bones, transformArray->get(), world, m_view, m_projection);
 }
 
