@@ -5,6 +5,7 @@
 #include "../ItoLib/UserResources.h"
 #include "../GameObject/Menu.h"
 #include "DeviceResources.h"
+#include "GameObject/TextureBillboard.h"
 
 class TitleScene : public Ito::Scene<UserResources>
 {
@@ -42,6 +43,14 @@ private:
 
 	// デバイスリソース
 	std::unique_ptr<DX::DeviceResources> m_deviceresources;
+
+	std::unique_ptr<TextureBillboard> m_texBill;
+
+	// ビュー行列
+	DirectX::SimpleMath::Matrix m_view;
+
+	// 射影行列
+	DirectX::SimpleMath::Matrix m_proj;
 public:
 
 };

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "TutorialScene.h"
-
+#include "ResultScene.h"
 
 using namespace DirectX;
 
@@ -9,7 +9,7 @@ void TutorialScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-	m_camera.SetPlayer(m_posP, m_rotateP);
+	m_camera.SetPlayer(m_player->GetPlayerPosition(), m_player->GetPlayerRotate());
 }
 
 void TutorialScene::Update(float elapsedTime)
@@ -26,18 +26,21 @@ void TutorialScene::Update(float elapsedTime)
 		m_skyRotate = 0.0f;
 	}
 
-	//Player
-	m_posP.y = -1.0f;
-	if (kb.A) m_rotateP = m_rotateP * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(0.5f));
-	if (kb.D) m_rotateP = m_rotateP * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
+	if (kb.Q)
+	{
+		ChangeScene<ResultScene>();
+	}
 
-	if (kb.W) m_posP += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotateP);
-	if (kb.S) m_posP -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotateP);
+	m_player->Update(elapsedTime);
 
-	if (kb.Space) act = true;
+	/*if (kb.Home) gameC = true;
+	if (kb.End) gameC = false;
 
+	if (gameC) {
+		if (kb.Space) act = true;
+	}
 	if (act) m_camera.Update(elapsedTime, 1);
-	else m_camera.Update(elapsedTime, 2);
+	else m_camera.Update(elapsedTime, 2);*/
 }
 
 void TutorialScene::Render()
@@ -52,11 +55,13 @@ void TutorialScene::Render()
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetUserResources()->GetCommonStates();
 
+	if (gameC) {
 	m_view = SimpleMath::Matrix::CreateLookAt(
 		m_camera.GetEyePosition(),
 		m_camera.GetTargetPosition(),
 		SimpleMath::Vector3::UnitY
 	);
+	}
 
 	m_floorPrimitive->Render(context, m_view, m_proj);
 
@@ -71,7 +76,7 @@ void TutorialScene::Render()
 
 	// “V‹…‚ÌÅI•ÏŠ·s—ñ
 	DirectX::SimpleMath::Matrix im = dynamicRotation * baseRotation;
-	im = im * DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(180.0f));
+	im = im * DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(360.0f));
 
 	context->OMSetDepthStencilState(states->DepthNone(), 0);
 	context->RSSetState(states->CullNone());
@@ -83,7 +88,7 @@ void TutorialScene::Render()
 			{
 				lights->SetLightEnabled(0, true);
 
-				DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, -1.0f);  // ‹tŒü‚«‚É
+				DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, 0.0f);  // ‹tŒü‚«‚É
 				dir.Normalize();
 				lights->SetLightDirection(0, DirectX::XMVectorSet(dir.x, dir.y, dir.z, 0.0f));
 
@@ -96,10 +101,8 @@ void TutorialScene::Render()
 	m_skyModel->Draw(context, *states, im * SimpleMath::Matrix::CreateScale(9000.0f), m_view, m_proj);
 	// “V‹…-------------------------------------------------------------------------------------------------
 
-	SimpleMath::Matrix p_world;
-	p_world = SimpleMath::Matrix::CreateFromQuaternion(m_rotateP) * SimpleMath::Matrix::CreateTranslation(m_posP);
+	m_player->Render(context, states, m_view, m_proj);
 
-	m_player->Draw(context, *states, p_world, m_view, m_proj);
 	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(5.0f, 1.0f, 5.0f));
 	m_enemy->Draw(context, *states, world, m_view, m_proj);
 }
@@ -129,8 +132,10 @@ void TutorialScene::CreateDeviceDependentResources()
 	fx->SetDirectory(L"Resources/Models");
 
 	m_skyModel = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Sky.sdkmesh", *fx);
-	m_player = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Player.sdkmesh", *fx);
 	m_enemy = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Enemy.sdkmesh", *fx);
+
+	m_player = std::make_unique<Player>();
+	m_player->Initialize(device);
 }
 
 void TutorialScene::CreateWindowSizeDependentResources()

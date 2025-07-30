@@ -44,7 +44,7 @@ void GameCamera::Update(float elapsedTime, int number)
 		m_angle += XMConvertToRadians(30.0f) * elapsedTime;
 		SimpleMath::Vector3 targetPos =
 			*m_pPlayerPos + SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
-		SimpleMath::Vector3 eyePos(0.0f, 3.0f, 4.0f);
+		SimpleMath::Vector3 eyePos(0.0f, 5.0f, 6.0f);
 		eyePos = SimpleMath::Vector3::Transform(
 			eyePos, SimpleMath::Matrix::CreateRotationY(m_angle));
 		SetPositionTarget(targetPos + eyePos, targetPos);

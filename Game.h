@@ -81,6 +81,7 @@ private:
     // ユーザー定義のリソース
     std::unique_ptr<UserResources> m_userResources;
 
+    HWND m_window;
 public:
     // 画面モード
     void SetFullScreenStare(BOOL value)
@@ -88,4 +89,6 @@ public:
         m_deviceResources->GetSwapChain()->SetFullscreenState(value, nullptr);
         if (value)m_deviceResources->CreateWindowSizeDependentResources();
     }
+
+    HWND GetWindow() { return m_window; }
 };

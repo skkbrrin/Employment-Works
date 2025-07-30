@@ -3,7 +3,7 @@
 //
 // シーンを管理するクラス
 //
-// Date: 2025.2.28
+// Date: 2025.7.28
 //--------------------------------------------------------------------------------------
 #pragma once
 
@@ -12,15 +12,17 @@
 
 #ifdef ESC_QUIT_ENABLE
 #include "Keyboard.h"
+#include "thread"
+#include "mutex"
 #endif
 
 namespace Ito
 {
-	template <class T>
+	template <typename T>
 	class SceneManager;
 
 	// シーンの基底クラス
-	template <class T>
+	template <typename T>
 	class Scene
 	{
 	private:
@@ -63,7 +65,11 @@ namespace Ito
 		void SetSceneManager(SceneManager<T>* sceneManager) { m_sceneManager = sceneManager; }
 
 		// シーンの切り替え関数
-		template <class U>
+		template <typename U>
+		void ChangeScene();
+
+		// 次の指定シーン、ロードシーン
+		template <typename U, typename V>
 		void ChangeScene();
 
 		// ユーザーが設定したリソース取得関数
@@ -71,8 +77,17 @@ namespace Ito
 
 	};
 
+
+
+	// ロード画面の基底クラス
+	// シーンと同じ作りでロードシーンを作れる
+	template <typename T>
+	using LoadingScreen = Scene<T>;
+
+
+
 	// シーンマネージャークラス
-	template <class T>
+	template <typename T>
 	class SceneManager
 	{
 	private:
@@ -81,10 +96,19 @@ namespace Ito
 		T* m_userResources;
 
 		// 実行中のシーンへのポインタ
-		Scene<T>* m_scene;
+		std::unique_ptr<Scene<T>> m_scene;
 
 		// 次のシーンへのポインタ
-		Scene<T>* m_nextScene;
+		std::unique_ptr<Scene<T>> m_nextScene;
+
+		// ロード画面 
+		std::unique_ptr<LoadingScreen<T>> m_loadingScreen;
+
+		// スレッド・共有変数(mutexによる排他制御)
+		std::thread m_loadingThread;
+		std::mutex  m_loadingMutex;
+		bool        m_isLoading;
+
 
 		// シーン削除関数
 		void DeleteScene();
@@ -94,13 +118,23 @@ namespace Ito
 		// コンストラクタ
 		SceneManager(T* userResources = nullptr)
 			: m_userResources(userResources)
-			, m_scene(nullptr)
-			, m_nextScene(nullptr)
+			, m_scene()
+			, m_nextScene()
+			, m_loadingScreen()
 		{
 		};
 
 		// デストラクタ
-		virtual ~SceneManager() { DeleteScene(); };
+		virtual ~SceneManager()
+		{
+			DeleteScene();
+
+			// お作法
+			if (m_loadingThread.joinable())
+			{
+				m_loadingThread.join();
+			}
+		};
 
 		// 更新
 		void Update(float elapsedTime);
@@ -110,7 +144,7 @@ namespace Ito
 
 		// デバイスに依存するリソースを作成する関数
 		void CreateDeviceDependentResources();
-		
+
 		// ウインドウサイズに依存するリソースを作成する関数
 		void CreateWindowSizeDependentResources();
 
@@ -118,12 +152,15 @@ namespace Ito
 		virtual void OnDeviceLost();
 
 		// シーンの設定関数
-		template <class U>
+		template <typename U>
 		void SetScene();
 
-		// 次のシーンの設定関数
-		template <class U>
-		void SetNextScene();
+		// 次のシーンのリクエスト関数
+		template <typename U>
+		bool RequestSceneChange();
+
+		template <typename U, typename V>
+		bool RequestSceneChange();
 
 		// ユーザーリソース設定関数
 		void SetUserResources(T* userResources) { m_userResources = userResources; }
@@ -131,18 +168,31 @@ namespace Ito
 		// ユーザーリソース取得関数
 		T* GetUserResources() { return m_userResources; }
 
+
+		void PrepareNextScene(std::function<std::unique_ptr<Scene<T>>()> sceneFactory);
+
+		bool IsLoading();
+
 	};
 
 	// シーンの切り替え関数
-	template <class T>
-	template <class U>
+	template <typename T>
+	template <typename U>
 	void Scene<T>::ChangeScene()
 	{
-		m_sceneManager->SetNextScene<U>();
+		m_sceneManager->RequestSceneChange<U>();
 	}
 
+	template <typename T>
+	template <typename U, typename V>
+	void Scene<T>::ChangeScene()
+	{
+		m_sceneManager->RequestSceneChange<U, V>();
+	}
+
+
 	// ユーザーが設定したリソース取得関数
-	template <class T>
+	template <typename T>
 	T* Scene<T>::GetUserResources()
 	{
 		assert(m_sceneManager);
@@ -151,39 +201,47 @@ namespace Ito
 	}
 
 	// シーンの設定関数
-	template <class T>
-	template <class U>
+	template <typename T>
+	template <typename U>
 	void SceneManager<T>::SetScene()
 	{
-		// シーンを削除
-		DeleteScene();
-
 		assert(m_scene == nullptr);
 
-		// シーンを生成
-		m_scene = new U;
-
-		// シーンにシーンマネージャーへのポインタを設定
-		m_scene->SetSceneManager(this);
-
-		// シーンの初期化処理
-		m_scene->Initialize();
+		RequestSceneChange<U>();
 	}
 
 	// シーンの設定関数
-	template <class T>
-	template <class U>
-	void SceneManager<T>::SetNextScene()
+	template <typename T>
+	template <typename U>
+	bool SceneManager<T>::RequestSceneChange()
 	{
 		if (!m_nextScene)
 		{
 			// シーンを生成
-			m_nextScene = new U;
+			PrepareNextScene([]() {return std::make_unique<U>(); });
+			return true;
 		}
+
+		return false;
+	}
+
+	template <typename T>
+	template <typename U, typename V>
+	bool SceneManager<T>::RequestSceneChange()
+	{
+		if (RequestSceneChange<U>())
+		{
+			// ロード画面を作成
+			m_loadingScreen = std::make_unique<V>();
+			m_loadingScreen->SetSceneManager(this);
+			m_loadingScreen->Initialize();
+		}
+
+		return false;
 	}
 
 	// 更新関数
-	template <class T>
+	template <typename T>
 	void SceneManager<T>::Update(float elapsedTime)
 	{
 #ifdef ESC_QUIT_ENABLE
@@ -193,22 +251,26 @@ namespace Ito
 #endif
 
 		// シーンの切り替え処理
-		if (m_nextScene)
+		if (!IsLoading() && m_nextScene)
 		{
 			DeleteScene();
 
 			assert(m_scene == nullptr);
 
 			// シーンを切り替え
-			m_scene = m_nextScene;
+			m_scene = std::move(m_nextScene);
 
-			m_nextScene = nullptr;
+			if (m_loadingScreen)
+			{
+				m_loadingScreen->Finalize();
+				m_loadingScreen.reset();
+			}
+		}
 
-			// シーンにシーンマネージャーへのポインタを設定
-			m_scene->SetSceneManager(this);
-
-			// シーンの初期化処理
-			m_scene->Initialize();
+		if (m_loadingScreen)
+		{
+			m_loadingScreen->Update(elapsedTime);
+			return;
 		}
 
 		// シーンの更新
@@ -217,46 +279,85 @@ namespace Ito
 	}
 
 	// 描画関数
-	template <class T>
+	template <typename T>
 	void SceneManager<T>::Render()
 	{
+		if (m_loadingScreen)
+		{
+			m_loadingScreen->Render();
+			return;
+		}
+
 		// シーンの描画
 		if (m_scene) m_scene->Render();
 	}
 
 	// デバイスに依存するリソースを作成する関数
-	template <class T>
+	template <typename T>
 	void SceneManager<T>::CreateDeviceDependentResources()
 	{
 		if (m_scene) m_scene->CreateDeviceDependentResources();
 	}
 
 	// ウインドウサイズに依存するリソースを作成する関数
-	template <class T>
+	template <typename T>
 	void SceneManager<T>::CreateWindowSizeDependentResources()
 	{
 		if (m_scene) m_scene->CreateWindowSizeDependentResources();
 	}
 
 	// デバイスロストした時に呼び出される関数
-	template <class T>
+	template <typename T>
 	void SceneManager<T>::OnDeviceLost()
 	{
 		if (m_scene) m_scene->OnDeviceLost();
 	}
 
 	// シーンの削除関数
-	template <class T>
+	template <typename T>
 	void SceneManager<T>::DeleteScene()
 	{
 		if (m_scene)
 		{
 			m_scene->Finalize();
 
-			delete m_scene;
-
-			m_scene = nullptr;
+			m_scene.reset();
 		}
+	}
+
+
+	// ミューテックのロック、アンロック
+	template<typename T>
+	inline void SceneManager<T>::PrepareNextScene(std::function<std::unique_ptr<Scene<T>>()> sceneFactory)
+	{
+		if (m_loadingThread.joinable())
+		{
+			m_loadingThread.join();
+		}
+
+		m_isLoading = true;
+		m_loadingThread = std::thread{
+			[=]()
+			{
+				m_nextScene = sceneFactory();
+				m_nextScene->SetSceneManager(this);
+				m_nextScene->Initialize();
+
+				m_loadingMutex.lock();
+				m_isLoading = false;
+				m_loadingMutex.unlock();
+			}
+		};
+	}
+
+	template<typename T>
+	inline bool SceneManager<T>::IsLoading()
+	{
+		m_loadingMutex.lock();
+		bool isLoading = m_isLoading;
+		m_loadingMutex.unlock();
+
+		return isLoading;
 	}
 
 }

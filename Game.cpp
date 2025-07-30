@@ -44,7 +44,7 @@ void Game::Initialize(HWND window, int width, int height)
     */
 
     // 始まりのシーンセット
-    m_sceneManager->SetScene<TutorialScene>();
+    m_sceneManager->SetScene<TitleScene>();
 }
 
 #pragma region Frame Update
@@ -76,9 +76,6 @@ void Game::Update(DX::StepTimer const& timer)
     auto ms = DirectX::Mouse::Get().GetState();
     m_msTracker.Update(ms);
 
-    if (kb.T) m_sceneManager->SetNextScene<TitleScene>();
-    if (kb.Y) m_sceneManager->SetNextScene<TutorialScene>();
-    if (kb.U) m_sceneManager->SetNextScene<ResultScene>();
 }
 #pragma endregion
 

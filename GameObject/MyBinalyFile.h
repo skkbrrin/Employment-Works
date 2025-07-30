@@ -8,9 +8,7 @@
 
 #include <memory>
 
-namespace kHorikawa
-{
-	class BinaryFile
+	class MyBinaryFile
 	{
 	protected:
 
@@ -23,15 +21,14 @@ namespace kHorikawa
 	public:
 
 		//	ファイル名を指定してロード
-		static std::unique_ptr<kHorikawa::BinaryFile> LoadFile(const wchar_t* fileName);
+		static std::unique_ptr<MyBinaryFile> LoadFile(const wchar_t* fileName);
 
-		BinaryFile();
+		MyBinaryFile();
 
 		//	ムーブコンストラクタ
-		BinaryFile(BinaryFile* in);
+		MyBinaryFile(MyBinaryFile* in);
 
-		//	アクセサ
+		//	アクセサ(取得)
 		char* GetData() { return m_data.get(); }
 		unsigned int GetSize() { return m_size; }
 	};
-}

@@ -8,7 +8,7 @@
 #include "pch.h"
 #include "Particle.h"
 
-#include "BinaryFile.h"
+#include "GameObject/MyBinalyFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -88,9 +88,9 @@ void kHorikawa::Particle::CreateShader()
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	std::unique_ptr<kHorikawa::BinaryFile> VSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/ParticleVS.cso");
-	std::unique_ptr<kHorikawa::BinaryFile> PSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/ParticlePS.cso");
-	std::unique_ptr<kHorikawa::BinaryFile> GSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/ParticleGS.cso");
+	std::unique_ptr<MyBinaryFile> VSData = MyBinaryFile::LoadFile(L"Resources/Shaders/ParticleVS.cso");
+	std::unique_ptr<MyBinaryFile> PSData = MyBinaryFile::LoadFile(L"Resources/Shaders/ParticlePS.cso");
+	std::unique_ptr<MyBinaryFile> GSData = MyBinaryFile::LoadFile(L"Resources/Shaders/ParticleGS.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],

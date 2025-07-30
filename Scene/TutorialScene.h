@@ -7,6 +7,8 @@
 #include "GameObject/FloorPrimitive.h"
 #include "ItoLib/GameCamera.h"
 
+#include "Charactor/Player/Player.h"
+
 class TutorialScene : public Ito::Scene<UserResources>
 {
 public:
@@ -62,17 +64,18 @@ private:
 
 	std::unique_ptr<kHorikawa::FloorPrimitive> m_floorPrimitive;
 
-	GameCamera m_camera;
-
-
-	std::unique_ptr<DirectX::Model> m_player;
-	DirectX::SimpleMath::Vector3 m_posP;
-
+	// ÉvÉåÉCÉÑÅ[
 	std::unique_ptr<DirectX::Model> m_enemy;
 	DirectX::SimpleMath::Vector3 m_posE;
-	DirectX::SimpleMath::Quaternion m_rotateP;
-	bool act = false;
 
+	std::unique_ptr<Player> m_player;
+	bool m_cameraDebug = false;
+	bool m_cameraGame = false;
+
+	bool act = false;
+	bool gameC = false;
+
+	GameCamera m_camera;
 
 private:
 	float m_skyRotate = 0.0f;

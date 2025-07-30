@@ -8,7 +8,7 @@
 #include "pch.h"
 #include "UserInterface.h"
 
-#include "BinaryFile.h"
+#include "GameObject/MyBinalyFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -135,9 +135,9 @@ void kHorikawa::UserInterface::CreateShader()
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	std::unique_ptr<kHorikawa::BinaryFile> VSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIVS.cso");
-	std::unique_ptr<kHorikawa::BinaryFile> GSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIGS.cso");
-	std::unique_ptr<kHorikawa::BinaryFile> PSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIPS.cso");
+	std::unique_ptr<MyBinaryFile> VSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIVS.cso");
+	std::unique_ptr<MyBinaryFile> GSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIGS.cso");
+	std::unique_ptr<MyBinaryFile> PSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIPS.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],

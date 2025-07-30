@@ -189,11 +189,11 @@
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObject\BinaryFile.h" />
-    <ClInclude Include="GameObject\FloorModel.h" />
     <ClInclude Include="GameObject\FloorPrimitive.h" />
     <ClInclude Include="GameObject\Menu.h" />
+    <ClInclude Include="GameObject\MyBinalyFile.h" />
     <ClInclude Include="GameObject\Particle.h" />
+    <ClInclude Include="GameObject\TextureBillboard.h" />
     <ClInclude Include="GameObject\UserInterface.h" />
     <ClInclude Include="ItoLib\Camera.h" />
     <ClInclude Include="ItoLib\DebugCamera.h" />
@@ -230,11 +230,11 @@
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameObject\BinaryFile.cpp" />
-    <ClCompile Include="GameObject\FloorModel.cpp" />
     <ClCompile Include="GameObject\FloorPrimitive.cpp" />
     <ClCompile Include="GameObject\Menu.cpp" />
+    <ClCompile Include="GameObject\MyBinalyFile.cpp" />
     <ClCompile Include="GameObject\Particle.cpp" />
+    <ClCompile Include="GameObject\TextureBillboard.cpp" />
     <ClCompile Include="GameObject\UserInterface.cpp" />
     <ClCompile Include="ItoLib\Camera.cpp" />
     <ClCompile Include="ItoLib\DebugCamera.cpp" />
@@ -271,6 +271,18 @@
     <None Include="Resources\Shaders\UI.hlsli" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\UIGS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>

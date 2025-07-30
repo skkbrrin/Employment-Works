@@ -84,12 +84,6 @@
     <ClInclude Include="ItoLib\UserResources.h">
       <Filter>ItoLib</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\BinaryFile.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\FloorModel.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\Menu.h">
       <Filter>GameObject</Filter>
     </ClInclude>
@@ -156,6 +150,12 @@
     <ClInclude Include="ItoLib\GameCamera.h">
       <Filter>ItoLib</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\MyBinalyFile.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\TextureBillboard.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -190,12 +190,6 @@
     </ClCompile>
     <ClCompile Include="ItoLib\TaskManager.cpp">
       <Filter>ItoLib</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\BinaryFile.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\FloorModel.cpp">
-      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Menu.cpp">
       <Filter>GameObject</Filter>
@@ -245,6 +239,12 @@
     <ClCompile Include="ItoLib\GameCamera.cpp">
       <Filter>ItoLib</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\MyBinalyFile.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\TextureBillboard.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -273,6 +273,12 @@
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\UIVS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

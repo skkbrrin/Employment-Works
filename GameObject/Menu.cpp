@@ -9,7 +9,7 @@
 #include "Menu.h"
 #include "UserInterface.h"
 
-#include "BinaryFile.h"
+#include "GameObject/MyBinalyFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
