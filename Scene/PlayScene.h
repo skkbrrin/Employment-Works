@@ -8,13 +8,14 @@
 #include "ItoLib/GameCamera.h"
 
 #include "Charactor/Player/Player.h"
+#include "Charactor/Enemy/Enemy.h"
 
-class TutorialScene : public Ito::Scene<UserResources>
+class PlayScene : public Ito::Scene<UserResources>
 {
 public:
 	// コンストラクタ
-	TutorialScene() = default; 
-	~TutorialScene() = default; 
+	PlayScene() = default; 
+	~PlayScene() = default; 
 	
 	// 初期化
 	void Initialize() override; 
@@ -65,10 +66,9 @@ private:
 	std::unique_ptr<kHorikawa::FloorPrimitive> m_floorPrimitive;
 
 	// プレイヤー
-	std::unique_ptr<DirectX::Model> m_enemy;
-	DirectX::SimpleMath::Vector3 m_posE;
-
 	std::unique_ptr<Player> m_player;
+	std::unique_ptr<Enemy> m_enemy;
+
 	bool m_cameraDebug = false;
 	bool m_cameraGame = false;
 
@@ -76,6 +76,8 @@ private:
 	bool gameC = false;
 
 	GameCamera m_camera;
+
+	float timer;
 
 private:
 	float m_skyRotate = 0.0f;

@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "TutorialScene.h"
+#include "PlayScene.h"
 #include "ResultScene.h"
 
 using namespace DirectX;
 
-void TutorialScene::Initialize()
+void PlayScene::Initialize()
 {
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
@@ -12,7 +12,7 @@ void TutorialScene::Initialize()
 	m_camera.SetPlayer(m_player->GetPlayerPosition(), m_player->GetPlayerRotate());
 }
 
-void TutorialScene::Update(float elapsedTime)
+void PlayScene::Update(float elapsedTime)
 {
 	auto kb = Keyboard::Get().GetState();
 
@@ -32,36 +32,26 @@ void TutorialScene::Update(float elapsedTime)
 	}
 
 	m_player->Update(elapsedTime);
+	m_enemy->Update(elapsedTime);
 
-	/*if (kb.Home) gameC = true;
-	if (kb.End) gameC = false;
-
-	if (gameC) {
-		if (kb.Space) act = true;
-	}
-	if (act) m_camera.Update(elapsedTime, 1);
-	else m_camera.Update(elapsedTime, 2);*/
+	timer += elapsedTime;
 }
 
-void TutorialScene::Render()
+void PlayScene::Render()
 {
 	// ビュー行列を設定
 	m_view = m_debugCamera->GetCameraMatrix();
 
 	auto debugFont = GetUserResources()->GetDebugFont();
-	debugFont->AddString(L"TutorialScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()));
+	debugFont->AddString(L"PlayScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()));
+	std::wostringstream oss;
+	oss << "Timer = " << timer;
+	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2));
 
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetUserResources()->GetCommonStates();
 
-	if (gameC) {
-	m_view = SimpleMath::Matrix::CreateLookAt(
-		m_camera.GetEyePosition(),
-		m_camera.GetTargetPosition(),
-		SimpleMath::Vector3::UnitY
-	);
-	}
 
 	m_floorPrimitive->Render(context, m_view, m_proj);
 
@@ -102,17 +92,24 @@ void TutorialScene::Render()
 	// 天球-------------------------------------------------------------------------------------------------
 
 	m_player->Render(context, states, m_view, m_proj);
+	m_enemy->Render(context, states, m_view, m_proj);
 
-	DirectX::SimpleMath::Matrix world = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(5.0f, 1.0f, 5.0f));
-	m_enemy->Draw(context, *states, world, m_view, m_proj);
+#if defined(_DEBUG)
+	std::wostringstream enemy;
+	enemy << "EnemyRigth =  " << m_enemy->Getrigth() << "\n" << "EnemyPos =  " << m_enemy->GetPos();
+	debugFont->AddString(enemy.str().c_str(), SimpleMath::Vector2(1000.0f, debugFont->GetFontHeight() * 2));
+#else
+#endif
 }
 
-void TutorialScene::Finalize()
+void PlayScene::Finalize()
 {
 }
 
-void TutorialScene::CreateDeviceDependentResources()
+void PlayScene::CreateDeviceDependentResources()
 {
+	std::this_thread::sleep_for(std::chrono::seconds{ 2 });
+
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto state = GetUserResources()->GetCommonStates();
@@ -132,13 +129,16 @@ void TutorialScene::CreateDeviceDependentResources()
 	fx->SetDirectory(L"Resources/Models");
 
 	m_skyModel = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Sky.sdkmesh", *fx);
-	m_enemy = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Enemy.sdkmesh", *fx);
 
 	m_player = std::make_unique<Player>();
 	m_player->Initialize(device);
+
+	m_enemy = std::make_unique<Enemy>();
+	m_enemy->Inisialize(device);
+
 }
 
-void TutorialScene::CreateWindowSizeDependentResources()
+void PlayScene::CreateWindowSizeDependentResources()
 {
 	// 射影行列を作成
 	RECT rect = GetUserResources()->GetDeviceResources()->GetOutputSize();
@@ -152,6 +152,6 @@ void TutorialScene::CreateWindowSizeDependentResources()
 	m_debugCamera = std::make_unique<Ito::DebugCamera>(rect.right, rect.bottom);
 }
 
-void TutorialScene::OnDeviceLost()
+void PlayScene::OnDeviceLost()
 {
 }

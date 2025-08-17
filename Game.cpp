@@ -7,7 +7,7 @@
 
 // シーンのインクルード
 #include "Scene/TitleScene.h"
-#include "Scene/TutorialScene.h"
+#include "Scene/PlayScene.h"
 #include "Scene/ResultScene.h"
 
 extern void ExitGame() noexcept;

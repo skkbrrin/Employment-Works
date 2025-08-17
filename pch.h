@@ -98,3 +98,9 @@ namespace DX
 
 #include <SpriteBatch.h>
 #include <SpriteFont.h>
+
+#include <Audio.h>
+
+// ‰æ‘œŠÖ˜A
+#include "DDSTextureLoader.h"
+#include "WICTextureLoader.h"

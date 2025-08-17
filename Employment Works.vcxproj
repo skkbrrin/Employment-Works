@@ -206,9 +206,10 @@
     <ClInclude Include="ItoLib\TaskManager.h" />
     <ClInclude Include="ItoLib\UserResources.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="Scene\LoadingScreen.h" />
     <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
-    <ClInclude Include="Scene\TutorialScene.h" />
+    <ClInclude Include="Scene\PlayScene.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="TanakaLib\Geometry.h" />
     <ClInclude Include="TanakaLib\Graphics.h" />
@@ -251,9 +252,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Scene\LoadingScreen.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
-    <ClCompile Include="Scene\TutorialScene.cpp" />
+    <ClCompile Include="Scene\PlayScene.cpp" />
     <ClCompile Include="TanakaLib\Graphics.cpp" />
     <ClCompile Include="TanakaLib\Messenger.cpp" />
   </ItemGroup>

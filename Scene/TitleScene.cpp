@@ -1,70 +1,89 @@
 #include "pch.h"
 #include "TitleScene.h"
-#include "TutorialScene.h"
+#include "Scene/LoadingScreen.h"
+#include "Scene/PlayScene.h"
 
+#include <CommonStates.h>
+
+
+using namespace DirectX;
 
 void TitleScene::Initialize()
 {
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-	auto deviceResouces = GetUserResources()->GetDeviceResources();
-	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
+	// BGM
+	AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
+#ifdef _DEBUG
+	flags |= AudioEngine_Debug;
+#endif
 
-	//m_menu->Initialize(deviceResouces, 1280, 720);
-	m_texBill->Create(deviceResouces, device);
+	audioEngine = std::make_unique<AudioEngine>(flags);
+
+	try {
+		bgm = std::make_unique<SoundEffect>(audioEngine.get(), L"Resources/Sounds/Momiziyado.wav");
+		bgmInstance = bgm->CreateInstance();
+		bgmInstance->Play(true);
+	}
+	catch (const std::exception& e) {
+		OutputDebugStringA(e.what());
+	}
 }
 
 void TitleScene::Update(float elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
-	auto kb = DirectX::Keyboard::Get().GetState();
+	auto kb = GetUserResources()->GetKeyboardStateTracker();
 
-	if (kb.Space)
+	if (kb->pressed.Enter)
 	{
-		ChangeScene<TutorialScene>();
+		bgmInstance->Stop();
+		ChangeScene<PlayScene, LoadingScreen>();
 	}
 
-	//m_menu->Update();
-	m_texBill->CreateBillboard(m_debugCamera->GetEyePosition(), DirectX::SimpleMath::Vector3::Up);
+	// 毎フレーム更新
+	timer += elapsedTime;
+
+	// アルファ値を 0～1 の範囲で変化させる（点滅）
+	float alpha = abs(sinf(timer)); // speedで速さ調整
+	color = { alpha, alpha, alpha, alpha };
 }
 
 void TitleScene::Render()
 {
-	// ビュー行列を設定
-	m_view = m_debugCamera->GetCameraMatrix();
+	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
+	auto states = GetUserResources()->GetCommonStates();
 
-	auto debugFont = GetUserResources()->GetDebugFont();
-	debugFont->AddString(L"TitleScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()));
-
-	//m_menu->Render();
-	m_texBill->Render(m_view, m_proj);
+	m_spriteBatch->Begin(SpriteSortMode_Deferred,
+		states->AlphaBlend());
+	m_spriteBatch->Draw(m_SRV.Get(), SimpleMath::Vector2(0.0f, 0.0f), nullptr, Colors::White, 0.0f, SimpleMath::Vector2(0.0f, 0.0f), 0.92f, SpriteEffects_None);
+	m_spriteBatch->Draw(m_callSRV.Get(), SimpleMath::Vector2(500.0f, 500.0f), nullptr, color, 0.0f, SimpleMath::Vector2(0.0f, 0.0f), 0.5f, SpriteEffects_None);
+	m_spriteBatch->End();
 }
 
 void TitleScene::Finalize()
 {
+	// 終了処理
+	bgmInstance.reset();
+	bgm.reset();
+	audioEngine.reset();
 }
 
 void TitleScene::CreateDeviceDependentResources()
 {
-	m_menu = std::make_unique<kHorikawa::Menu>();
+	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
+	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-	m_texBill = std::make_unique<TextureBillboard>();
+	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+
+	CreateDDSTextureFromFile(device, L"Resources/Textures/Title.dds", nullptr, TitleScene::m_SRV.ReleaseAndGetAddressOf());
+	CreateDDSTextureFromFile(device, L"Resources/Textures/Enter.dds", nullptr, TitleScene::m_callSRV.ReleaseAndGetAddressOf());
 }
 
 void TitleScene::CreateWindowSizeDependentResources()
 {
-	// 射影行列を作成
-	RECT rect = GetUserResources()->GetDeviceResources()->GetOutputSize();
-	m_proj = DirectX::SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		DirectX::XMConvertToRadians(45.0f),
-		static_cast<float>(rect.right) / static_cast<float>(rect.bottom),
-		0.1f, 10000.0f
-	);
-
-	// デバッグカメラの作成
-	m_debugCamera = std::make_unique<Ito::DebugCamera>(rect.right, rect.bottom);
 }
 
 void TitleScene::OnDeviceLost()

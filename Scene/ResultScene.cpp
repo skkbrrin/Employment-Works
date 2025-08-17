@@ -11,8 +11,9 @@ void ResultScene::Initialize()
 void ResultScene::Update(float elapsedTime)
 {
 	auto kb = DirectX::Keyboard::Get().GetState();
+	auto kbState = GetUserResources()->GetKeyboardStateTracker();
 
-	if (kb.Enter)
+	if (kbState->pressed.Space)
 	{
 		ChangeScene<TitleScene>();
 	}

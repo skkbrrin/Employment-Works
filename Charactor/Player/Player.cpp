@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Charactor/Player/Player.h"
-#include "Scene/TutorialScene.h"
+#include "Scene/PlayScene.h"
 
 using namespace DirectX;
 
@@ -31,7 +31,6 @@ void Player::Update(float elapsedTime)
 	if (kb.W) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
 	if (kb.S) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
 
-	
 }
 
 void Player::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -40,6 +39,7 @@ void Player::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states,
 	p_world = SimpleMath::Matrix::CreateFromQuaternion(m_rotate) * SimpleMath::Matrix::CreateTranslation(m_position);
 
 	m_player->Draw(context, *states, p_world, view, proj);
+
 }
 
 void Player::Finalize()
@@ -55,4 +55,5 @@ DirectX::SimpleMath::Quaternion Player::GetPlayerRotate()
 {
 	return m_rotate;
 }
+
 

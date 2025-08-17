@@ -60,7 +60,7 @@
     <ClInclude Include="Scene\TitleScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\TutorialScene.h">
+    <ClInclude Include="Scene\PlayScene.h">
       <Filter>Scene</Filter>
     </ClInclude>
     <ClInclude Include="ItoLib\DebugCamera.h">
@@ -156,6 +156,9 @@
     <ClInclude Include="GameObject\TextureBillboard.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\LoadingScreen.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -173,7 +176,7 @@
     <ClCompile Include="Scene\TitleScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\TutorialScene.cpp">
+    <ClCompile Include="Scene\PlayScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="ItoLib\DebugCamera.cpp">
@@ -244,6 +247,9 @@
     </ClCompile>
     <ClCompile Include="GameObject\TextureBillboard.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\LoadingScreen.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
