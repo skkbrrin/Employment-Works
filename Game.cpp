@@ -99,11 +99,14 @@ void Game::Render()
 
     m_sceneManager->Render();
 
+#if defined(_DEBUG) // fps•\¦(ƒŠƒŠ[ƒX‚É‚Í‘‚©‚È‚¢)
     std::wostringstream oss;
     oss << "fps:" << m_timer.GetFramesPerSecond();
     m_debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 0.0f));
 
     m_debugFont->Render(m_states.get());
+#endif
+
 
     m_deviceResources->PIXEndEvent();
 

@@ -102,7 +102,7 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #if defined(_DEBUG) // デバッグモードはウィンドウで実行
         g_game->SetFullScreenStare(FALSE);
 #else // リリースモードはフルスクリーンで実行
-        //g_game->SetFullScreenStare(TRUE);
+        g_game->SetFullScreenStare(TRUE);
 #endif
     }
 
@@ -120,6 +120,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
             g_game->Tick();
         }
     }
+
+    g_game->SetFullScreenStare(FALSE);
 
     g_game.reset();
 
