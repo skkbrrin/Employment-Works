@@ -19,27 +19,25 @@ void Enemy::Inisialize(ID3D11Device* device)
 	m_enemyModel = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Enemy.sdkmesh", *fx);
 
 	m_position = SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
-	m_speed = SimpleMath::Vector3(1.0f, 0.0f, 0.0f);
+	m_speed = 3.0f;
 }
 
-void Enemy::Update(float elapsedTime)
+void Enemy::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos)
 {
-	m_rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(10.f));
+	// 方向ベクトル計算
+	SimpleMath::Vector3 toPlayer = playerPos - m_position;
 
-	m_speed = m_speed * 1.01f;
-
-	if (rigth)
+	if (toPlayer.LengthSquared() > 0.0001f)
 	{
-		m_position += SimpleMath::Vector3::Transform(m_speed * elapsedTime, m_rotate);
+		toPlayer.Normalize();
 	}
-	else
-	{
-		m_position -= SimpleMath::Vector3::Transform(m_speed * elapsedTime, m_rotate);
-	}
-	
 
-	if (m_position.x <= -30.0f) { rigth = true; }
-	if (m_position.x >= 30.0f) { rigth = false; }
+	// 移動
+	m_position += toPlayer * m_speed * elapsedTime;
+
+	// 向き
+	float angle = atan2f(toPlayer.x, toPlayer.z);
+	m_rotate = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, angle);
 }
 
 void Enemy::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)

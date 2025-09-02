@@ -7,7 +7,7 @@ public:
 	Enemy();
 	~Enemy();
 	void Inisialize(ID3D11Device* device);
-	void Update(float elapsedTime);
+	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos);
 	void Render( ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
@@ -17,7 +17,7 @@ private:
 	DirectX::SimpleMath::Quaternion m_rotate;
 	bool rigth = false;
 
-	DirectX::SimpleMath::Vector3 m_speed;
+	float m_speed;
 
 public:
 	bool Getrigth() { return rigth; }

@@ -19,7 +19,9 @@ private:
 	DirectX::SimpleMath::Quaternion m_rotate;
 
 public:
-	DirectX::SimpleMath::Vector3 GetPlayerPosition();
-	DirectX::SimpleMath::Quaternion GetPlayerRotate();
+	DirectX::SimpleMath::Vector3 GetPlayerPosition() { return m_position; }
+	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
+	DirectX::SimpleMath::Quaternion GetPlayerRotate() { return m_rotate; }
+	void SetRotate(DirectX::SimpleMath::Quaternion rotate) { m_rotate = rotate; }
 	
 };

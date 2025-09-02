@@ -18,6 +18,7 @@ void PlayScene::Update(float elapsedTime)
 
 	m_debugCamera->Update();
 
+
 	float rotateSpeed = 1.0f;
 	m_skyRotate += rotateSpeed * elapsedTime;
 
@@ -32,15 +33,23 @@ void PlayScene::Update(float elapsedTime)
 	}
 
 	m_player->Update(elapsedTime);
-	m_enemy->Update(elapsedTime);
+	m_enemy->Update(elapsedTime, m_player->GetPlayerPosition());
 
 	timer += elapsedTime;
+	
+	m_camera.Update(elapsedTime, 1);
 }
 
 void PlayScene::Render()
 {
 	// ビュー行列を設定
 	m_view = m_debugCamera->GetCameraMatrix();
+
+	/*m_view = SimpleMath::Matrix::CreateLookAt(
+		m_camera.GetEyePosition(),
+		m_camera.GetTargetPosition(),
+		SimpleMath::Vector3::UnitY
+	);*/
 
 	auto debugFont = GetUserResources()->GetDebugFont();
 	debugFont->AddString(L"PlayScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()));
@@ -66,33 +75,37 @@ void PlayScene::Render()
 
 	// 天球の最終変換行列
 	DirectX::SimpleMath::Matrix im = dynamicRotation * baseRotation;
-	im = im * DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(360.0f));
+	//im = im * DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(360.0f));
 
-	context->OMSetDepthStencilState(states->DepthNone(), 0);
-	context->RSSetState(states->CullNone());
+	//context->OMSetDepthStencilState(states->DepthNone(), 0);
+	//context->RSSetState(states->CullNone());
 
-	m_skyModel->UpdateEffects([](IEffect* effect)
-		{
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-			if (lights)
-			{
-				lights->SetLightEnabled(0, true);
+	//m_skyModel->UpdateEffects([](IEffect* effect)
+	//	{
+	//		auto lights = dynamic_cast<IEffectLights*>(effect);
+	//		if (lights)
+	//		{
+	//			lights->SetLightEnabled(0, true);
 
-				DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, 0.0f);  // 逆向きに
-				dir.Normalize();
-				lights->SetLightDirection(0, DirectX::XMVectorSet(dir.x, dir.y, dir.z, 0.0f));
+	//			DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, 0.0f);  // 逆向きに
+	//			dir.Normalize();
+	//			lights->SetLightDirection(0, DirectX::XMVectorSet(dir.x, dir.y, dir.z, 0.0f));
 
-				lights->SetLightDiffuseColor(0, DirectX::Colors::White);
-				lights->SetLightSpecularColor(0, DirectX::Colors::White);
-				lights->SetAmbientLightColor(DirectX::Colors::WhiteSmoke);
-			}
-		});
+	//			lights->SetLightDiffuseColor(0, DirectX::Colors::White);
+	//			lights->SetLightSpecularColor(0, DirectX::Colors::White);
+	//			lights->SetAmbientLightColor(DirectX::Colors::WhiteSmoke);
+	//		}
+	//	});
 
 	m_skyModel->Draw(context, *states, im * SimpleMath::Matrix::CreateScale(9000.0f), m_view, m_proj);
 	// 天球-------------------------------------------------------------------------------------------------
 
 	m_player->Render(context, states, m_view, m_proj);
 	m_enemy->Render(context, states, m_view, m_proj);
+
+	
+	
+	
 
 #if defined(_DEBUG)
 	std::wostringstream enemy;

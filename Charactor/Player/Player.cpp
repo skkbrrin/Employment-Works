@@ -46,14 +46,3 @@ void Player::Finalize()
 {
 }
 
-DirectX::SimpleMath::Vector3 Player::GetPlayerPosition()
-{
-	return m_position;
-}
-
-DirectX::SimpleMath::Quaternion Player::GetPlayerRotate()
-{
-	return m_rotate;
-}
-
-
