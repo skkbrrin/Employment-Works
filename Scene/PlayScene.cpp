@@ -37,7 +37,7 @@ void PlayScene::Update(float elapsedTime)
 
 	timer += elapsedTime;
 	
-	m_camera.Update(elapsedTime, 1);
+	//m_camera.Update(elapsedTime, 1);
 }
 
 void PlayScene::Render()
@@ -111,6 +111,10 @@ void PlayScene::Render()
 	std::wostringstream enemy;
 	enemy << "EnemyRigth =  " << m_enemy->Getrigth() << "\n" << "EnemyPos =  " << m_enemy->GetPos();
 	debugFont->AddString(enemy.str().c_str(), SimpleMath::Vector2(1000.0f, debugFont->GetFontHeight() * 2));
+
+	std::wostringstream EnemyD;
+	EnemyD << "Enemy<->Player =  " << m_enemy->GetDistance();
+	debugFont->AddString(EnemyD.str().c_str(), SimpleMath::Vector2(1000.0f, debugFont->GetFontHeight() * 4));
 #else
 #endif
 }

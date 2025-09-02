@@ -18,26 +18,44 @@ void Enemy::Inisialize(ID3D11Device* device)
 	fx->SetDirectory(L"Resources/Models");
 	m_enemyModel = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Enemy.sdkmesh", *fx);
 
-	m_position = SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+	m_position = SimpleMath::Vector3(10.0f, 1.0f, 10.0f);
 	m_speed = 3.0f;
 }
 
 void Enemy::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos)
 {
-	// 方向ベクトル計算
-	SimpleMath::Vector3 toPlayer = playerPos - m_position;
+	// プレイヤーとの距離
+	m_distance = (playerPos - m_position).LengthSquared();
 
-	if (toPlayer.LengthSquared() > 0.0001f)
+	// ステート切り替え
+	if (m_distance <= m_detectionRange * m_detectionRange) { m_state = State::Roll; }
+	else { m_state = State::Chase; }
+
+	if (m_state == State::Chase)
 	{
-		toPlayer.Normalize();
+		// 方向ベクトル計算
+		SimpleMath::Vector3 toPlayer = playerPos - m_position;
+
+		if (toPlayer.LengthSquared() > 0.0001f)
+		{
+			toPlayer.Normalize();
+		}
+
+		// 移動
+		m_position += toPlayer * m_speed * elapsedTime;
+		m_position.y = 1.0f;
+
+		// 向き
+		float angle = atan2f(toPlayer.x, toPlayer.z);
+		m_rotate = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, angle);
 	}
-
-	// 移動
-	m_position += toPlayer * m_speed * elapsedTime;
-
-	// 向き
-	float angle = atan2f(toPlayer.x, toPlayer.z);
-	m_rotate = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, angle);
+	else if (m_state == State::Roll)
+	{
+		// その場で回転
+		m_rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(
+			SimpleMath::Vector3::UnitY,
+			XMConvertToRadians(90.0f) * elapsedTime);
+	}
 }
 
 void Enemy::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)

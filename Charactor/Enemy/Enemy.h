@@ -1,6 +1,12 @@
 #pragma once
 #include "ItoLib/GameCamera.h"
 
+enum class State
+{
+	Chase,// 追跡ステート
+	Roll, // 回転ステート（攻撃実装したら攻撃に変える）
+};
+
 class Enemy
 {
 public:
@@ -19,8 +25,13 @@ private:
 
 	float m_speed;
 
+	State m_state = State::Chase; // ステート
+	float m_detectionRange = 3.0f; // 攻撃可能距離
+	float m_distance;
+
 public:
 	bool Getrigth() { return rigth; }
 	float GetPos() { return m_position.x; }
+	float GetDistance(){ return m_distance; }
 };
 
