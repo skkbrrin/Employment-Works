@@ -31,7 +31,7 @@ private:
 
 public:
 	bool Getrigth() { return rigth; }
-	float GetPos() { return m_position.x; }
+	DirectX::SimpleMath::Vector3 GetPos() { return m_position; }
 	float GetDistance(){ return m_distance; }
 };
 

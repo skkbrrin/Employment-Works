@@ -45,5 +45,4 @@ public:
 		m_pPlayerPos = &position;
 		m_pPlayerRotate = &rotate;
 	}
-
 };

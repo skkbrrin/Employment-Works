@@ -41,6 +41,9 @@
     <Filter Include="TanakaLib">
       <UniqueIdentifier>{9ec88e79-bb97-4c73-a47d-320b67d0ba21}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Charactors\Task">
+      <UniqueIdentifier>{fdc0b7f5-bf86-4d5a-982b-06f05f6c41b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -159,6 +162,13 @@
     <ClInclude Include="Scene\LoadingScreen.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Charactor\ScoreManager.h">
+      <Filter>Charactors</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Task\Number.h">
+      <Filter>Charactors\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3DPG応用\3DPG_0\SpriteSheet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -250,6 +260,12 @@
     </ClCompile>
     <ClCompile Include="Scene\LoadingScreen.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\ScoreManager.cpp">
+      <Filter>Charactors</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Task\Number.cpp">
+      <Filter>Charactors\Task</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

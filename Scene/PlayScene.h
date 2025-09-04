@@ -9,6 +9,7 @@
 
 #include "Charactor/Player/Player.h"
 #include "Charactor/Enemy/Enemy.h"
+#include "Charactor/ScoreManager.h"
 
 class PlayScene : public Ito::Scene<UserResources>
 {
@@ -65,7 +66,6 @@ private:
 
 	std::unique_ptr<kHorikawa::FloorPrimitive> m_floorPrimitive;
 
-	// ÉvÉåÉCÉÑÅ[
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Enemy> m_enemy;
 
@@ -76,6 +76,7 @@ private:
 	bool gameC = false;
 
 	GameCamera m_camera;
+	int cameraNum;
 
 	float timer;
 

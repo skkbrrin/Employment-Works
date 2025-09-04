@@ -44,7 +44,7 @@ void Game::Initialize(HWND window, int width, int height)
     */
 
     // 始まりのシーンセット
-    m_sceneManager->SetScene<TitleScene>();
+    m_sceneManager->SetScene<ResultScene>();
 }
 
 #pragma region Frame Update
@@ -102,7 +102,7 @@ void Game::Render()
 #if defined(_DEBUG) // fps表示(リリース時には書かない)
     std::wostringstream oss;
     oss << "fps:" << m_timer.GetFramesPerSecond();
-    m_debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 0.0f));
+    m_debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 0.0f), DirectX::Colors::Black);
 
     m_debugFont->Render(m_states.get());
 #endif

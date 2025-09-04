@@ -9,12 +9,13 @@ void PlayScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-	m_camera.SetPlayer(m_player->GetPlayerPosition(), m_player->GetPlayerRotate());
+	cameraNum = 1;
+	timer = 45.0f;
 }
 
 void PlayScene::Update(float elapsedTime)
 {
-	auto kb = Keyboard::Get().GetState();
+	auto kb = GetUserResources()->GetKeyboardStateTracker();
 
 	m_debugCamera->Update();
 
@@ -27,35 +28,50 @@ void PlayScene::Update(float elapsedTime)
 		m_skyRotate = 0.0f;
 	}
 
-	if (kb.Q)
+	if (kb->pressed.Q || timer <= 0.0f)
 	{
 		ChangeScene<ResultScene>();
 	}
 
-	m_player->Update(elapsedTime);
+	m_player->Update(elapsedTime, m_enemy->GetPos());
 	m_enemy->Update(elapsedTime, m_player->GetPlayerPosition());
+	m_camera.SetPlayer(m_player->GetPlayerPosition(), m_player->GetPlayerRotate());
 
-	timer += elapsedTime;
+	timer -= elapsedTime;
+
+	if (kb->pressed.D0) { cameraNum = 0; }
+	if (kb->pressed.D1) { cameraNum = 1; }
+	if (kb->pressed.D2) { cameraNum = 2; }
 	
-	//m_camera.Update(elapsedTime, 1);
+	m_camera.Update(elapsedTime, cameraNum);
 }
 
 void PlayScene::Render()
 {
+	// 一時的なカメラ設定
+	// (リリースモードのバグ修正完了したら消す)
+#if defined(_DEBUG)
 	// ビュー行列を設定
+	if (cameraNum == 0) {
+		m_view = m_debugCamera->GetCameraMatrix();
+	}
+	else if (cameraNum != 0) {
+		m_view = SimpleMath::Matrix::CreateLookAt(
+			m_camera.GetEyePosition(),
+			m_camera.GetTargetPosition(),
+			SimpleMath::Vector3::UnitY
+		);
+	}
+#else
 	m_view = m_debugCamera->GetCameraMatrix();
+#endif
 
-	/*m_view = SimpleMath::Matrix::CreateLookAt(
-		m_camera.GetEyePosition(),
-		m_camera.GetTargetPosition(),
-		SimpleMath::Vector3::UnitY
-	);*/
 
 	auto debugFont = GetUserResources()->GetDebugFont();
-	debugFont->AddString(L"PlayScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()));
+	debugFont->AddString(L"PlayScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()), DirectX::Colors::Black);
 	std::wostringstream oss;
-	oss << "Timer = " << timer;
-	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2));
+	oss << "Timer = " << static_cast<int>(timer);
+	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);
 
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
@@ -75,27 +91,27 @@ void PlayScene::Render()
 
 	// 天球の最終変換行列
 	DirectX::SimpleMath::Matrix im = dynamicRotation * baseRotation;
-	//im = im * DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(360.0f));
+	im = im * DirectX::SimpleMath::Matrix::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::UnitY, DirectX::XMConvertToRadians(360.0f));
 
-	//context->OMSetDepthStencilState(states->DepthNone(), 0);
-	//context->RSSetState(states->CullNone());
+	context->OMSetDepthStencilState(states->DepthNone(), 0);
+	context->RSSetState(states->CullNone());
 
-	//m_skyModel->UpdateEffects([](IEffect* effect)
-	//	{
-	//		auto lights = dynamic_cast<IEffectLights*>(effect);
-	//		if (lights)
-	//		{
-	//			lights->SetLightEnabled(0, true);
+	m_skyModel->UpdateEffects([](IEffect* effect)
+		{
+			auto lights = dynamic_cast<IEffectLights*>(effect);
+			if (lights)
+			{
+				lights->SetLightEnabled(0, true);
 
-	//			DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, 0.0f);  // 逆向きに
-	//			dir.Normalize();
-	//			lights->SetLightDirection(0, DirectX::XMVectorSet(dir.x, dir.y, dir.z, 0.0f));
+				DirectX::SimpleMath::Vector3 dir(0.0f, 0.0f, 0.0f);  // 逆向きに
+				dir.Normalize();
+				lights->SetLightDirection(0, DirectX::XMVectorSet(dir.x, dir.y, dir.z, 0.0f));
 
-	//			lights->SetLightDiffuseColor(0, DirectX::Colors::White);
-	//			lights->SetLightSpecularColor(0, DirectX::Colors::White);
-	//			lights->SetAmbientLightColor(DirectX::Colors::WhiteSmoke);
-	//		}
-	//	});
+				lights->SetLightDiffuseColor(0, DirectX::Colors::White);
+				lights->SetLightSpecularColor(0, DirectX::Colors::White);
+				lights->SetAmbientLightColor(DirectX::Colors::WhiteSmoke);
+			}
+		});
 
 	m_skyModel->Draw(context, *states, im * SimpleMath::Matrix::CreateScale(9000.0f), m_view, m_proj);
 	// 天球-------------------------------------------------------------------------------------------------
@@ -108,13 +124,10 @@ void PlayScene::Render()
 	
 
 #if defined(_DEBUG)
-	std::wostringstream enemy;
-	enemy << "EnemyRigth =  " << m_enemy->Getrigth() << "\n" << "EnemyPos =  " << m_enemy->GetPos();
-	debugFont->AddString(enemy.str().c_str(), SimpleMath::Vector2(1000.0f, debugFont->GetFontHeight() * 2));
-
 	std::wostringstream EnemyD;
 	EnemyD << "Enemy<->Player =  " << m_enemy->GetDistance();
-	debugFont->AddString(EnemyD.str().c_str(), SimpleMath::Vector2(1000.0f, debugFont->GetFontHeight() * 4));
+	debugFont->AddString(EnemyD.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 3), DirectX::Colors::Black);
+
 #else
 #endif
 }

@@ -179,6 +179,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\3DPG応用\3DPG_0\SpriteSheet.h" />
     <ClInclude Include="Charactor\Enemy\Enemy.h" />
     <ClInclude Include="Charactor\Enemy\State\EnemyIdling.h" />
     <ClInclude Include="Charactor\Enemy\State\TrackingPlayer.h" />
@@ -186,6 +187,8 @@
     <ClInclude Include="Charactor\Object.h" />
     <ClInclude Include="Charactor\Player\Player.h" />
     <ClInclude Include="Charactor\Player\State\PlayerIdling.h" />
+    <ClInclude Include="Charactor\ScoreManager.h" />
+    <ClInclude Include="Charactor\Task\Number.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
@@ -228,6 +231,8 @@
     <ClCompile Include="Charactor\Object.cpp" />
     <ClCompile Include="Charactor\Player\Player.cpp" />
     <ClCompile Include="Charactor\Player\State\PlayerIdling.cpp" />
+    <ClCompile Include="Charactor\ScoreManager.cpp" />
+    <ClCompile Include="Charactor\Task\Number.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />

@@ -17,11 +17,16 @@ void Player::Initialize( ID3D11Device* device )
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
 	m_player = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Player.sdkmesh", *fx);
+
+	m_rotate = SimpleMath::Quaternion::Identity;
+	m_position = SimpleMath::Vector3::Zero;
+
 }
 
-void Player::Update(float elapsedTime)
+void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 enemyPos)
 {
-	auto kb = DirectX::Keyboard::Get().GetState();
+	auto kb = Keyboard::Get().GetState();
+	m_tracker.Update(kb);
 
 	//Player
 	m_position.y = -1.0f;
@@ -29,7 +34,7 @@ void Player::Update(float elapsedTime)
 	if (kb.D) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
 
 	if (kb.W) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
-	if (kb.S) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
+	if (m_tracker.pressed.S) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 2.5f), m_rotate);
 
 }
 

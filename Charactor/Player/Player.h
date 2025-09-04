@@ -7,7 +7,7 @@ public:
 	Player();
 	~Player();
 	void Initialize(ID3D11Device* device);
-	void Update(float elapsedTime);
+	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3 enemyPos);
 	void Render(
 		ID3D11DeviceContext* context, DirectX::CommonStates* states,
 		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
@@ -17,6 +17,9 @@ private:
 	std::unique_ptr<DirectX::Model> m_player;
 	DirectX::SimpleMath::Vector3 m_position;
 	DirectX::SimpleMath::Quaternion m_rotate;
+
+	DirectX::Keyboard::KeyboardStateTracker m_tracker;
+
 
 public:
 	DirectX::SimpleMath::Vector3 GetPlayerPosition() { return m_position; }
