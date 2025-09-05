@@ -11,6 +11,11 @@ void PlayScene::Initialize()
 
 	cameraNum = 1;
 	timer = 45.0f;
+
+	m_timeNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
+	m_timeNumber->SetPosition(SimpleMath::Vector2(350.0f, 0.0f));
+	m_timeNumber->SetNumber(timer);
+	m_timeNumber->SetScale(2.5f);
 }
 
 void PlayScene::Update(float elapsedTime)
@@ -44,6 +49,8 @@ void PlayScene::Update(float elapsedTime)
 	if (kb->pressed.D2) { cameraNum = 2; }
 	
 	m_camera.Update(elapsedTime, cameraNum);
+
+	m_timeNumber->SetNumber(timer);
 }
 
 void PlayScene::Render()
@@ -68,15 +75,9 @@ void PlayScene::Render()
 
 
 	auto debugFont = GetUserResources()->GetDebugFont();
-	debugFont->AddString(L"PlayScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()), DirectX::Colors::Black);
-	std::wostringstream oss;
-	oss << "Timer = " << static_cast<int>(timer);
-	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);
-
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetUserResources()->GetCommonStates();
-
 
 	m_floorPrimitive->Render(context, m_view, m_proj);
 
@@ -119,14 +120,19 @@ void PlayScene::Render()
 	m_player->Render(context, states, m_view, m_proj);
 	m_enemy->Render(context, states, m_view, m_proj);
 
-	
+	m_spriteBatch->Begin();
+	m_timeNumber->Render();
+	m_spriteBatch->End();
 	
 	
 
 #if defined(_DEBUG)
-	std::wostringstream EnemyD;
-	EnemyD << "Enemy<->Player =  " << m_enemy->GetDistance();
-	debugFont->AddString(EnemyD.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 3), DirectX::Colors::Black);
+	std::wostringstream PlayerHP;
+	PlayerHP << "PlayerHP =  " << m_player->GetHP();
+	debugFont->AddString(PlayerHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);
+	std::wostringstream EnemyHP;
+	EnemyHP << "EnemyHP =  " << m_enemy->GetHP();
+	debugFont->AddString(EnemyHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 3), DirectX::Colors::Black);
 
 #else
 #endif
@@ -166,6 +172,9 @@ void PlayScene::CreateDeviceDependentResources()
 	m_enemy = std::make_unique<Enemy>();
 	m_enemy->Inisialize(device);
 
+	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+
+	DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/number.dds", nullptr, PlayScene::m_numberSRV.ReleaseAndGetAddressOf()));
 }
 
 void PlayScene::CreateWindowSizeDependentResources()

@@ -11,6 +11,10 @@
 #include "Charactor/Enemy/Enemy.h"
 #include "Charactor/ScoreManager.h"
 
+#include "Charactor/ScoreManager.h"
+#include "ItoLib/TaskManager.h"
+#include "Charactor/Task/Number.h"
+
 class PlayScene : public Ito::Scene<UserResources>
 {
 public:
@@ -79,6 +83,13 @@ private:
 	int cameraNum;
 
 	float timer;
+
+	std::unique_ptr<ScoreManager> m_scoreManager;
+	Ito::TaskManager m_taskManager;
+	Number* m_timeNumber;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV;
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+
 
 private:
 	float m_skyRotate = 0.0f;

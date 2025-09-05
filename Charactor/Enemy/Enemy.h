@@ -17,6 +17,11 @@ public:
 	void Render( ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
+public:
+	void Attack();
+	void Roll(float elapsedTime);
+	void Chase(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos);
+
 private:
 	std::unique_ptr<DirectX::Model> m_enemyModel;
 	DirectX::SimpleMath::Vector3 m_position;
@@ -29,9 +34,15 @@ private:
 	float m_detectionRange = 3.0f; // çUåÇâ¬î\ãóó£
 	float m_distance;
 
+	int m_HP;
+	int m_attack;
+
 public:
 	bool Getrigth() { return rigth; }
 	DirectX::SimpleMath::Vector3 GetPos() { return m_position; }
 	float GetDistance(){ return m_distance; }
+	int GetHP() { return m_HP; }
+	void SetHP(int hp) { m_HP = hp; }
+	void SubHP(int damage) { m_HP -= damage; }
 };
 

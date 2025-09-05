@@ -20,6 +20,8 @@ void Enemy::Inisialize(ID3D11Device* device)
 
 	m_position = SimpleMath::Vector3(10.0f, 1.0f, 10.0f);
 	m_speed = 3.0f;
+
+	m_HP = 10;
 }
 
 void Enemy::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos)
@@ -31,31 +33,8 @@ void Enemy::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 playerP
 	if (m_distance <= m_detectionRange * m_detectionRange) { m_state = State::Roll; }
 	else { m_state = State::Chase; }
 
-	if (m_state == State::Chase)
-	{
-		// •ûŒüƒxƒNƒgƒ‹ŒvŽZ
-		SimpleMath::Vector3 toPlayer = playerPos - m_position;
-
-		if (toPlayer.LengthSquared() > 0.0001f)
-		{
-			toPlayer.Normalize();
-		}
-
-		// ˆÚ“®
-		m_position += toPlayer * m_speed * elapsedTime;
-		m_position.y = 1.0f;
-
-		// Œü‚«
-		float angle = atan2f(toPlayer.x, toPlayer.z);
-		m_rotate = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, angle);
-	}
-	else if (m_state == State::Roll)
-	{
-		// ‚»‚Ìê‚Å‰ñ“]
-		m_rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(
-			SimpleMath::Vector3::UnitY,
-			XMConvertToRadians(90.0f) * elapsedTime);
-	}
+	if (m_state == State::Chase) { Chase(elapsedTime, playerPos); }
+	else if (m_state == State::Roll) { Roll(elapsedTime); }
 }
 
 void Enemy::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -69,4 +48,36 @@ void Enemy::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
 
 void Enemy::Finalize()
 {
+}
+
+void Enemy::Attack()
+{
+
+}
+
+void Enemy::Roll(float elapsedTime)
+{
+	// ‚»‚Ìê‚Å‰ñ“]
+	m_rotate *= SimpleMath::Quaternion::CreateFromAxisAngle(
+		SimpleMath::Vector3::UnitY,
+		XMConvertToRadians(90.0f) * elapsedTime);
+}
+
+void Enemy::Chase(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos)
+{
+	// •ûŒüƒxƒNƒgƒ‹ŒvŽZ
+	SimpleMath::Vector3 toPlayer = playerPos - m_position;
+
+	if (toPlayer.LengthSquared() > 0.0001f)
+	{
+		toPlayer.Normalize();
+	}
+
+	// ˆÚ“®
+	m_position += toPlayer * m_speed * elapsedTime;
+	m_position.y = 1.0f;
+
+	// Œü‚«
+	float angle = atan2f(toPlayer.x, toPlayer.z);
+	m_rotate = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, angle);
 }
