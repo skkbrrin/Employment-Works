@@ -19,20 +19,20 @@ class PlayScene : public Ito::Scene<UserResources>
 {
 public:
 	// コンストラクタ
-	PlayScene() = default; 
-	~PlayScene() = default; 
-	
+	PlayScene() = default;
+	~PlayScene() = default;
+
 	// 初期化
-	void Initialize() override; 
+	void Initialize() override;
 
 	// 更新
-	void Update(float elapsedTime) override; 
+	void Update(float elapsedTime) override;
 
 	// 描画
-	void Render() override; 
+	void Render() override;
 
 	// 終了
-	void Finalize() override; 
+	void Finalize() override;
 
 	// デバイスに依存するリソースを作成する関数
 	void CreateDeviceDependentResources() override;
@@ -94,8 +94,9 @@ private:
 private:
 	float m_skyRotate = 0.0f;
 
-public :
+public:
 	float GetSkyRotation() { return m_skyRotate; }
-
+	int GetCameraNumber() { return cameraNum; }
+	void SetCameraNumber(int modeNumber) { cameraNum = modeNumber; }
 };
 

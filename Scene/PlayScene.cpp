@@ -33,13 +33,13 @@ void PlayScene::Update(float elapsedTime)
 		m_skyRotate = 0.0f;
 	}
 
-	if (kb->pressed.Q || timer <= 0.0f)
+	if (kb->pressed.Q || timer <= 0.0f || m_player->GetHP() <= 0)
 	{
 		ChangeScene<ResultScene>();
 	}
 
 	m_player->Update(elapsedTime, m_enemy->GetPos());
-	m_enemy->Update(elapsedTime, m_player->GetPlayerPosition());
+	m_enemy->Update(elapsedTime, m_player.get());
 	m_camera.SetPlayer(m_player->GetPlayerPosition(), m_player->GetPlayerRotate());
 
 	timer -= elapsedTime;
@@ -47,10 +47,14 @@ void PlayScene::Update(float elapsedTime)
 	if (kb->pressed.D0) { cameraNum = 0; }
 	if (kb->pressed.D1) { cameraNum = 1; }
 	if (kb->pressed.D2) { cameraNum = 2; }
+	if (kb->pressed.D3) { cameraNum = 3; }
 	
+	m_timeNumber->SetNumber(timer);
+
 	m_camera.Update(elapsedTime, cameraNum);
 
-	m_timeNumber->SetNumber(timer);
+	// シーンチェンジの時に、白い板を画面に出して、透明度を0→１に徐々にしてフェードアウト
+	// 白フェードアウト→リザルトバンっとだす。(「大神」常闇之皇戦、戦績風)
 }
 
 void PlayScene::Render()
@@ -134,12 +138,16 @@ void PlayScene::Render()
 	EnemyHP << "EnemyHP =  " << m_enemy->GetHP();
 	debugFont->AddString(EnemyHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 3), DirectX::Colors::Black);
 
+	std::wostringstream Cool;
+	Cool << "Cooldown =  " << m_enemy->GetCooldown();
+	debugFont->AddString(Cool.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 4), DirectX::Colors::Black);
 #else
 #endif
 }
 
 void PlayScene::Finalize()
 {
+	m_enemy->Finalize();
 }
 
 void PlayScene::CreateDeviceDependentResources()

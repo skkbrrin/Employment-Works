@@ -1,10 +1,14 @@
 #pragma once
 #include "ItoLib/GameCamera.h"
 
+class Player;
+
 enum class State
 {
 	Chase,// 追跡ステート
 	Roll, // 回転ステート（攻撃実装したら攻撃に変える）
+	Attack, // 攻撃ステート
+	Die, // 消滅ステート
 };
 
 class Enemy
@@ -13,14 +17,14 @@ public:
 	Enemy();
 	~Enemy();
 	void Inisialize(ID3D11Device* device);
-	void Update(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos);
+	void Update(float elapsedTime, Player* player);
 	void Render( ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
 public:
-	void Attack();
+	void Attack(Player* player);
 	void Roll(float elapsedTime);
-	void Chase(float elapsedTime, const DirectX::SimpleMath::Vector3 playerPos);
+	void Chase(float elapsedTime, Player* player);
 
 private:
 	std::unique_ptr<DirectX::Model> m_enemyModel;
@@ -36,6 +40,7 @@ private:
 
 	int m_HP;
 	int m_attack;
+	float attackCooldown;
 
 public:
 	bool Getrigth() { return rigth; }
@@ -44,5 +49,6 @@ public:
 	int GetHP() { return m_HP; }
 	void SetHP(int hp) { m_HP = hp; }
 	void SubHP(int damage) { m_HP -= damage; }
+	float GetCooldown(){ return attackCooldown; }
 };
 

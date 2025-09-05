@@ -11,7 +11,8 @@ public:
 	enum class Type
 	{
 		Type_A,	//プレイヤーを追尾するカメラ
-		Type_B	//プレイヤーの周りをまわるカメラ
+		Type_B,	//プレイヤーの周りをまわるカメラ
+		Type_C  // 一人称視点
 	};
 
 private:

@@ -39,7 +39,7 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 enemyP
 
 	if (m_tracker.pressed.Z)
 	{
-		m_position = enemyPos;
+		m_position = SimpleMath::Vector3(enemyPos.x, -0.5f, enemyPos.z);
 	}
 }
 

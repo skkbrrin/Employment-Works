@@ -53,6 +53,11 @@ void ResultScene::Render()
 	m_number->Render();
 	m_taskManager.Render();
 	m_spriteBatch->End();
+
+	// 画面としては、スコア数値以外の物が書かれているテクスチャ一枚
+	//               →スコア
+	// の順番に貼っていく
+	// 一番右下にpress enterの文字をタイトルと同じように描画
 }
 
 void ResultScene::Finalize()

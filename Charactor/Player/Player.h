@@ -32,4 +32,13 @@ public:
 	int GetHP() { return m_HP; }
 	void SetHP(int hp) { m_HP = hp; }
 	void SubHP(int damage) { m_HP -= damage; }
+
+	void Damage(int damage) 
+	{
+		m_HP -= damage; 
+		if (m_HP <= 0)
+		{
+			m_HP = 0;
+		}
+	}
 };

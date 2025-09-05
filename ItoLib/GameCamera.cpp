@@ -24,6 +24,9 @@ void GameCamera::Update(float elapsedTime, int number)
 	case 2:
 		m_type = Type::Type_B;
 		break;
+	case 3:
+		m_type = Type::Type_C;
+		break;
 	default:
 		break;
 	}
@@ -50,6 +53,18 @@ void GameCamera::Update(float elapsedTime, int number)
 		SetPositionTarget(targetPos + eyePos, targetPos);
 	}
 	break;
+	case Type::Type_C: // àÍêlèÃéãì_
+	{
+		SimpleMath::Vector3 eyePos(0.0f, 2.0f, 0.0f);
+		eyePos += *m_pPlayerPos;
+		SimpleMath::Vector3 forward = SimpleMath::Vector3::Transform
+		(SimpleMath::Vector3::UnitZ, *m_pPlayerRotate);
+		forward.Normalize();
+		SimpleMath::Vector3 targetPos =
+			eyePos + forward * 5.0f;
+		SetPositionTarget(eyePos, targetPos);
+	}
+		break;
 	default:
 		break;
 	}
