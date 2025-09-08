@@ -22,7 +22,7 @@ void ScoreManager::Update()
 {
 	AddAttackScore(100);
 	AddTimeScore(100);
-	AddTotalScore(GetAttackScoer() + GetTimeScore());
+	AddTotalScore(GetAttackScore() + GetTimeScore());
 }
 
 void ScoreManager::Finalize()

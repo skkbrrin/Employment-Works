@@ -8,13 +8,14 @@
 #include "pch.h"
 #include "Number.h"
 
-Number::Number(std::unique_ptr<DirectX::SpriteBatch>* pSpriteBatch, ID3D11ShaderResourceView** pNumberSRV, uint32_t digit, float scale)
+Number::Number(std::unique_ptr<DirectX::SpriteBatch>* pSpriteBatch, ID3D11ShaderResourceView** pNumberSRV, uint32_t digit, float scale, DirectX::FXMVECTOR color)
 	: m_spriteBatch(pSpriteBatch)
 	, m_pNumberSRV(pNumberSRV)
 	, m_digit(digit)
 	, m_scale(scale)
 	, m_number(0)
 	, m_frame{}
+	, m_color(color)
 {
 	m_sprites = std::make_unique<SpriteSheet>();
 
@@ -57,7 +58,7 @@ void Number::Render()
 	{
 		uint32_t no = number % 10;
 		number /= 10;
-		m_sprites->Draw((*m_spriteBatch).get(), *m_frame[no], pos, DirectX::Colors::White, 0.0f, m_scale);
+		m_sprites->Draw((*m_spriteBatch).get(), *m_frame[no], pos, m_color, 0.0f, m_scale);
 		pos.x -= static_cast<float>(w) * m_scale;
 	}
 }

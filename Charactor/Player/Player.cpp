@@ -21,11 +21,12 @@ void Player::Initialize( ID3D11Device* device )
 	m_rotate = SimpleMath::Quaternion::Identity;
 	m_position = SimpleMath::Vector3(0.0f, -0.5f, 0.0f);
 
-	m_HP = 100;
+	m_fullHP = 100;
+	m_HP = m_fullHP;
 	m_attck = 10;
 }
 
-void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 enemyPos)
+void Player::Update(float elapsedTime, Enemy* enemy)
 {
 	auto kb = Keyboard::Get().GetState();
 	m_tracker.Update(kb);
@@ -36,12 +37,8 @@ void Player::Update(float elapsedTime, const DirectX::SimpleMath::Vector3 enemyP
 
 	if (kb.W) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
 	if (m_tracker.pressed.S) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 2.5f), m_rotate);
-
-	if (m_tracker.pressed.Z)
-	{
-		m_position = SimpleMath::Vector3(enemyPos.x, -0.5f, enemyPos.z);
-	}
 }
+
 
 void Player::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
@@ -54,5 +51,14 @@ void Player::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states,
 
 void Player::Finalize()
 {
+}
+
+void Player::Attack(Enemy* enemy)
+{
+	if (!enemy) return;
+
+	m_position = SimpleMath::Vector3(enemy->GetPos());
+	m_position.y = -0.5f;
+	enemy->Damage(m_attck);
 }
 

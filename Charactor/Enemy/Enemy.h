@@ -8,7 +8,6 @@ enum class State
 	Chase,// 追跡ステート
 	Roll, // 回転ステート（攻撃実装したら攻撃に変える）
 	Attack, // 攻撃ステート
-	Die, // 消滅ステート
 };
 
 class Enemy
@@ -42,13 +41,19 @@ private:
 	int m_attack;
 	float attackCooldown;
 
+	bool m_isDie = false;
+
 public:
 	bool Getrigth() { return rigth; }
 	DirectX::SimpleMath::Vector3 GetPos() { return m_position; }
+	void SetPos(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
 	float GetDistance(){ return m_distance; }
 	int GetHP() { return m_HP; }
 	void SetHP(int hp) { m_HP = hp; }
 	void SubHP(int damage) { m_HP -= damage; }
 	float GetCooldown(){ return attackCooldown; }
+	void Damage(int damage) { m_HP -= damage; }
+	bool GetIsDie() { return m_isDie; }
+	void SetIsDie(bool isdie) { m_isDie = isdie; }
 };
 

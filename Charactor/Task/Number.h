@@ -18,7 +18,9 @@ public:
 		, ID3D11ShaderResourceView** pNumberSRV
 		, uint32_t digit = 8
 		, float scale = 1.0f
+		, DirectX::FXMVECTOR color = DirectX::Colors::White
 	);
+
 	// デストラクタ
 	~Number();
 	// 更新
@@ -48,6 +50,9 @@ private:
 
 	// 表示する数字
 	uint32_t m_number;
+
+	// 表示色
+	DirectX::FXMVECTOR m_color;
 
 	// スプライトフレーム
 	const SpriteSheet::SpriteFrame* m_frame[10];

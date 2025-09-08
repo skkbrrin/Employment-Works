@@ -8,6 +8,8 @@
 #include "ItoLib/TaskManager.h"
 #include "Charactor/Task/Number.h"
 
+#include "GameObject/TextureSprite.h"
+
 class ResultScene : public Ito::Scene<UserResources>
 {
 public:
@@ -43,8 +45,11 @@ private:
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
 
 	std::unique_ptr<ScoreManager> m_scoreManager;
+	std::unique_ptr<TextureSprite> m_textureSprite;
 	Ito::TaskManager m_taskManager;
-	Number* m_number;
+	Number* m_attackNumber;
+	Number* m_timeNumber;
+	Number* m_totalNumber;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV; // ”š
 
 };

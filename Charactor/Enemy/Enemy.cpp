@@ -32,7 +32,8 @@ void Enemy::Update(float elapsedTime, Player* player)
 	m_distance = (player->GetPlayerPosition() - m_position).LengthSquared();
 
 	// ステート切り替え
-	if (m_distance <= m_detectionRange * m_detectionRange) { m_state = State::Attack; }
+	if (m_HP <= 0) { m_isDie = true; }
+	else if (m_distance <= m_detectionRange * m_detectionRange) { m_state = State::Attack; }
 	else { m_state = State::Chase; }
 
 	if (m_state == State::Chase) { Chase(elapsedTime, player);
@@ -92,3 +93,4 @@ void Enemy::Chase(float elapsedTime, Player* player)
 	float angle = atan2f(toPlayer.x, toPlayer.z);
 	m_rotate = SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, angle);
 }
+

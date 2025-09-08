@@ -169,6 +169,15 @@
       <Filter>Charactors\Task</Filter>
     </ClInclude>
     <ClInclude Include="..\3DPG応用\3DPG_0\SpriteSheet.h" />
+    <ClInclude Include="GameObject\TextureSprite.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\TextureAlpha.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\HPManager.h">
+      <Filter>Charactors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -266,6 +275,15 @@
     </ClCompile>
     <ClCompile Include="Charactor\Task\Number.cpp">
       <Filter>Charactors\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\TextureSprite.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\TextureAlpha.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\HPManager.cpp">
+      <Filter>Charactors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

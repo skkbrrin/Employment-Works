@@ -15,6 +15,8 @@
 #include "ItoLib/TaskManager.h"
 #include "Charactor/Task/Number.h"
 
+#include "Charactor/HPManager.h"
+
 class PlayScene : public Ito::Scene<UserResources>
 {
 public:
@@ -72,6 +74,7 @@ private:
 
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Enemy> m_enemy;
+	std::vector<std::unique_ptr<Enemy>> m_enemies; // ï°êî
 
 	bool m_cameraDebug = false;
 	bool m_cameraGame = false;
@@ -90,6 +93,7 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV;
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
+	std::unique_ptr<HPManager> m_hpManager;
 
 private:
 	float m_skyRotate = 0.0f;

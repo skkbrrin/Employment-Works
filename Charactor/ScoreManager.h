@@ -14,7 +14,7 @@ public:
 	void Finalize();
 
 public:
-	int GetAttackScoer() { return m_attackScore; }
+	int GetAttackScore() { return m_attackScore; }
 	int GetTimeScore() { return m_timeScore; }
 	int GetTotalScore() { return m_totalScore; }
 

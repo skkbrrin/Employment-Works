@@ -38,8 +38,31 @@ void PlayScene::Update(float elapsedTime)
 		ChangeScene<ResultScene>();
 	}
 
-	m_player->Update(elapsedTime, m_enemy->GetPos());
-	m_enemy->Update(elapsedTime, m_player.get());
+	if (kb->pressed.Z)
+	{
+		for (auto& ene : m_enemies)
+		{
+			m_player->Attack(ene.get());
+		}
+	}
+	
+	m_player->Update(elapsedTime, m_enemy.get());
+
+	// 複数体
+	for (auto& ene : m_enemies)
+	{
+		ene->Update(elapsedTime, m_player.get());
+	}
+
+	m_enemies.erase(
+		std::remove_if(m_enemies.begin(), m_enemies.end(),
+			[](const std::unique_ptr<Enemy>& e)
+			{
+				return e->GetIsDie();
+			}),
+		m_enemies.end()
+	);
+
 	m_camera.SetPlayer(m_player->GetPlayerPosition(), m_player->GetPlayerRotate());
 
 	timer -= elapsedTime;
@@ -52,6 +75,8 @@ void PlayScene::Update(float elapsedTime)
 	m_timeNumber->SetNumber(timer);
 
 	m_camera.Update(elapsedTime, cameraNum);
+
+	m_hpManager->Update(m_player->GetHP(), m_player->GetFullHP());
 
 	// シーンチェンジの時に、白い板を画面に出して、透明度を0→１に徐々にしてフェードアウト
 	// 白フェードアウト→リザルトバンっとだす。(「大神」常闇之皇戦、戦績風)
@@ -122,32 +147,36 @@ void PlayScene::Render()
 	// 天球-------------------------------------------------------------------------------------------------
 
 	m_player->Render(context, states, m_view, m_proj);
-	m_enemy->Render(context, states, m_view, m_proj);
+	//m_enemy->Render(context, states, m_view, m_proj);
+	for (auto& ene : m_enemies)
+	{
+		ene->Render(context, states, m_view, m_proj);
+	}
 
 	m_spriteBatch->Begin();
 	m_timeNumber->Render();
 	m_spriteBatch->End();
 	
-	
+	m_hpManager->Render({ 100.0f, 100.0f }, 100);
 
 #if defined(_DEBUG)
 	std::wostringstream PlayerHP;
 	PlayerHP << "PlayerHP =  " << m_player->GetHP();
 	debugFont->AddString(PlayerHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);
-	std::wostringstream EnemyHP;
-	EnemyHP << "EnemyHP =  " << m_enemy->GetHP();
-	debugFont->AddString(EnemyHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 3), DirectX::Colors::Black);
 
-	std::wostringstream Cool;
-	Cool << "Cooldown =  " << m_enemy->GetCooldown();
-	debugFont->AddString(Cool.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 4), DirectX::Colors::Black);
 #else
 #endif
 }
 
 void PlayScene::Finalize()
 {
-	m_enemy->Finalize();
+	for (auto& ene : m_enemies)
+	{
+		if (ene) ene->Finalize(); 
+	}
+	m_enemies.clear();
+
+	if (m_player) { m_player->Finalize(); m_player.reset(); }
 }
 
 void PlayScene::CreateDeviceDependentResources()
@@ -177,12 +206,27 @@ void PlayScene::CreateDeviceDependentResources()
 	m_player = std::make_unique<Player>();
 	m_player->Initialize(device);
 
-	m_enemy = std::make_unique<Enemy>();
-	m_enemy->Inisialize(device);
+	/*m_enemy = std::make_unique<Enemy>();
+	m_enemy->Inisialize(device);*/
+
+	// 複数体
+	for (int i = 0; i < 5; i++)
+	{
+		auto ene = std::make_unique<Enemy>();
+		ene->Inisialize(device);
+
+		// 初期値ずらし
+		ene->SetPos(SimpleMath::Vector3(4.0f * ( -1 * i ), 1.0f, 3.0f * (-1 * i)));
+		
+		m_enemies.push_back(std::move(ene));
+	}
 
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 
 	DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/number.dds", nullptr, PlayScene::m_numberSRV.ReleaseAndGetAddressOf()));
+
+	m_hpManager = std::make_unique<HPManager>(device, context);
+	m_hpManager->Load(L"Resources/Textures/backGauge.dds", L"Resources/Textures/fillGauge.dds");
 }
 
 void PlayScene::CreateWindowSizeDependentResources()

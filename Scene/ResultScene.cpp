@@ -12,11 +12,23 @@ void ResultScene::Initialize()
 	m_scoreManager->Initialize();
 	m_scoreManager->Update();
 
-	m_number = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
-	//m_number->SetNumber(m_scoreManager->GetTotalScore());
-	m_number->SetNumber(9999999);
-	m_number->SetPosition(SimpleMath::Vector2(300.0f, 50.0f));
-	m_number->SetScale(3.0f);
+	// 討伐得点
+	m_attackNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
+	m_attackNumber->SetNumber(m_scoreManager->GetAttackScore());
+	m_attackNumber->SetPosition(SimpleMath::Vector2(600.0f, 260.0f));
+	m_attackNumber->SetScale(2.0f);
+
+	// 余時点
+	m_timeNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
+	m_timeNumber->SetNumber(m_scoreManager->GetTimeScore());
+	m_timeNumber->SetPosition(SimpleMath::Vector2(600.0f, 380.0f));
+	m_timeNumber->SetScale(2.0f);
+
+	// 総合得点
+	m_totalNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
+	m_totalNumber->SetNumber(m_scoreManager->GetTotalScore());
+	m_totalNumber->SetPosition(SimpleMath::Vector2(530.0f, 530.0f));
+	m_totalNumber->SetScale(3.0f);
 
 }
 
@@ -37,21 +49,12 @@ void ResultScene::Render()
 	auto debugFont = GetUserResources()->GetDebugFont();
 	debugFont->AddString(L"ResultScene", DirectX::SimpleMath::Vector2(0.0f, debugFont->GetFontHeight()), DirectX::Colors::Black);
 
-
-	/*std::wostringstream AtS;
-	AtS << "AttackScore : " << m_scoreManager->GetAttackScoer();
-	debugFont->AddString(AtS.str().c_str(), SimpleMath::Vector2(450.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);
-	std::wostringstream TiS;
-	TiS << "TimeScore : " << m_scoreManager->GetTimeScore();
-	debugFont->AddString(TiS.str().c_str(), SimpleMath::Vector2(450.0f, debugFont->GetFontHeight() * 3), DirectX::Colors::Black);
-	debugFont->AddString(L"--------------------------", DirectX::SimpleMath::Vector2(420.0f, debugFont->GetFontHeight() * 4), DirectX::Colors::Black);
-	std::wostringstream ToS;
-	ToS << "TotalScore : " << m_scoreManager->GetTotalScore();
-	debugFont->AddString(ToS.str().c_str(), SimpleMath::Vector2(450.0f, debugFont->GetFontHeight() * 5), DirectX::Colors::Black);*/
+	m_textureSprite->Render({ 0.0f, 0.0f });
 
 	m_spriteBatch->Begin();
-	m_number->Render();
-	m_taskManager.Render();
+	m_attackNumber->Render();
+	m_timeNumber->Render();
+	m_totalNumber->Render();
 	m_spriteBatch->End();
 
 	// 画面としては、スコア数値以外の物が書かれているテクスチャ一枚
@@ -70,6 +73,10 @@ void ResultScene::CreateDeviceDependentResources()
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 
 	m_scoreManager = std::make_unique <ScoreManager>();
+	
+	m_textureSprite = std::make_unique<TextureSprite>(device, context);
+	m_textureSprite->Load(L"Resources/Textures/Result.dds");
+
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 
 	DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/number.dds", nullptr, ResultScene::m_numberSRV.ReleaseAndGetAddressOf()));

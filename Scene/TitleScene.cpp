@@ -15,10 +15,6 @@ void TitleScene::Initialize()
 
 	// BGM
 	AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
-#ifdef _DEBUG
-	flags |= AudioEngine_Debug;
-#endif
-
 	audioEngine = std::make_unique<AudioEngine>(flags);
 
 	try {
@@ -43,12 +39,7 @@ void TitleScene::Update(float elapsedTime)
 		ChangeScene<PlayScene, LoadingScreen>();
 	}
 
-	// 毎フレーム更新
-	timer += elapsedTime;
-
-	// アルファ値を 0～1 の範囲で変化させる（点滅）
-	float alpha = abs(sinf(timer)); // speedで速さ調整
-	color = { alpha, alpha, alpha, alpha };
+	m_tectureAlpha->Update(elapsedTime);
 }
 
 void TitleScene::Render()
@@ -56,11 +47,8 @@ void TitleScene::Render()
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto states = GetUserResources()->GetCommonStates();
 
-	m_spriteBatch->Begin(SpriteSortMode_Deferred,
-		states->AlphaBlend());
-	m_spriteBatch->Draw(m_SRV.Get(), SimpleMath::Vector2(0.0f, 0.0f), nullptr, Colors::White, 0.0f, SimpleMath::Vector2(0.0f, 0.0f), 0.92f, SpriteEffects_None);
-	m_spriteBatch->Draw(m_callSRV.Get(), SimpleMath::Vector2(500.0f, 500.0f), nullptr, color, 0.0f, SimpleMath::Vector2(0.0f, 0.0f), 0.5f, SpriteEffects_None);
-	m_spriteBatch->End();
+	m_textureSprite->Render({ 0.0f, 0.0f });
+	m_tectureAlpha->Render({ 430.0f, 450.0f }, 0.8f);
 }
 
 void TitleScene::Finalize()
@@ -76,10 +64,11 @@ void TitleScene::CreateDeviceDependentResources()
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+	m_textureSprite = std::make_unique<TextureSprite>(device, context);
+	m_tectureAlpha = std::make_unique<TextureAlpha>(device, context);
 
-	CreateDDSTextureFromFile(device, L"Resources/Textures/Title.dds", nullptr, TitleScene::m_SRV.ReleaseAndGetAddressOf());
-	CreateDDSTextureFromFile(device, L"Resources/Textures/Enter.dds", nullptr, TitleScene::m_callSRV.ReleaseAndGetAddressOf());
+	m_textureSprite->Load(L"Resources/Textures/Title.dds");
+	m_tectureAlpha->Load(L"Resources/Textures/Enter.dds");
 }
 
 void TitleScene::CreateWindowSizeDependentResources()

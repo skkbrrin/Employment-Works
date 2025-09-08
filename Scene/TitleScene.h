@@ -5,6 +5,8 @@
 
 #include <Audio.h> 
 
+#include "GameObject/TextureAlpha.h"
+#include "GameObject/TextureSprite.h"
 
 class TitleScene : public Ito::Scene<UserResources>
 {
@@ -37,10 +39,8 @@ private:
 	std::unique_ptr<DirectX::SoundEffect> bgm;
 	std::unique_ptr<DirectX::SoundEffectInstance> bgmInstance;
 
-	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
-
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_SRV;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_callSRV;
+	std::unique_ptr<TextureSprite> m_textureSprite;
+	std::unique_ptr<TextureAlpha> m_tectureAlpha;
 
 	float timer;
 	DirectX::XMVECTORF32 color;
