@@ -16,10 +16,9 @@
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
 #include <vector>
-
 namespace kHorikawa
 {
-	//	UIのアンカーポイントの列挙数
+	//UIのアンカーポイントの列挙数
 	enum ANCHOR
 	{
 		TOP_LEFT = 0,
@@ -39,40 +38,39 @@ namespace kHorikawa
 	class UserInterface
 	{
 	public:
-		//	データ受け渡し用コンスタントバッファ(送信側)
+		//データ受け渡し用コンスタントバッファ(送信側)
 		struct ConstBuffer
 		{
-			DirectX::SimpleMath::Vector4	windowSize;
+			DirectX::SimpleMath::Vector2	windowSize; //<- x,y
+			float alpheDate; // <- z
+			float dummy; // <- w
 		};
-	//	変数
+		//変数
 	private:
 		DX::DeviceResources* m_pDR;
 
 		Microsoft::WRL::ComPtr<ID3D11Buffer>	m_CBuffer;
 
 		DX::StepTimer                           m_timer;
-		//	入力レイアウト
+		// 入力レイアウト
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
-		//	プリミティブバッチ
+		// プリミティブバッチ
 		std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_batch;
-		//	コモンステート
+		//コモンステート
 		std::unique_ptr<DirectX::CommonStates> m_states;
-		//	テクスチャハンドル
+		// テクスチャハンドル
 		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
 		Microsoft::WRL::ComPtr<ID3D11Resource> m_res;
-		Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_yoshiTexture;
-		Microsoft::WRL::ComPtr<ID3D11Resource> m_yoshiRes;
-		//	頂点シェーダ
+		// 頂点シェーダ
 		Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vertexShader;
-		//	ピクセルシェーダ
+		// ピクセルシェーダ
 		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-		//	ジオメトリシェーダ
+		// ジオメトリシェーダ
 		Microsoft::WRL::ComPtr<ID3D11GeometryShader> m_geometryShader;
 
-		int m_windowWidth , m_windowHeight;
+		int m_windowWidth, m_windowHeight;
 		int m_textureWidth, m_textureHeight;
-		int m_yoshiTextureWidth, m_yoshiTextureHeight;
 
 		DirectX::SimpleMath::Vector2 m_scale;
 		DirectX::SimpleMath::Vector2 m_baseScale;
@@ -80,7 +78,10 @@ namespace kHorikawa
 
 		ANCHOR m_anchor;
 
-	//	関数
+		float m_renderRatio;
+		float m_renderRatioOffset;
+
+		//関数
 	public:
 		static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
@@ -88,25 +89,30 @@ namespace kHorikawa
 		~UserInterface();
 
 		void LoadTexture(const wchar_t* path);
-		
+
 		void Create(DX::DeviceResources* pDR
 			, const wchar_t* path
 			, DirectX::SimpleMath::Vector2 position
-			,DirectX::SimpleMath::Vector2 scale
-			,ANCHOR anchor);
+			, DirectX::SimpleMath::Vector2 scale
+			, ANCHOR anchor);
 
 		void Render();
 
-		void SetWindowSize(const int &width,const int& height);
+		void SetWindowSize(const int& width, const int& height);
 
 		void SetScale(DirectX::SimpleMath::Vector2 scale);
 		DirectX::SimpleMath::Vector2 GetScale() { return m_scale; }
 		DirectX::SimpleMath::Vector2 GetBaseScale() { return m_baseScale; }
 		void SetPosition(DirectX::SimpleMath::Vector2 position);
-		DirectX::SimpleMath::Vector2 GetPosition() { return m_position;}
+		DirectX::SimpleMath::Vector2 GetPosition() { return m_position; }
 		void SetAnchor(kHorikawa::ANCHOR anchor);
 		kHorikawa::ANCHOR GetAnchor() { return m_anchor; }
 
+		void SetRenderRatio(float ratio);
+		float GetRenderRatio() { return m_renderRatio; }
+
+		void SetRenderRatioOffset(float offset);
+		float GetRenderRatioOffset() { return m_renderRatioOffset; }
 
 	private:
 

@@ -20,8 +20,8 @@ void ScoreManager::Initialize()
 
 void ScoreManager::Update()
 {
-	AddAttackScore(100);
-	AddTimeScore(100);
+	AddAttackScore(600);
+	AddTimeScore(50);
 	AddTotalScore(GetAttackScore() + GetTimeScore());
 }
 

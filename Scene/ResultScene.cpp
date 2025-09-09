@@ -42,6 +42,7 @@ void ResultScene::Update(float elapsedTime)
 		ChangeScene<TitleScene>();
 	}
 
+	m_textureAlpha->Update(elapsedTime);
 }
 
 void ResultScene::Render()
@@ -56,6 +57,8 @@ void ResultScene::Render()
 	m_timeNumber->Render();
 	m_totalNumber->Render();
 	m_spriteBatch->End();
+
+	m_textureAlpha->Render({ 1050.0f, 580.0f }, 0.4f);
 
 	// 画面としては、スコア数値以外の物が書かれているテクスチャ一枚
 	//               →スコア
@@ -76,6 +79,9 @@ void ResultScene::CreateDeviceDependentResources()
 	
 	m_textureSprite = std::make_unique<TextureSprite>(device, context);
 	m_textureSprite->Load(L"Resources/Textures/Result.dds");
+
+	m_textureAlpha = std::make_unique<TextureAlpha>(device, context);
+	m_textureAlpha->Load(L"Resources/Textures/Enter.dds");
 
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 

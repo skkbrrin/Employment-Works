@@ -15,20 +15,28 @@ public:
 		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
-	void Attack(Enemy* enemy);
+	void Attack(const std::vector<std::unique_ptr<Enemy>>& enemies);
 
 private:
-	std::unique_ptr<DirectX::Model> m_player;
-	DirectX::SimpleMath::Vector3 m_position;
-	DirectX::SimpleMath::Quaternion m_rotate;
+	std::unique_ptr<DirectX::Model> m_player; // モデル
+	DirectX::SimpleMath::Vector3 m_position; // 座標
+	DirectX::SimpleMath::Quaternion m_rotate; // 回転
 
-	DirectX::Keyboard::KeyboardStateTracker m_tracker;
+	DirectX::Keyboard::KeyboardStateTracker m_tracker; // キーボードトラッカー
 
-	int m_HP;
-	int m_fullHP;
-	int m_attck;
+	int m_HP; // HP
+	int m_fullHP; // 最大HP
+	int m_attck; // 攻撃力
 
+	bool m_isAttacking = false;// 攻撃しているか
+	float m_attackTime = 0.0f; // 経過時間
+	float m_attackDuration = 0.5f;
 
+	DirectX::SimpleMath::Vector3 m_attackStartPos; // 攻撃開始時座標
+	DirectX::SimpleMath::Vector3 m_attackTargetPos; // 攻撃終了時座標
+	Enemy* m_attackTarget = nullptr; // ターゲット
+
+// 取得　設定
 public:
 	DirectX::SimpleMath::Vector3 GetPlayerPosition() { return m_position; }
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
@@ -38,6 +46,9 @@ public:
 	int GetFullHP() { return m_fullHP; }
 	void SetHP(int hp) { m_HP = hp; }
 	void SubHP(int damage) { m_HP -= damage; }
+
+	bool GetAttacking() { return m_isAttacking; }
+	void SetAttacking(bool isAttack) { m_isAttacking = isAttack; }
 
 	void Damage(int damage) 
 	{

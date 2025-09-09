@@ -45,6 +45,7 @@ public:
 	// デバイスロストした時に呼び出される関数
 	void OnDeviceLost() override;
 
+
 private:
 	// カメラのポインタ
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
@@ -94,6 +95,8 @@ private:
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
 	std::unique_ptr<HPManager> m_hpManager;
+
+	int m_windowWidth, m_windowHeigth;
 
 private:
 	float m_skyRotate = 0.0f;

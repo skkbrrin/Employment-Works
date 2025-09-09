@@ -9,6 +9,9 @@ void PlayScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
+	auto DR = GetUserResources()->GetDeviceResources();
+	auto windowSize = GetUserResources()->GetDeviceResources()->GetWindow();
+
 	cameraNum = 1;
 	timer = 45.0f;
 
@@ -16,6 +19,8 @@ void PlayScene::Initialize()
 	m_timeNumber->SetPosition(SimpleMath::Vector2(350.0f, 0.0f));
 	m_timeNumber->SetNumber(timer);
 	m_timeNumber->SetScale(2.5f);
+
+	m_hpManager->Initialize(DR);
 }
 
 void PlayScene::Update(float elapsedTime)
@@ -33,19 +38,20 @@ void PlayScene::Update(float elapsedTime)
 		m_skyRotate = 0.0f;
 	}
 
-	if (kb->pressed.Q || timer <= 0.0f || m_player->GetHP() <= 0)
+	if (kb->pressed.Q || timer <= 0.0f || m_player->GetHP() <= 0/* || m_enemies.size()*/)
 	{
+		std::this_thread::sleep_for(std::chrono::seconds{ 1 });
 		ChangeScene<ResultScene>();
 	}
 
+	// プレイヤー
+	/// 攻撃
 	if (kb->pressed.Z)
 	{
-		for (auto& ene : m_enemies)
-		{
-			m_player->Attack(ene.get());
-		}
+		m_player->Attack(m_enemies);
 	}
-	
+
+	/// 通常
 	m_player->Update(elapsedTime, m_enemy.get());
 
 	// 複数体
@@ -156,16 +162,18 @@ void PlayScene::Render()
 	m_spriteBatch->Begin();
 	m_timeNumber->Render();
 	m_spriteBatch->End();
-	
-	m_hpManager->Render({ 100.0f, 100.0f }, 100);
+
+	m_hpManager->Render();
 
 #if defined(_DEBUG)
-	std::wostringstream PlayerHP;
+	/*std::wostringstream PlayerHP;
 	PlayerHP << "PlayerHP =  " << m_player->GetHP();
-	debugFont->AddString(PlayerHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);
+	debugFont->AddString(PlayerHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);*/
 
 #else
 #endif
+
+
 }
 
 void PlayScene::Finalize()
@@ -210,23 +218,28 @@ void PlayScene::CreateDeviceDependentResources()
 	m_enemy->Inisialize(device);*/
 
 	// 複数体
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		auto ene = std::make_unique<Enemy>();
 		ene->Inisialize(device);
 
 		// 初期値ずらし
-		ene->SetPos(SimpleMath::Vector3(4.0f * ( -1 * i ), 1.0f, 3.0f * (-1 * i)));
+		ene->SetPos(SimpleMath::Vector3(10.0f * (i + 1) , 0.0f, 10.0f * (1 + i)));
 		
 		m_enemies.push_back(std::move(ene));
 	}
 
-	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+	auto device_2D = GetUserResources()->GetDeviceResources()->GetD3DDevice();
+	auto context_2D = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
+
+	m_spriteBatch = std::make_unique<SpriteBatch>(context_2D);
 
 	DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/number.dds", nullptr, PlayScene::m_numberSRV.ReleaseAndGetAddressOf()));
 
-	m_hpManager = std::make_unique<HPManager>(device, context);
-	m_hpManager->Load(L"Resources/Textures/backGauge.dds", L"Resources/Textures/fillGauge.dds");
+	m_hpManager = std::make_unique<HPManager>();
+	m_hpManager->LoadBase(L"Resources/Textures/base.png");
+	m_hpManager->LoadGauge(L"Resources/Textures/gauge.png");
+	m_hpManager->LoadFrame(L"Resources/Textures/frame.png");
 }
 
 void PlayScene::CreateWindowSizeDependentResources()

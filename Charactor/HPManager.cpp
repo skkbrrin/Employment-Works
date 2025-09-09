@@ -7,92 +7,87 @@
 
 #include "pch.h"
 #include "HPManager.h"
-#include <PrimitiveBatch.h> 
-#include <VertexTypes.h> 
-#include <WICTextureLoader.h> 
+#include "GameObject/UserInterface.h"
 
+#include "GameObject/BinaryFile.h"
+#include "DeviceResources.h"
+#include <SimpleMath.h>
+#include <Effects.h>
+#include <PrimitiveBatch.h>
+#include <VertexTypes.h>
+#include <WICTextureLoader.h>
+#include <CommonStates.h>
+#include <vector>
 using namespace DirectX;
 
-// 指定範囲内に収めるテンプレート
-template <typename T>
-T Clamp(const T& value, const T& min, const T& max)
+static float Clamp(float v, float lo, float hi)
 {
-	return (value < min) ? min : (value > max ? max : value);
+	if (v < lo) return lo;
+	if (v > hi) return hi;
+	return v;
 }
 
-/// <summary>
-/// Constractor
-/// </summary>
-HPManager::HPManager(ID3D11Device1* device, ID3D11DeviceContext* context)
-	: m_context(context)
-	, m_device(device)
-	, m_color()
+
+HPManager::HPManager()
+	: m_pDR(nullptr)
+	, m_baseTexturePath(nullptr)
+	, m_frameTexturePath(nullptr)
+	, m_gaugeTexturePath(nullptr)
+	, m_base(nullptr)
+	, m_frame(nullptr)
+	, m_gauge(nullptr)
 {
-	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 }
 
-/// <summary>
-/// Destractor
-/// </summary>
 HPManager::~HPManager()
 {
-	Finalize();
 }
 
-bool HPManager::Load(const wchar_t* back, const wchar_t* fill)
+void HPManager::Initialize(DX::DeviceResources* pDR)
 {
-	HRESULT hr_1 = CreateDDSTextureFromFile(
-		m_device,
-		back,
-		nullptr,
-		m_backSRV.ReleaseAndGetAddressOf());
+	m_pDR = pDR;
 
-	HRESULT hr_2 = CreateDDSTextureFromFile(
-		m_device,
-		fill,
-		nullptr,
-		m_fillSRV.ReleaseAndGetAddressOf());
+	Creates(SimpleMath::Vector2{0.0f, 0.0f}, SimpleMath::Vector2{0.5f, 0.5f});
+	
+	RECT rect = m_pDR->GetOutputSize();
+	m_base->SetWindowSize(rect.right, rect.bottom);
+	m_gauge->SetWindowSize(rect.right, rect.bottom);
+	m_frame->SetWindowSize(rect.right, rect.bottom);
 
-	return SUCCEEDED(hr_1) && SUCCEEDED(hr_2); // 成功ならtrueを返す関数
 }
 
 void HPManager::Update(int HP, int maxHP)
 {
-	if (maxHP <= 0) maxHP = 1; // ０で割ってエラーが出るのを防止
-	m_HP = Clamp((float)HP / (float)maxHP, 0.0f, 1.0f);
+	float ratio = m_gauge->GetRenderRatio();
+
+	if (maxHP > 0)
+	{
+		ratio = static_cast<float>(HP) / static_cast<float>(maxHP);
+		ratio = Clamp(ratio, 0.0f, 1.0f); // 負や1超えを防ぐ
+	}
+
+	m_gauge->SetRenderRatio(ratio);
 }
 
-
-/// <summary>
-/// Render 
-/// </summary>
-void HPManager::Render(DirectX::SimpleMath::Vector2 pos, float scale)
+void HPManager::Render()
 {
-	m_spriteBatch->Begin();
-
-	// 枠部分
-	m_spriteBatch->Draw(m_backSRV.Get(),
-		pos, nullptr, m_color, 0.0f, SimpleMath::Vector2(0, 0),
-		scale);
-
-	// 中身部分
-	RECT rect = { 0, 0,(LONG)(m_fillW * m_HP), m_fillH };
-
-	m_spriteBatch->Draw(m_fillSRV.Get(),
-		pos, &rect, m_color, 0.0f, SimpleMath::Vector2(0, 0),
-		scale);
-
-	m_spriteBatch->End();
+	m_base->Render();
+	m_gauge->Render();
+	m_frame->Render();
 }
 
-
-
-/// <summary>
-/// Finalize 
-/// </summary>
-void HPManager::Finalize()
+void HPManager::Creates(DirectX::SimpleMath::Vector2 pos, DirectX::SimpleMath::Vector2 scale)
 {
-	m_backSRV.Reset();
-	m_fillSRV.Reset();
-	m_spriteBatch.reset();
+	SimpleMath::Vector2 gaugePos = SimpleMath::Vector2{ pos.x + 62.0f, pos.y - 0.2f };
+
+	m_base = std::make_unique<kHorikawa::UserInterface>();
+	m_base->Create(m_pDR, m_baseTexturePath, gaugePos, scale, kHorikawa::ANCHOR::TOP_LEFT);
+
+	m_gauge = std::make_unique<kHorikawa::UserInterface>();
+	m_gauge->Create(m_pDR, m_gaugeTexturePath, gaugePos, scale, kHorikawa::ANCHOR::TOP_LEFT);
+	m_gauge->SetRenderRatioOffset(0.1f);
+
+	m_frame = std::make_unique<kHorikawa::UserInterface>();
+	m_frame->Create(m_pDR, m_frameTexturePath, pos, scale, kHorikawa::ANCHOR::TOP_LEFT);
 }
+

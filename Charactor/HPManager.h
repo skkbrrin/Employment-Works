@@ -3,35 +3,46 @@
 //-------------------------------------------------------------------------------------
 
 #pragma once
+#include "StepTimer.h"
+#include "GameObject/UserInterface.h"
+#include <DeviceResources.h>
+#include <SimpleMath.h>
+#include <Effects.h>
 #include <PrimitiveBatch.h>
 #include <VertexTypes.h>
+#include <WICTextureLoader.h>
+#include <CommonStates.h>
+#include <vector>
 
 
 class HPManager {
+public:
+
 private:
-    wchar_t m_texture; // 張り付けるテクスチャファイル
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backSRV; // 枠
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_fillSRV; // 中身
-    std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
-    ID3D11DeviceContext* m_context;
-    ID3D11Device* m_device;
+	DX::DeviceResources* m_pDR; // デバイスリソース
 
-    int m_HP;
-    DirectX::XMVECTORF32 m_color;
+	std::unique_ptr<kHorikawa::UserInterface> m_gauge; // ゲージ
+	std::unique_ptr<kHorikawa::UserInterface> m_frame; // 枠
+	std::unique_ptr<kHorikawa::UserInterface> m_base; // 背景ゲージ
 
-    float m_fillW = 256;
-    float m_fillH = 64;
+	const wchar_t* m_baseTexturePath; // 背景ゲージテクスチャパス
+	const wchar_t* m_frameTexturePath; // 枠テクスチャパス
+	const wchar_t* m_gaugeTexturePath; // ゲージテクスチャパス
 
 public:
-    HPManager(ID3D11Device1* device, ID3D11DeviceContext* context);
-    ~HPManager();
+	HPManager();
+	~HPManager();
 
-    bool Load(const wchar_t* back, const wchar_t* fill);
+	void Initialize(DX::DeviceResources* pDR);
+	void Update(int HP, int maxHP);
+	void Render();
 
-    void Update(int HP, int maxHP);
-
-    void Render(DirectX::SimpleMath::Vector2 pos, 
-                float scale = 1.0f);
-
-    void Finalize();
+	void Creates( DirectX::SimpleMath::Vector2 pos
+		, DirectX::SimpleMath::Vector2 scale);
+	
+// 読み込み
+public:
+	void LoadBase(const wchar_t* base) { m_baseTexturePath = base; }
+	void LoadFrame(const wchar_t* frame) { m_frameTexturePath = frame; }
+	void LoadGauge(const wchar_t* gauge) { m_gaugeTexturePath = gauge; }
 };

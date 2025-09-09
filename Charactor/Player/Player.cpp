@@ -31,12 +31,42 @@ void Player::Update(float elapsedTime, Enemy* enemy)
 	auto kb = Keyboard::Get().GetState();
 	m_tracker.Update(kb);
 
-	//Player
-	if (kb.A) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(0.5f));
-	if (kb.D) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
 
-	if (kb.W) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
-	if (m_tracker.pressed.S) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 2.5f), m_rotate);
+    // 攻撃
+
+    if (m_isAttacking)
+    {
+        m_attackTime += elapsedTime;
+        float t = m_attackTime / m_attackDuration;
+        if (t > 1.0f) t = 1.0f;
+
+        // 出発点→目標点を補間
+        m_position = m_attackStartPos * (1 - t) + m_attackTargetPos * t;
+
+        // パラボラ軌道（ジャンプっぽく）
+        float jumpHeight = 2.0f;
+        m_position.y += sinf(t * XM_PI) * jumpHeight;
+
+        // 攻撃終了
+        if (t >= 1.0f)
+        {
+            m_isAttacking = false;
+            if (m_attackTarget)
+            {
+                m_attackTarget->Damage(m_attck);
+                m_attackTarget = nullptr;
+            }
+        }
+        return;
+    }
+
+
+    //通常移動
+    if (kb.A) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(0.5f));
+    if (kb.D) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
+
+    if (kb.W) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
+    if (m_tracker.pressed.S) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 2.5f), m_rotate);
 }
 
 
@@ -53,12 +83,53 @@ void Player::Finalize()
 {
 }
 
-void Player::Attack(Enemy* enemy)
+void Player::Attack(const std::vector<std::unique_ptr<Enemy>>& enemies)
 {
-	if (!enemy) return;
+    if (m_isAttacking) return;
+    if (enemies.empty()) return;
 
-	m_position = SimpleMath::Vector3(enemy->GetPos());
-	m_position.y = -0.5f;
-	enemy->Damage(m_attck);
+    Enemy* nearestEnemy = nullptr; // 一番近い敵
+    float nearestDist = FLT_MAX; // 敵までの距離
+
+    // 一番近い敵を探す
+    for (auto& ene : enemies)
+    {
+        if (!ene || ene->GetIsDie()) continue;
+
+        float dist = (ene->GetPos() - m_position).Length();
+        if (dist < nearestDist)
+        {
+            nearestDist = dist;
+            nearestEnemy = ene.get();
+        }
+    }
+
+    if (!nearestEnemy) return;
+
+    // プレイヤーの正面ベクトル
+    DirectX::SimpleMath::Vector3 forward =
+        DirectX::SimpleMath::Vector3::Transform(
+            DirectX::SimpleMath::Vector3::UnitZ, m_rotate);
+    forward.Normalize();
+
+    // 敵方向ベクトル
+    DirectX::SimpleMath::Vector3 toEnemy =
+        nearestEnemy->GetPos() - m_position;
+    toEnemy.Normalize();
+
+    // 視野角チェック（±45°）
+    float dot = forward.Dot(toEnemy);
+    float angleThreshold = cosf(XMConvertToRadians(45.0f));
+    if (dot < angleThreshold) return; // 前方じゃなければ攻撃失敗
+
+    // 攻撃開始
+    m_isAttacking = true;
+    m_attackTime = 0.0f;
+    m_attackStartPos = m_position;
+
+    m_attackTargetPos = nearestEnemy->GetPos();
+    m_attackTargetPos.y = -0.5f;
+
+    m_attackTarget = nearestEnemy;
 }
 

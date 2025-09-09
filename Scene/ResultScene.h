@@ -9,6 +9,7 @@
 #include "Charactor/Task/Number.h"
 
 #include "GameObject/TextureSprite.h"
+#include "GameObject/TextureAlpha.h"
 
 class ResultScene : public Ito::Scene<UserResources>
 {
@@ -46,6 +47,8 @@ private:
 
 	std::unique_ptr<ScoreManager> m_scoreManager;
 	std::unique_ptr<TextureSprite> m_textureSprite;
+	std::unique_ptr<TextureAlpha> m_textureAlpha;
+
 	Ito::TaskManager m_taskManager;
 	Number* m_attackNumber;
 	Number* m_timeNumber;

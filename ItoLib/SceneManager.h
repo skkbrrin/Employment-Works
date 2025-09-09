@@ -59,6 +59,7 @@ namespace Ito
 		// デバイスロストした時に呼び出される関数
 		virtual void OnDeviceLost() {}
 
+
 	public:
 
 		// シーンマネージャー設定関数
@@ -173,6 +174,8 @@ namespace Ito
 
 		bool IsLoading();
 
+
+		
 	};
 
 	// シーンの切り替え関数

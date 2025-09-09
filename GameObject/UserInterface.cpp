@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-// File: UserInterface.cpp
+// File: UserInterface.h
 //
 // ユーザーインターフェースクラス
 //
@@ -8,7 +8,7 @@
 #include "pch.h"
 #include "UserInterface.h"
 
-#include "GameObject/MyBinalyFile.h"
+#include "BinaryFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -18,14 +18,16 @@
 #include <CommonStates.h>
 #include <vector>
 
+using namespace DirectX;
+
 /// <summary>
 /// インプットレイアウト
 /// </summary>
 const std::vector<D3D11_INPUT_ELEMENT_DESC> kHorikawa::UserInterface::INPUT_LAYOUT =
 {
 	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(DirectX::SimpleMath::Vector3)+ sizeof(DirectX::SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3) + sizeof(SimpleMath::Vector4), D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
 /// <summary>
@@ -33,19 +35,17 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> kHorikawa::UserInterface::INPUT_LAYO
 /// </summary>
 kHorikawa::UserInterface::UserInterface()
 	:m_pDR(nullptr)
-	,m_windowHeight(0)
-	,m_windowWidth(0)
-	,m_textureHeight(0)
-	,m_textureWidth(0)
-	,m_yoshiTextureHeight(0)
-	,m_yoshiTextureWidth(0)
-	,m_texture(nullptr)
-	,m_res(nullptr)
-	,m_yoshiTexture(nullptr)
-	,m_yoshiRes(nullptr)
-	,m_scale(DirectX::SimpleMath::Vector2::One)
-	,m_position(DirectX::SimpleMath::Vector2::Zero)
-	,m_anchor(ANCHOR::TOP_LEFT)
+	, m_windowHeight(0)
+	, m_windowWidth(0)
+	, m_textureHeight(0)
+	, m_textureWidth(0)
+	, m_texture(nullptr)
+	, m_res(nullptr)
+	, m_scale(SimpleMath::Vector2::One)
+	, m_position(SimpleMath::Vector2::Zero)
+	, m_anchor(ANCHOR::TOP_LEFT)
+	, m_renderRatio(1.0f)
+	, m_renderRatioOffset(0.0f)
 {
 
 }
@@ -63,31 +63,16 @@ kHorikawa::UserInterface::~UserInterface()
 /// <param name="path">相対パス(Resources/Textures/・・・.pngなど）</param>
 void kHorikawa::UserInterface::LoadTexture(const wchar_t* path)
 {
-	//	善子画像を読み込む
-	HRESULT result = DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), L"Resources/Textures/yoshiko.jpg", m_yoshiRes.ReleaseAndGetAddressOf(), m_yoshiTexture.ReleaseAndGetAddressOf());
-	Microsoft::WRL::ComPtr<ID3D11Texture2D> yoshiTex;
-	DX::ThrowIfFailed(m_yoshiRes.As(&yoshiTex));
 
-	//	指定された画像を読み込む
-	result = DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_res.ReleaseAndGetAddressOf(), m_texture.ReleaseAndGetAddressOf());
+	DirectX::CreateWICTextureFromFile(m_pDR->GetD3DDevice(), path, m_res.ReleaseAndGetAddressOf(), m_texture.ReleaseAndGetAddressOf());
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> tex;
 	DX::ThrowIfFailed(m_res.As(&tex));
 
-	//	読み込んだ画像の情報を取得する
 	D3D11_TEXTURE2D_DESC desc;
 	tex->GetDesc(&desc);
 
-	//	読み込んだ画像のサイズを取得する
 	m_textureWidth = desc.Width;
 	m_textureHeight = desc.Height;
-
-	//	善子画像の情報を取得する
-	D3D11_TEXTURE2D_DESC desc2;
-	yoshiTex->GetDesc(&desc2);
-
-	//	善子画像のサイズを取得する
-	m_yoshiTextureWidth = desc2.Width;
-	m_yoshiTextureHeight = desc2.Height;
 
 }
 
@@ -114,9 +99,10 @@ void kHorikawa::UserInterface::Create(DX::DeviceResources* pDR
 	LoadTexture(path);
 
 	//	プリミティブバッチの作成
-	m_batch = std::make_unique<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
+	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
 
-	m_states = std::make_unique<DirectX::CommonStates>(device);
+	m_states = std::make_unique<CommonStates>(device);
+
 }
 
 void kHorikawa::UserInterface::SetScale(DirectX::SimpleMath::Vector2 scale)
@@ -127,6 +113,18 @@ void kHorikawa::UserInterface::SetPosition(DirectX::SimpleMath::Vector2 position
 {
 	m_position = position;
 }
+void kHorikawa::UserInterface::SetAnchor(kHorikawa::ANCHOR anchor)
+{
+	m_anchor = anchor;
+}
+void kHorikawa::UserInterface::SetRenderRatio(float ratio)
+{
+	m_renderRatio = ratio;
+}
+void kHorikawa::UserInterface::SetRenderRatioOffset(float offset)
+{
+	m_renderRatioOffset = offset;
+}
 /// <summary>
 /// Shader作成部分だけ分離した関数
 /// </summary>
@@ -135,9 +133,9 @@ void kHorikawa::UserInterface::CreateShader()
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	std::unique_ptr<MyBinaryFile> VSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIVS.cso");
-	std::unique_ptr<MyBinaryFile> GSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIGS.cso");
-	std::unique_ptr<MyBinaryFile> PSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIPS.cso");
+	std::unique_ptr<kHorikawa::BinaryFile> VSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIVS.cso");
+	std::unique_ptr<kHorikawa::BinaryFile> GSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIGS.cso");
+	std::unique_ptr<kHorikawa::BinaryFile> PSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIPS.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],
@@ -147,7 +145,7 @@ void kHorikawa::UserInterface::CreateShader()
 
 	//	頂点シェーダ作成
 	if (FAILED(device->CreateVertexShader(VSData->GetData(), VSData->GetSize(), NULL, m_vertexShader.ReleaseAndGetAddressOf())))
-	{//	エラー
+	{// エラー
 		MessageBox(0, L"CreateVertexShader Failed.", NULL, MB_OK);
 		return;
 	}
@@ -181,24 +179,27 @@ void kHorikawa::UserInterface::CreateShader()
 void kHorikawa::UserInterface::Render()
 {
 	ID3D11DeviceContext1* context = m_pDR->GetD3DDeviceContext();
-	//	各情報の詳細
+	//	頂点情報
 	//	Position.xy	:拡縮用スケール
 	//	Position.z	:アンカータイプ(0～8)の整数で指定
-	//	Color.xy　	:アンカー座標(1280×720のピクセル座標指定)
+	//	Color.xy　	:アンカー座標(ピクセル指定:1280 ×720)
 	//	Color.zw	:画像サイズ
-	//	Tex.xy		:ウィンドウサイズ（ConstBufferも同じ。こちらは未使用）
-	DirectX::VertexPositionColorTexture vertex[1] = {
-		DirectX::VertexPositionColorTexture(DirectX::SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))
-		, DirectX::SimpleMath::Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))
-		, DirectX::SimpleMath::Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight)))
+	//	Tex.xy		:x = 0, y = 0
+	VertexPositionColorTexture vertex[1] = {
+		VertexPositionColorTexture(
+			 SimpleMath::Vector3(m_scale.x, m_scale.y, static_cast<float>(m_anchor))
+			,SimpleMath::Vector4(m_position.x, m_position.y, static_cast<float>(m_textureWidth), static_cast<float>(m_textureHeight))
+			,SimpleMath::Vector2(0,0))
 	};
-	//	ただし上記の設定値には、WorldやViewなどの3D空間から変換するための計算を一切しないため、
-	//	スクリーン座標として描画される
 
 	//	シェーダーに渡す追加のバッファを作成する。(ConstBuffer）
 	ConstBuffer cbuff;
-	cbuff.windowSize = DirectX::SimpleMath::Vector4(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight), 1, 1);
-//	cbuff.windowSize = DirectX::SimpleMath::Vector4(static_cast<float>(1920), static_cast<float>(1080), 1, 1);
+	// ↓x, y, z, wの順に入れてっているから順番気を付ける
+	//	ウィンドウサイズ
+	cbuff.windowSize = SimpleMath::Vector2(static_cast<float>(m_windowWidth), static_cast<float>(m_windowHeight));
+	//	αグラデーション開始位置
+	cbuff.alpheDate = m_renderRatio - m_renderRatioOffset;
+	cbuff.dummy = 0.0f;//<- 使っていない変数であっても何か入れておく。
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_CBuffer.Get(), 0, NULL, &cbuff, 0, 0);
@@ -212,7 +213,6 @@ void kHorikawa::UserInterface::Render()
 	//	画像用サンプラーの登録
 	ID3D11SamplerState* sampler[1] = { m_states->LinearWrap() };
 	context->PSSetSamplers(0, 1, sampler);
-
 
 	//	半透明描画指定
 	ID3D11BlendState* blendstate = m_states->NonPremultiplied();
@@ -233,8 +233,6 @@ void kHorikawa::UserInterface::Render()
 
 	//	ピクセルシェーダにテクスチャを登録する。
 	context->PSSetShaderResources(0, 1, m_texture.GetAddressOf());
-	context->PSSetShaderResources(1, 1, m_yoshiTexture.GetAddressOf());
-
 
 	//	インプットレイアウトの登録
 	context->IASetInputLayout(m_inputLayout.Get());
@@ -248,7 +246,6 @@ void kHorikawa::UserInterface::Render()
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
-
 }
 
 void kHorikawa::UserInterface::SetWindowSize(const int& width, const int& height)

@@ -17,10 +17,10 @@ void Enemy::Inisialize(ID3D11Device* device)
 {
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
-	m_enemyModel = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Enemy.sdkmesh", *fx);
+	m_enemyModel = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Treent.sdkmesh", *fx);
 
-	m_position = SimpleMath::Vector3(10.0f, 1.0f, 10.0f);
-	m_speed = 3.0f;
+	m_position = GetPos();
+	m_speed = 1.0f;
 
 	m_HP = 10;
 	m_attack = 10;
@@ -87,7 +87,7 @@ void Enemy::Chase(float elapsedTime, Player* player)
 
 	// ˆÚ“®
 	m_position += toPlayer * m_speed * elapsedTime;
-	m_position.y = 1.0f;
+	m_position.y = 0.0f;
 
 	// Œü‚«
 	float angle = atan2f(toPlayer.x, toPlayer.z);

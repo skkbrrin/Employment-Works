@@ -178,6 +178,12 @@
     <ClInclude Include="Charactor\HPManager.h">
       <Filter>Charactors</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Gauge.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\BinaryFile.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -285,6 +291,12 @@
     <ClCompile Include="Charactor\HPManager.cpp">
       <Filter>Charactors</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\Gauge.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\BinaryFile.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -306,6 +318,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\UIGS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
@@ -313,12 +331,6 @@
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\UIVS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>
