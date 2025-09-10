@@ -4,6 +4,12 @@
 
 using namespace DirectX;
 
+std::vector<DirectX::SimpleMath::Vector3> enemiesSpawnPos =
+{
+	DirectX::SimpleMath::Vector3{10.0f, 0.0f, 10.0f},
+	//DirectX::SimpleMath::Vector3{-8.0f, 0.0f, 10.0f},
+};
+
 void PlayScene::Initialize()
 {
 	CreateDeviceDependentResources();
@@ -160,7 +166,7 @@ void PlayScene::Render()
 	}
 
 	m_spriteBatch->Begin();
-	m_timeNumber->Render();
+	//m_timeNumber->Render();
 	m_spriteBatch->End();
 
 	m_hpManager->Render();
@@ -218,13 +224,13 @@ void PlayScene::CreateDeviceDependentResources()
 	m_enemy->Inisialize(device);*/
 
 	// •¡”‘Ì
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < enemiesSpawnPos.size(); i++)
 	{
 		auto ene = std::make_unique<Enemy>();
 		ene->Inisialize(device);
 
 		// ‰Šú’l‚¸‚ç‚µ
-		ene->SetPos(SimpleMath::Vector3(10.0f * (i + 1) , 0.0f, 10.0f * (1 + i)));
+		ene->SetPos(enemiesSpawnPos[i]);
 		
 		m_enemies.push_back(std::move(ene));
 	}

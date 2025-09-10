@@ -10,7 +10,10 @@ void ResultScene::Initialize()
 	CreateWindowSizeDependentResources();
 
 	m_scoreManager->Initialize();
+	m_scoreManager->AddAttackScore(1000);
+	m_scoreManager->AddTimeScore(500);
 	m_scoreManager->Update();
+
 
 	// 討伐得点
 	m_attackNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
@@ -27,7 +30,7 @@ void ResultScene::Initialize()
 	// 総合得点
 	m_totalNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
 	m_totalNumber->SetNumber(m_scoreManager->GetTotalScore());
-	m_totalNumber->SetPosition(SimpleMath::Vector2(530.0f, 530.0f));
+	m_totalNumber->SetPosition(SimpleMath::Vector2(500.0f, 530.0f));
 	m_totalNumber->SetScale(3.0f);
 
 }
@@ -56,9 +59,10 @@ void ResultScene::Render()
 	m_attackNumber->Render();
 	m_timeNumber->Render();
 	m_totalNumber->Render();
+	//m_spriteBatch->Draw(m_rankSRV.Get(), SimpleMath::Vector2(0.0f, 0.0f), nullptr);
 	m_spriteBatch->End();
 
-	m_textureAlpha->Render({ 1050.0f, 580.0f }, 0.4f);
+	m_textureAlpha->Render({ 1150.0f, 560.0f }, 0.4f);
 
 	// 画面としては、スコア数値以外の物が書かれているテクスチャ一枚
 	//               →スコア
@@ -81,11 +85,25 @@ void ResultScene::CreateDeviceDependentResources()
 	m_textureSprite->Load(L"Resources/Textures/Result.dds");
 
 	m_textureAlpha = std::make_unique<TextureAlpha>(device, context);
-	m_textureAlpha->Load(L"Resources/Textures/Enter.dds");
+	m_textureAlpha->Load(L"Resources/Textures/OnryEnter.dds");
 
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 
 	DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/number.dds", nullptr, ResultScene::m_numberSRV.ReleaseAndGetAddressOf()));
+
+	// ランク
+	if (m_scoreManager->GetTotalScore() <= 200)
+	{
+		DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/retu.dds", nullptr, ResultScene::m_rankSRV.ReleaseAndGetAddressOf()));
+	}
+	else if(m_scoreManager->GetTotalScore() <= 800)
+	{
+		DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/hei.dds", nullptr, ResultScene::m_rankSRV.ReleaseAndGetAddressOf()));
+	}
+	else
+	{
+		DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/Yu.dds", nullptr, ResultScene::m_rankSRV.ReleaseAndGetAddressOf()));
+	}
 }
 
 void ResultScene::CreateWindowSizeDependentResources()

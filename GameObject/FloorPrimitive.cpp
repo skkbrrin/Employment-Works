@@ -18,10 +18,10 @@ using namespace DirectX;
 //			※初期状態は1枚がベタ張りされる設定
 const VertexPositionTexture kHorikawa::FloorPrimitive::VERTICES[4] =
 {
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 30.0f, 0.0f, -30.0f), DirectX::SimpleMath::Vector2( 30.0f,  0.0f)),  // 0:左上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 30.0f, 0.0f,  30.0f), DirectX::SimpleMath::Vector2( 30.0f,  30.0f)),  // 1:右上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3(-30.0f, 0.0f,  30.0f), DirectX::SimpleMath::Vector2( 0.0f,  30.0f)),  // 3:右下
-	VertexPositionTexture(DirectX::SimpleMath::Vector3(-30.0f, 0.0f, -30.0f), DirectX::SimpleMath::Vector2( 0.0f,  0.0f)),  // 2:左下
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f, -100.0f), DirectX::SimpleMath::Vector2( 1.0f,  0.0f)),  // 0:左上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 1.0f,  1.0f)),  // 1:右上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3(-100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 0.0f,  1.0f)),  // 3:右下
+	VertexPositionTexture(DirectX::SimpleMath::Vector3(-100.0f, 0.0f, -100.0f), DirectX::SimpleMath::Vector2( 0.0f,  0.0f)),  // 2:左下
 };
 
 /// <summary>

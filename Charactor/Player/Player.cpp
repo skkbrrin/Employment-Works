@@ -40,12 +40,30 @@ void Player::Update(float elapsedTime, Enemy* enemy)
         float t = m_attackTime / m_attackDuration;
         if (t > 1.0f) t = 1.0f;
 
-        // 出発点→目標点を補間
-        m_position = m_attackStartPos * (1 - t) + m_attackTargetPos * t;
+        // ジャンプ
+        if (t < 0.5f)
+        {
+            float tt = t / 0.5f; // 正規化
 
-        // パラボラ軌道（ジャンプっぽく）
-        float jumpHeight = 2.0f;
-        m_position.y += sinf(t * XM_PI) * jumpHeight;
+            m_position = m_attackStartPos;
+            float jumpHeigth = 2.0f; // ジャンプの高さ
+            m_position.y += sinf(tt * XM_PI) * jumpHeigth; // ジャンプ
+        }
+        
+        // 斜め移動切り
+        else
+        {
+            float tt = t / 0.5f; // 正規化
+
+            // 開始位置
+            DirectX::SimpleMath::Vector3 apex = m_attackStartPos;
+            apex.y += 2.0f;
+
+            // 直線移動
+            m_position.x = apex.x * (1 - tt) + m_attackTargetPos.x * tt;
+            m_position.y = apex.y * (1 - tt) + m_attackTargetPos.y * tt + 2.0f;
+            m_position.z = apex.z * (1 - tt) + m_attackTargetPos.z * tt;
+        }
 
         // 攻撃終了
         if (t >= 1.0f)

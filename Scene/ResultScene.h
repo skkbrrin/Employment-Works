@@ -55,5 +55,7 @@ private:
 	Number* m_totalNumber;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV; // ”š
 
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_rankSRV; // ƒ‰ƒ“ƒN
+
 };
 
