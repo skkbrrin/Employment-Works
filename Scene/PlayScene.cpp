@@ -4,10 +4,13 @@
 
 using namespace DirectX;
 
+// 敵の初期座標
 std::vector<DirectX::SimpleMath::Vector3> enemiesSpawnPos =
 {
 	DirectX::SimpleMath::Vector3{10.0f, 0.0f, 10.0f},
-	//DirectX::SimpleMath::Vector3{-8.0f, 0.0f, 10.0f},
+	DirectX::SimpleMath::Vector3{-8.0f, 0.0f, 10.0f},
+	DirectX::SimpleMath::Vector3{-5.0f, 0.0f, 5.0f},
+	DirectX::SimpleMath::Vector3{7.0f, 0.0f, -10.0f},
 };
 
 void PlayScene::Initialize()
@@ -27,15 +30,31 @@ void PlayScene::Initialize()
 	m_timeNumber->SetScale(2.5f);
 
 	m_hpManager->Initialize(DR);
+
+	m_camera.SetPlayer(m_player.get());
 }
 
 void PlayScene::Update(float elapsedTime)
 {
 	auto kb = GetUserResources()->GetKeyboardStateTracker();
+	if (m_camera.IsCutInActive())
+	{
+		m_camera.Update(elapsedTime);
+		// カットインUIもここで更新／描画準備（描画は Render 側）
+		return;
+	}
+	if (m_stoppingAttack)
+	{
+		// カットインが終わった瞬間に一度だけプレイヤーの攻撃を呼ぶ
+		m_player->Attack(elapsedTime, m_enemies);
+		m_stoppingAttack = false;
+	}
 
+
+	// デバッグカメラ
 	m_debugCamera->Update();
 
-
+	// 天球
 	float rotateSpeed = 1.0f;
 	m_skyRotate += rotateSpeed * elapsedTime;
 
@@ -44,7 +63,8 @@ void PlayScene::Update(float elapsedTime)
 		m_skyRotate = 0.0f;
 	}
 
-	if (kb->pressed.Q || timer <= 0.0f || m_player->GetHP() <= 0/* || m_enemies.size()*/)
+	// リザルト切り替え条件
+	if (kb->pressed.Q || timer <= 0.0f || m_player->GetHP() <= 0 || m_enemies.size() <= 0)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds{ 1 });
 		ChangeScene<ResultScene>();
@@ -54,17 +74,22 @@ void PlayScene::Update(float elapsedTime)
 	/// 攻撃
 	if (kb->pressed.Z)
 	{
-		m_player->Attack(m_enemies);
+		// 既に攻撃中 / 予約中でなければカットインを予約
+		if (!m_player->GetAttacking() && !m_stoppingAttack)
+		{
+			StartCutIn();
+		}
 	}
 
 	/// 通常
 	m_player->Update(elapsedTime, m_enemy.get());
 
-	// 複数体
+	// 複数体エネミー
 	for (auto& ene : m_enemies)
 	{
 		ene->Update(elapsedTime, m_player.get());
 	}
+
 
 	m_enemies.erase(
 		std::remove_if(m_enemies.begin(), m_enemies.end(),
@@ -75,19 +100,38 @@ void PlayScene::Update(float elapsedTime)
 		m_enemies.end()
 	);
 
-	m_camera.SetPlayer(m_player->GetPlayerPosition(), m_player->GetPlayerRotate());
 
-	timer -= elapsedTime;
+	// ゲームカメラ
+	// 攻撃カメラ----------------------------------------------------
+	bool nowAttacking = m_player->GetAttacking();
+	bool attackStart = (!m_prevIsAttacking && nowAttacking);
+	bool attackFinished = (m_prevIsAttacking && !nowAttacking);
 
-	if (kb->pressed.D0) { cameraNum = 0; }
-	if (kb->pressed.D1) { cameraNum = 1; }
-	if (kb->pressed.D2) { cameraNum = 2; }
-	if (kb->pressed.D3) { cameraNum = 3; }
+	if (attackStart)
+	{
+		// もしカットインで既にカメラを Attack にしていればここで再度切り替えないようにガード
+		if (!m_camera.IsCutInActive())
+		{
+			m_camera.ChangeMode(GameCamera::Type::Attack);
+		}
+	}
+	else if (attackFinished)
+	{
+		m_camera.ChangeMode(GameCamera::Type::Return);
+	}
+
+	m_prevIsAttacking = nowAttacking;
+
+	// カメラ更新
+	m_camera.Update(elapsedTime);
+
+	//---------------------------------------------------------------
 	
+	// タイマー
+	timer -= elapsedTime;
 	m_timeNumber->SetNumber(timer);
 
-	m_camera.Update(elapsedTime, cameraNum);
-
+	// HPマネージャー
 	m_hpManager->Update(m_player->GetHP(), m_player->GetFullHP());
 
 	// シーンチェンジの時に、白い板を画面に出して、透明度を0→１に徐々にしてフェードアウト
@@ -100,10 +144,7 @@ void PlayScene::Render()
 	// (リリースモードのバグ修正完了したら消す)
 #if defined(_DEBUG)
 	// ビュー行列を設定
-	if (cameraNum == 0) {
-		m_view = m_debugCamera->GetCameraMatrix();
-	}
-	else if (cameraNum != 0) {
+	if (cameraNum != 0) {
 		m_view = SimpleMath::Matrix::CreateLookAt(
 			m_camera.GetEyePosition(),
 			m_camera.GetTargetPosition(),
@@ -111,7 +152,7 @@ void PlayScene::Render()
 		);
 	}
 #else
-	m_view = m_debugCamera->GetCameraMatrix();
+		m_view = m_debugCamera->GetCameraMatrix();
 #endif
 
 
@@ -120,6 +161,7 @@ void PlayScene::Render()
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetUserResources()->GetCommonStates();
 
+	// 床
 	m_floorPrimitive->Render(context, m_view, m_proj);
 
 	// 天球-------------------------------------------------------------------------------------------------
@@ -158,32 +200,35 @@ void PlayScene::Render()
 	m_skyModel->Draw(context, *states, im * SimpleMath::Matrix::CreateScale(9000.0f), m_view, m_proj);
 	// 天球-------------------------------------------------------------------------------------------------
 
+	// プレイヤー
 	m_player->Render(context, states, m_view, m_proj);
-	//m_enemy->Render(context, states, m_view, m_proj);
+
+	// エネミー
 	for (auto& ene : m_enemies)
 	{
 		ene->Render(context, states, m_view, m_proj);
 	}
 
+	//	スプライトバッチ
 	m_spriteBatch->Begin();
-	//m_timeNumber->Render();
+	m_timeNumber->Render();
 	m_spriteBatch->End();
 
+	// HP
 	m_hpManager->Render();
 
-#if defined(_DEBUG)
-	/*std::wostringstream PlayerHP;
-	PlayerHP << "PlayerHP =  " << m_player->GetHP();
-	debugFont->AddString(PlayerHP.str().c_str(), SimpleMath::Vector2(0.0f, debugFont->GetFontHeight() * 2), DirectX::Colors::Black);*/
-
-#else
-#endif
-
-
+	// 一番上にカットイン演出
+	if(m_camera.IsCutInActive())
+	{
+		m_spriteBatch->Begin();
+		// cutInSprite->Render() など
+		m_spriteBatch->End();
+	}
 }
 
 void PlayScene::Finalize()
 {
+	// オブジェクトの開放
 	for (auto& ene : m_enemies)
 	{
 		if (ene) ene->Finalize(); 
@@ -264,4 +309,27 @@ void PlayScene::CreateWindowSizeDependentResources()
 
 void PlayScene::OnDeviceLost()
 {
+}
+
+
+
+// カットイン用関数
+void PlayScene::StartCutIn()
+{
+	// 既にカットイン予約中なら何もしない
+	//if (m_stoppingAttack || m_camera.IsCutInActive()) return;
+
+	// カメラを攻撃モードに切り替え（内部で m_showCutIn を立てる想定）
+	m_camera.ChangeMode(GameCamera::Type::Attack);
+
+	// カットインが終わったら攻撃を開始するための予約フラグ
+	m_stoppingAttack = true;
+}
+
+void PlayScene::EndCutIn()
+{
+	if (m_stoppingAttack)
+	{
+		m_stoppingAttack = false;
+	}
 }

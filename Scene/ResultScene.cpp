@@ -10,8 +10,6 @@ void ResultScene::Initialize()
 	CreateWindowSizeDependentResources();
 
 	m_scoreManager->Initialize();
-	m_scoreManager->AddAttackScore(1000);
-	m_scoreManager->AddTimeScore(500);
 	m_scoreManager->Update();
 
 
@@ -92,7 +90,7 @@ void ResultScene::CreateDeviceDependentResources()
 	DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/number.dds", nullptr, ResultScene::m_numberSRV.ReleaseAndGetAddressOf()));
 
 	// ƒ‰ƒ“ƒN
-	if (m_scoreManager->GetTotalScore() <= 200)
+	/*if (m_scoreManager->GetTotalScore() <= 200)
 	{
 		DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/retu.dds", nullptr, ResultScene::m_rankSRV.ReleaseAndGetAddressOf()));
 	}
@@ -103,7 +101,7 @@ void ResultScene::CreateDeviceDependentResources()
 	else
 	{
 		DX::ThrowIfFailed(CreateDDSTextureFromFile(device, L"Resources/Textures/Yu.dds", nullptr, ResultScene::m_rankSRV.ReleaseAndGetAddressOf()));
-	}
+	}*/
 }
 
 void ResultScene::CreateWindowSizeDependentResources()

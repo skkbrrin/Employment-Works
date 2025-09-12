@@ -45,6 +45,8 @@ public:
 	// デバイスロストした時に呼び出される関数
 	void OnDeviceLost() override;
 
+	void StartCutIn();
+	void EndCutIn();
 
 private:
 	// カメラのポインタ
@@ -77,6 +79,7 @@ private:
 	std::unique_ptr<Enemy> m_enemy;
 	std::vector<std::unique_ptr<Enemy>> m_enemies; // 複数
 
+	// カメラ
 	bool m_cameraDebug = false;
 	bool m_cameraGame = false;
 
@@ -86,17 +89,21 @@ private:
 	GameCamera m_camera;
 	int cameraNum;
 
+	// スコア　タイマー
 	float timer;
-
 	std::unique_ptr<ScoreManager> m_scoreManager;
 	Ito::TaskManager m_taskManager;
 	Number* m_timeNumber;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV;
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
-	std::unique_ptr<HPManager> m_hpManager;
+	std::unique_ptr<HPManager> m_hpManager; // HPマネージャー
 
-	int m_windowWidth, m_windowHeigth;
+	int m_windowWidth, m_windowHeigth; // 画面サイズ
+
+	bool m_prevIsAttacking = false; // 攻撃しているか
+
+	bool m_stoppingAttack = false;
 
 private:
 	float m_skyRotate = 0.0f;

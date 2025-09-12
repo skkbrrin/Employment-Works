@@ -69,10 +69,12 @@ void Player::Update(float elapsedTime, Enemy* enemy)
         if (t >= 1.0f)
         {
             m_isAttacking = false;
+            SetAttacking(false);
             if (m_attackTarget)
             {
                 m_attackTarget->Damage(m_attck);
                 m_attackTarget = nullptr;
+                
             }
         }
         return;
@@ -101,19 +103,57 @@ void Player::Finalize()
 {
 }
 
-void Player::Attack(const std::vector<std::unique_ptr<Enemy>>& enemies)
+void Player::Attack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies)
 {
-    if (m_isAttacking) return;
+    // 攻撃中は時間経過で動作
+    if (m_isAttacking)
+    {
+        m_attackTime += elapsedTime;
+        float t = m_attackTime / m_attackDuration;
+        if (t > 1.0f) t = 1.0f;
+
+        // 攻撃前半：ジャンプ
+        if (t < 0.5f)
+        {
+            float tt = t / 0.5f;
+            m_position = m_attackStartPos;
+            float jumpHeight = 2.0f;
+            m_position.y += sinf(tt * XM_PI) * jumpHeight;
+        }
+        // 攻撃後半：斜め移動
+        else
+        {
+            float tt = (t - 0.5f) / 0.5f; // 正規化
+            DirectX::SimpleMath::Vector3 apex = m_attackStartPos;
+            apex.y += 2.0f;
+
+            m_position.x = apex.x * (1 - tt) + m_attackTargetPos.x * tt;
+            m_position.y = apex.y * (1 - tt) + m_attackTargetPos.y * tt;
+            m_position.z = apex.z * (1 - tt) + m_attackTargetPos.z * tt;
+        }
+
+        // 攻撃終了
+        if (t >= 1.0f)
+        {
+            m_isAttacking = false;
+            if (m_attackTarget)
+            {
+                m_attackTarget->Damage(m_attck);
+                m_attackTarget = nullptr;
+            }
+        }
+        return;
+    }
+
+    // 攻撃開始判定
     if (enemies.empty()) return;
 
-    Enemy* nearestEnemy = nullptr; // 一番近い敵
-    float nearestDist = FLT_MAX; // 敵までの距離
+    Enemy* nearestEnemy = nullptr;
+    float nearestDist = FLT_MAX;
 
-    // 一番近い敵を探す
     for (auto& ene : enemies)
     {
         if (!ene || ene->GetIsDie()) continue;
-
         float dist = (ene->GetPos() - m_position).Length();
         if (dist < nearestDist)
         {
@@ -124,30 +164,24 @@ void Player::Attack(const std::vector<std::unique_ptr<Enemy>>& enemies)
 
     if (!nearestEnemy) return;
 
-    // プレイヤーの正面ベクトル
     DirectX::SimpleMath::Vector3 forward =
-        DirectX::SimpleMath::Vector3::Transform(
-            DirectX::SimpleMath::Vector3::UnitZ, m_rotate);
+        DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitZ, m_rotate);
     forward.Normalize();
 
-    // 敵方向ベクトル
-    DirectX::SimpleMath::Vector3 toEnemy =
-        nearestEnemy->GetPos() - m_position;
+    DirectX::SimpleMath::Vector3 toEnemy = nearestEnemy->GetPos() - m_position;
     toEnemy.Normalize();
 
-    // 視野角チェック（±45°）
     float dot = forward.Dot(toEnemy);
     float angleThreshold = cosf(XMConvertToRadians(45.0f));
-    if (dot < angleThreshold) return; // 前方じゃなければ攻撃失敗
+    if (dot < angleThreshold) return;
 
     // 攻撃開始
     m_isAttacking = true;
     m_attackTime = 0.0f;
     m_attackStartPos = m_position;
-
     m_attackTargetPos = nearestEnemy->GetPos();
     m_attackTargetPos.y = -0.5f;
-
     m_attackTarget = nearestEnemy;
 }
+
 

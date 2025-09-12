@@ -15,7 +15,7 @@ public:
 		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
-	void Attack(const std::vector<std::unique_ptr<Enemy>>& enemies);
+	void Attack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies);
 
 private:
 	std::unique_ptr<DirectX::Model> m_player; // ƒ‚ƒfƒ‹
@@ -40,7 +40,7 @@ private:
 public:
 	DirectX::SimpleMath::Vector3 GetPlayerPosition() { return m_position; }
 	void SetPosition(DirectX::SimpleMath::Vector3 pos) { m_position = pos; }
-	DirectX::SimpleMath::Quaternion GetPlayerRotate() { return m_rotate; }
+	DirectX::SimpleMath::Quaternion& GetPlayerRotate() { return m_rotate; }
 	void SetRotate(DirectX::SimpleMath::Quaternion rotate) { m_rotate = rotate; }
 	int GetHP() { return m_HP; }
 	int GetFullHP() { return m_fullHP; }
@@ -49,6 +49,8 @@ public:
 
 	bool GetAttacking() { return m_isAttacking; }
 	void SetAttacking(bool isAttack) { m_isAttacking = isAttack; }
+
+	Enemy* GetAttackTarget() { return m_attackTarget; }
 
 	void Damage(int damage) 
 	{
