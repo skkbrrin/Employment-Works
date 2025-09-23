@@ -9,29 +9,42 @@ void ResultScene::Initialize()
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-	m_scoreManager->Initialize();
-	m_scoreManager->Update();
+	ScoreManager::Instance().Update();
 
+	attack = ScoreManager::Instance().GetAttackScore();
+	time = ScoreManager::Instance().GetTimeScore();
+	total = ScoreManager::Instance().GetTotalScore();
+
+	wchar_t buf[256];
+	swprintf(buf, 256, L"[Initialize] attack=%d time=%d total=%d\n",
+		ScoreManager::Instance().GetAttackScore(),
+		ScoreManager::Instance().GetTimeScore(),
+		ScoreManager::Instance().GetTotalScore());
+	OutputDebugString(buf);
 
 	// 討伐得点
 	m_attackNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
-	m_attackNumber->SetNumber(m_scoreManager->GetAttackScore());
-	m_attackNumber->SetPosition(SimpleMath::Vector2(600.0f, 260.0f));
-	m_attackNumber->SetScale(2.0f);
+	m_attackNumber->SetNumber(attack);
 
 	// 余時点
 	m_timeNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
-	m_timeNumber->SetNumber(m_scoreManager->GetTimeScore());
-	m_timeNumber->SetPosition(SimpleMath::Vector2(600.0f, 380.0f));
-	m_timeNumber->SetScale(2.0f);
+	m_timeNumber->SetNumber(time);
 
 	// 総合得点
 	m_totalNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
-	m_totalNumber->SetNumber(m_scoreManager->GetTotalScore());
-	m_totalNumber->SetPosition(SimpleMath::Vector2(500.0f, 530.0f));
-	m_totalNumber->SetScale(3.0f);
+	m_totalNumber->SetNumber(total);
 
+	// 座標とスケールは最後に設定
+	m_attackNumber->SetPosition({ 600.0f, 260.0f });
+	m_attackNumber->SetScale(2.0f);
+
+	m_timeNumber->SetPosition({ 600.0f, 380.0f });
+	m_timeNumber->SetScale(2.0f);
+
+	m_totalNumber->SetPosition({ 500.0f, 530.0f });
+	m_totalNumber->SetScale(3.0f);
 }
+
 
 void ResultScene::Update(float elapsedTime)
 {
@@ -62,6 +75,10 @@ void ResultScene::Render()
 
 	m_textureAlpha->Render({ 1150.0f, 560.0f }, 0.4f);
 
+	m_spriteBatch = std::make_unique<SpriteBatch>(
+		GetUserResources()->GetDeviceResources()->GetD3DDeviceContext()
+	);
+
 	// 画面としては、スコア数値以外の物が書かれているテクスチャ一枚
 	//               →スコア
 	// の順番に貼っていく
@@ -77,8 +94,6 @@ void ResultScene::CreateDeviceDependentResources()
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-	m_scoreManager = std::make_unique <ScoreManager>();
-	
 	m_textureSprite = std::make_unique<TextureSprite>(device, context);
 	m_textureSprite->Load(L"Resources/Textures/Result.dds");
 

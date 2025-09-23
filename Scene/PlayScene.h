@@ -45,9 +45,6 @@ public:
 	// デバイスロストした時に呼び出される関数
 	void OnDeviceLost() override;
 
-	void StartCutIn();
-	void EndCutIn();
-
 private:
 	// カメラのポインタ
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
@@ -91,7 +88,6 @@ private:
 
 	// スコア　タイマー
 	float timer;
-	std::unique_ptr<ScoreManager> m_scoreManager;
 	Ito::TaskManager m_taskManager;
 	Number* m_timeNumber;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV;
@@ -104,6 +100,8 @@ private:
 	bool m_prevIsAttacking = false; // 攻撃しているか
 
 	bool m_stoppingAttack = false;
+
+	int m_attackScore, m_timeScore;
 
 private:
 	float m_skyRotate = 0.0f;

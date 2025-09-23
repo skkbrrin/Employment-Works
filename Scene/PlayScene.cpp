@@ -24,6 +24,9 @@ void PlayScene::Initialize()
 	cameraNum = 1;
 	timer = 45.0f;
 
+	m_attackScore = 0;
+	m_timeScore = 0;
+
 	m_timeNumber = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
 	m_timeNumber->SetPosition(SimpleMath::Vector2(350.0f, 0.0f));
 	m_timeNumber->SetNumber(timer);
@@ -37,19 +40,6 @@ void PlayScene::Initialize()
 void PlayScene::Update(float elapsedTime)
 {
 	auto kb = GetUserResources()->GetKeyboardStateTracker();
-	if (m_camera.IsCutInActive())
-	{
-		m_camera.Update(elapsedTime);
-		// カットインUIもここで更新／描画準備（描画は Render 側）
-		return;
-	}
-	if (m_stoppingAttack)
-	{
-		// カットインが終わった瞬間に一度だけプレイヤーの攻撃を呼ぶ
-		m_player->Attack(elapsedTime, m_enemies);
-		m_stoppingAttack = false;
-	}
-
 
 	// デバッグカメラ
 	m_debugCamera->Update();
@@ -64,21 +54,31 @@ void PlayScene::Update(float elapsedTime)
 	}
 
 	// リザルト切り替え条件
-	if (kb->pressed.Q || timer <= 0.0f || m_player->GetHP() <= 0 || m_enemies.size() <= 0)
+	if (kb->pressed.Q || timer <= 0.0f || m_player->GetHP() <= 0 || m_enemies.empty())
 	{
+		// スコアを事前に加算
+		int addScore = static_cast<int>(timer * 5 + 10);
+		ScoreManager::Instance().SetTimeScore(
+			ScoreManager::Instance().GetTimeScore() + addScore
+		);
+		ScoreManager::Instance().Update();
+
 		std::this_thread::sleep_for(std::chrono::seconds{ 1 });
 		ChangeScene<ResultScene>();
+
+		wchar_t buf[256];
+		swprintf(buf, 256, L"[Finalize] attack=%d time=%d total=%d\n",
+			ScoreManager::Instance().GetAttackScore(),
+			ScoreManager::Instance().GetTimeScore(),
+			ScoreManager::Instance().GetTotalScore());
+		OutputDebugString(buf);
 	}
 
 	// プレイヤー
 	/// 攻撃
 	if (kb->pressed.Z)
 	{
-		// 既に攻撃中 / 予約中でなければカットインを予約
-		if (!m_player->GetAttacking() && !m_stoppingAttack)
-		{
-			StartCutIn();
-		}
+		m_player->ComboAttack(elapsedTime, m_enemies);
 	}
 
 	/// 通常
@@ -90,6 +90,15 @@ void PlayScene::Update(float elapsedTime)
 		ene->Update(elapsedTime, m_player.get());
 	}
 
+	for (auto& e : m_enemies)
+	{
+		if (e->GetIsDie())
+		{
+			ScoreManager::Instance().SetAttackScore(
+				ScoreManager::Instance().GetAttackScore() + 50
+			);
+		}
+	}
 
 	m_enemies.erase(
 		std::remove_if(m_enemies.begin(), m_enemies.end(),
@@ -99,33 +108,18 @@ void PlayScene::Update(float elapsedTime)
 			}),
 		m_enemies.end()
 	);
+	
 
+	ScoreManager::Instance().Update();
 
 	// ゲームカメラ
 	// 攻撃カメラ----------------------------------------------------
-	bool nowAttacking = m_player->GetAttacking();
-	bool attackStart = (!m_prevIsAttacking && nowAttacking);
-	bool attackFinished = (m_prevIsAttacking && !nowAttacking);
+	
 
-	if (attackStart)
-	{
-		// もしカットインで既にカメラを Attack にしていればここで再度切り替えないようにガード
-		if (!m_camera.IsCutInActive())
-		{
-			m_camera.ChangeMode(GameCamera::Type::Attack);
-		}
-	}
-	else if (attackFinished)
-	{
-		m_camera.ChangeMode(GameCamera::Type::Return);
-	}
-
-	m_prevIsAttacking = nowAttacking;
-
-	// カメラ更新
-	m_camera.Update(elapsedTime);
 
 	//---------------------------------------------------------------
+	// カメラ更新
+	m_camera.Update(elapsedTime);
 	
 	// タイマー
 	timer -= elapsedTime;
@@ -216,22 +210,14 @@ void PlayScene::Render()
 
 	// HP
 	m_hpManager->Render();
-
-	// 一番上にカットイン演出
-	if(m_camera.IsCutInActive())
-	{
-		m_spriteBatch->Begin();
-		// cutInSprite->Render() など
-		m_spriteBatch->End();
-	}
 }
 
 void PlayScene::Finalize()
 {
-	// オブジェクトの開放
+	// --- 後始末処理 ---
 	for (auto& ene : m_enemies)
 	{
-		if (ene) ene->Finalize(); 
+		if (ene) ene->Finalize();
 	}
 	m_enemies.clear();
 
@@ -291,6 +277,7 @@ void PlayScene::CreateDeviceDependentResources()
 	m_hpManager->LoadBase(L"Resources/Textures/base.png");
 	m_hpManager->LoadGauge(L"Resources/Textures/gauge.png");
 	m_hpManager->LoadFrame(L"Resources/Textures/frame.png");
+
 }
 
 void PlayScene::CreateWindowSizeDependentResources()
@@ -309,27 +296,4 @@ void PlayScene::CreateWindowSizeDependentResources()
 
 void PlayScene::OnDeviceLost()
 {
-}
-
-
-
-// カットイン用関数
-void PlayScene::StartCutIn()
-{
-	// 既にカットイン予約中なら何もしない
-	//if (m_stoppingAttack || m_camera.IsCutInActive()) return;
-
-	// カメラを攻撃モードに切り替え（内部で m_showCutIn を立てる想定）
-	m_camera.ChangeMode(GameCamera::Type::Attack);
-
-	// カットインが終わったら攻撃を開始するための予約フラグ
-	m_stoppingAttack = true;
-}
-
-void PlayScene::EndCutIn()
-{
-	if (m_stoppingAttack)
-	{
-		m_stoppingAttack = false;
-	}
 }

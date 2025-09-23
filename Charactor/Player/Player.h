@@ -6,6 +6,7 @@ class Enemy;
 class Player
 {
 public:
+	// 通常関数
 	Player();
 	~Player();
 	void Initialize(ID3D11Device* device);
@@ -15,7 +16,9 @@ public:
 		DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
-	void Attack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies);
+	// 攻撃用
+	void NormalAttack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies); //< 単体攻撃
+	void ComboAttack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies); //< コンボ攻撃
 
 private:
 	std::unique_ptr<DirectX::Model> m_player; // モデル

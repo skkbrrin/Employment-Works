@@ -31,62 +31,12 @@ void Player::Update(float elapsedTime, Enemy* enemy)
 	auto kb = Keyboard::Get().GetState();
 	m_tracker.Update(kb);
 
-
-    // çUåÇ
-
-    if (m_isAttacking)
-    {
-        m_attackTime += elapsedTime;
-        float t = m_attackTime / m_attackDuration;
-        if (t > 1.0f) t = 1.0f;
-
-        // ÉWÉÉÉìÉv
-        if (t < 0.5f)
-        {
-            float tt = t / 0.5f; // ê≥ãKâª
-
-            m_position = m_attackStartPos;
-            float jumpHeigth = 2.0f; // ÉWÉÉÉìÉvÇÃçÇÇ≥
-            m_position.y += sinf(tt * XM_PI) * jumpHeigth; // ÉWÉÉÉìÉv
-        }
-        
-        // éŒÇﬂà⁄ìÆêÿÇË
-        else
-        {
-            float tt = t / 0.5f; // ê≥ãKâª
-
-            // äJénà íu
-            DirectX::SimpleMath::Vector3 apex = m_attackStartPos;
-            apex.y += 2.0f;
-
-            // íºê¸à⁄ìÆ
-            m_position.x = apex.x * (1 - tt) + m_attackTargetPos.x * tt;
-            m_position.y = apex.y * (1 - tt) + m_attackTargetPos.y * tt + 2.0f;
-            m_position.z = apex.z * (1 - tt) + m_attackTargetPos.z * tt;
-        }
-
-        // çUåÇèIóπ
-        if (t >= 1.0f)
-        {
-            m_isAttacking = false;
-            SetAttacking(false);
-            if (m_attackTarget)
-            {
-                m_attackTarget->Damage(m_attck);
-                m_attackTarget = nullptr;
-                
-            }
-        }
-        return;
-    }
-
-
     //í èÌà⁄ìÆ
-    if (kb.A) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(0.5f));
-    if (kb.D) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
+    if (kb.Left) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(0.5f));
+    if (kb.Right) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
 
-    if (kb.W) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
-    if (m_tracker.pressed.S) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 2.5f), m_rotate);
+    if (kb.Up) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
+    if (m_tracker.pressed.Down) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 2.5f), m_rotate);
 }
 
 
@@ -103,54 +53,14 @@ void Player::Finalize()
 {
 }
 
-void Player::Attack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies)
+void Player::NormalAttack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies)
 {
-    // çUåÇíÜÇÕéûä‘åoâﬂÇ≈ìÆçÏ
-    if (m_isAttacking)
-    {
-        m_attackTime += elapsedTime;
-        float t = m_attackTime / m_attackDuration;
-        if (t > 1.0f) t = 1.0f;
-
-        // çUåÇëOîºÅFÉWÉÉÉìÉv
-        if (t < 0.5f)
-        {
-            float tt = t / 0.5f;
-            m_position = m_attackStartPos;
-            float jumpHeight = 2.0f;
-            m_position.y += sinf(tt * XM_PI) * jumpHeight;
-        }
-        // çUåÇå„îºÅFéŒÇﬂà⁄ìÆ
-        else
-        {
-            float tt = (t - 0.5f) / 0.5f; // ê≥ãKâª
-            DirectX::SimpleMath::Vector3 apex = m_attackStartPos;
-            apex.y += 2.0f;
-
-            m_position.x = apex.x * (1 - tt) + m_attackTargetPos.x * tt;
-            m_position.y = apex.y * (1 - tt) + m_attackTargetPos.y * tt;
-            m_position.z = apex.z * (1 - tt) + m_attackTargetPos.z * tt;
-        }
-
-        // çUåÇèIóπ
-        if (t >= 1.0f)
-        {
-            m_isAttacking = false;
-            if (m_attackTarget)
-            {
-                m_attackTarget->Damage(m_attck);
-                m_attackTarget = nullptr;
-            }
-        }
-        return;
-    }
-
-    // çUåÇäJénîªíË
     if (enemies.empty()) return;
 
-    Enemy* nearestEnemy = nullptr;
-    float nearestDist = FLT_MAX;
+    Enemy* nearestEnemy = nullptr; //< ãﬂÇ≠ÇÃìGÇÃÉ|ÉCÉìÉ^
+    float nearestDist = FLT_MAX; //< ãﬂÇ≥
 
+    // àÍî‘ãﬂÇ¢ìGÇíTÇ∑
     for (auto& ene : enemies)
     {
         if (!ene || ene->GetIsDie()) continue;
@@ -164,6 +74,7 @@ void Player::Attack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>
 
     if (!nearestEnemy) return;
 
+    // ëOï˚Ç…Ç¢ÇÈÇ©Ç«Ç§Ç©îªíË
     DirectX::SimpleMath::Vector3 forward =
         DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitZ, m_rotate);
     forward.Normalize();
@@ -172,16 +83,53 @@ void Player::Attack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>
     toEnemy.Normalize();
 
     float dot = forward.Dot(toEnemy);
-    float angleThreshold = cosf(XMConvertToRadians(45.0f));
+    float angleThreshold = cosf(XMConvertToRadians(180.0f)); //< éãñÏäp
     if (dot < angleThreshold) return;
 
-    // çUåÇäJén
-    m_isAttacking = true;
-    m_attackTime = 0.0f;
-    m_attackStartPos = m_position;
-    m_attackTargetPos = nearestEnemy->GetPos();
-    m_attackTargetPos.y = -0.5f;
-    m_attackTarget = nearestEnemy;
+    // çUåÇâ¬î\ãóó£
+    if (nearestDist < 3.0f)
+    {
+        nearestEnemy->Damage(m_attck);
+    }
+}
+
+void Player::ComboAttack(float elapsedTime, const std::vector<std::unique_ptr<Enemy>>& enemies)
+{
+    if (enemies.empty()) return;
+
+    std::vector<Enemy*> candidates; //< çUåÇåÛï‚
+
+    DirectX::SimpleMath::Vector3 forward =
+        DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitZ, m_rotate);
+    forward.Normalize();
+
+    float angleThreshold = cosf(XMConvertToRadians(180.0f)); //< éãñÏäp
+    float attackRange = 100.0f; //< çUåÇãóó£
+
+    // çUåÇâ¬î\îÕàÕÇÃìGÇé˚èW
+    for (auto& ene : enemies)
+    {
+        if (!ene || ene->GetIsDie()) continue;
+
+        DirectX::SimpleMath::Vector3 toEnemy = ene->GetPos() - m_position;
+        float dist = toEnemy.Length();
+        toEnemy.Normalize();
+
+        float dot = forward.Dot(toEnemy);
+        if (dist <= attackRange && dot >= angleThreshold)
+        {
+            candidates.push_back(ene.get());
+        }
+    }
+
+    if (candidates.empty()) return;
+
+    // åÛï‚ëSàıÇ…çUåÇ
+    for (Enemy* target : candidates)
+    {
+        m_position = target->GetPos(); // èuä‘à⁄ìÆ
+        target->Damage(m_attck);
+    }
 }
 
 

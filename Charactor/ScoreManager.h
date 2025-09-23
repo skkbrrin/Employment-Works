@@ -1,25 +1,34 @@
 #pragma once
+
 class ScoreManager
 {
 private:
-	int m_attackScore;
-	int m_timeScore;
-	int m_totalScore;
+    int m_attackScore;
+    int m_timeScore;
+    int m_totalScore;
 
+    ScoreManager(); // private
 public:
-	ScoreManager();
-	~ScoreManager();
-	void Initialize();
-	void Update();
-	void Finalize();
+    static ScoreManager& Instance()
+    {
+        static ScoreManager instance;
+        return instance;
+    }
 
-public:
-	int GetAttackScore() { return m_attackScore; }
-	int GetTimeScore() { return m_timeScore; }
-	int GetTotalScore() { return m_totalScore; }
+    void Reset();
 
-	void AddAttackScore(int scoreA) { m_attackScore += scoreA; }
-	void AddTimeScore(int scoreTime) { m_timeScore += scoreTime; }
-	void AddTotalScore(int scoreTotal) { m_totalScore += scoreTotal; }
+    void Update()
+    {
+        m_totalScore = m_attackScore + m_timeScore;
+    }
+
+
+    // Getter
+    int GetAttackScore() const { return m_attackScore; }
+    int GetTimeScore() const { return m_timeScore; }
+    int GetTotalScore() const { return m_totalScore; }
+
+    // Setter
+    void SetAttackScore(int scoreA) { m_attackScore = scoreA; }
+    void SetTimeScore(int scoreTime) { m_timeScore = scoreTime; }
 };
-

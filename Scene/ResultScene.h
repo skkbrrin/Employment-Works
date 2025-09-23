@@ -45,7 +45,6 @@ private:
 	// カメラのポインタ
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
 
-	std::unique_ptr<ScoreManager> m_scoreManager;
 	std::unique_ptr<TextureSprite> m_textureSprite;
 	std::unique_ptr<TextureAlpha> m_textureAlpha;
 
@@ -56,6 +55,10 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV; // 数字
 
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_rankSRV; // ランク
+
+	int attack;
+	int time;
+	int total;
 
 };
 

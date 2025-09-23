@@ -25,6 +25,7 @@ void TitleScene::Initialize()
 	catch (const std::exception& e) {
 		OutputDebugStringA(e.what());
 	}
+
 }
 
 void TitleScene::Update(float elapsedTime)
@@ -57,6 +58,8 @@ void TitleScene::Finalize()
 	bgmInstance.reset();
 	bgm.reset();
 	audioEngine.reset();
+
+	ScoreManager::Instance().Reset();
 }
 
 void TitleScene::CreateDeviceDependentResources()
