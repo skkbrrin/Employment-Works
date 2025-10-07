@@ -88,8 +88,10 @@ private:
 
 	// スコア　タイマー
 	float timer;
+	float startcount;
 	Ito::TaskManager m_taskManager;
 	Number* m_timeNumber;
+	Number* m_countNumber;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV;
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
@@ -103,6 +105,11 @@ private:
 
 	int m_attackScore, m_timeScore;
 
+	// 音楽
+	std::unique_ptr<DirectX::AudioEngine> m_audioE;
+	std::unique_ptr<DirectX::SoundEffect> m_bgm;
+	std::unique_ptr<DirectX::SoundEffectInstance> m_bgmInstance;
+
 private:
 	float m_skyRotate = 0.0f;
 
@@ -110,5 +117,8 @@ public:
 	float GetSkyRotation() { return m_skyRotate; }
 	int GetCameraNumber() { return cameraNum; }
 	void SetCameraNumber(int modeNumber) { cameraNum = modeNumber; }
+
+
+
 };
 

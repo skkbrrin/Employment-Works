@@ -60,5 +60,9 @@ private:
 	int time;
 	int total;
 
+	// ‰¹Šy
+	std::unique_ptr<DirectX::AudioEngine> m_audioE;
+	std::unique_ptr<DirectX::SoundEffect> m_bgm;
+	std::unique_ptr<DirectX::SoundEffectInstance> m_bgmInstance;
 };
 

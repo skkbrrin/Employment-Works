@@ -43,6 +43,20 @@ void ResultScene::Initialize()
 
 	m_totalNumber->SetPosition({ 500.0f, 530.0f });
 	m_totalNumber->SetScale(3.0f);
+
+
+	// BGM
+	AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
+	m_audioE = std::make_unique<AudioEngine>(flags);
+
+	try {
+		m_bgm = std::make_unique<SoundEffect>(m_audioE.get(), L"Resources/Sounds/ƒŠƒUƒ‹ƒgBGM.wav");
+		m_bgmInstance = m_bgm->CreateInstance();
+		m_bgmInstance->Play(false);
+	}
+	catch (const std::exception& e) {
+		OutputDebugStringA(e.what());
+	}
 }
 
 

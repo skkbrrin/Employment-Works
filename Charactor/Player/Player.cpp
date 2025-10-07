@@ -2,6 +2,7 @@
 #include "Charactor/Player/Player.h"
 #include "Scene/PlayScene.h"
 
+
 using namespace DirectX;
 
 Player::Player()
@@ -24,6 +25,18 @@ void Player::Initialize( ID3D11Device* device )
 	m_fullHP = 100;
 	m_HP = m_fullHP;
 	m_attck = 10;
+
+    // ÉTÉEÉìÉh
+    AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
+    m_audioEngine = std::make_unique<AudioEngine>(flags);
+
+    try {
+        m_sound = std::make_unique<SoundEffect>(m_audioEngine.get(), L"Resources/Sounds/Momiziyado.wav");
+        m_soundInstance = m_sound->CreateInstance();
+    }
+    catch (const std::exception& e) {
+        OutputDebugStringA(e.what());
+    }
 }
 
 void Player::Update(float elapsedTime, Enemy* enemy)
@@ -32,11 +45,11 @@ void Player::Update(float elapsedTime, Enemy* enemy)
 	m_tracker.Update(kb);
 
     //í èÌà⁄ìÆ
-    if (kb.Left) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(0.5f));
-    if (kb.Right) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-0.5f));
+    if (kb.Left) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(2.0f));
+    if (kb.Right) m_rotate = m_rotate * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::UnitY, XMConvertToRadians(-2.0f));
 
     if (kb.Up) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
-    if (m_tracker.pressed.Down) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 2.5f), m_rotate);
+    if (m_tracker.pressed.Down) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 7.0f), m_rotate);
 }
 
 
@@ -90,6 +103,11 @@ void Player::NormalAttack(float elapsedTime, const std::vector<std::unique_ptr<E
     if (nearestDist < 3.0f)
     {
         nearestEnemy->Damage(m_attck);
+        // ÉTÉEÉìÉh
+    }
+    else
+    {
+        // ÉTÉEÉìÉh
     }
 }
 
@@ -103,8 +121,8 @@ void Player::ComboAttack(float elapsedTime, const std::vector<std::unique_ptr<En
         DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitZ, m_rotate);
     forward.Normalize();
 
-    float angleThreshold = cosf(XMConvertToRadians(180.0f)); //< éãñÏäp
-    float attackRange = 100.0f; //< çUåÇãóó£
+    float angleThreshold = cosf(XMConvertToRadians(75.0f)); //< éãñÏäp
+    float attackRange = 10.0f; //< çUåÇãóó£
 
     // çUåÇâ¬î\îÕàÕÇÃìGÇé˚èW
     for (auto& ene : enemies)
@@ -132,4 +150,7 @@ void Player::ComboAttack(float elapsedTime, const std::vector<std::unique_ptr<En
     }
 }
 
-
+void Player::CreateDevices()
+{
+   
+}
