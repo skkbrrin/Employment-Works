@@ -181,13 +181,9 @@
   <ItemGroup>
     <ClInclude Include="..\3DPG応用\3DPG_0\SpriteSheet.h" />
     <ClInclude Include="Charactor\Enemy\Enemy.h" />
-    <ClInclude Include="Charactor\Enemy\State\EnemyIdling.h" />
-    <ClInclude Include="Charactor\Enemy\State\TrackingPlayer.h" />
     <ClInclude Include="Charactor\Field.h" />
     <ClInclude Include="Charactor\HPManager.h" />
-    <ClInclude Include="Charactor\Object.h" />
     <ClInclude Include="Charactor\Player\Player.h" />
-    <ClInclude Include="Charactor\Player\State\PlayerIdling.h" />
     <ClInclude Include="Charactor\ScoreManager.h" />
     <ClInclude Include="Charactor\Task\Number.h" />
     <ClInclude Include="DebugDraw.h" />
@@ -219,24 +215,12 @@
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Scene\PlayScene.h" />
     <ClInclude Include="StepTimer.h" />
-    <ClInclude Include="TanakaLib\Geometry.h" />
-    <ClInclude Include="TanakaLib\Graphics.h" />
-    <ClInclude Include="TanakaLib\IMoving.h" />
-    <ClInclude Include="TanakaLib\IObject.h" />
-    <ClInclude Include="TanakaLib\IObserver.h" />
-    <ClInclude Include="TanakaLib\IState.h" />
-    <ClInclude Include="TanakaLib\Message.h" />
-    <ClInclude Include="TanakaLib\Messenger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Charactor\Enemy\Enemy.cpp" />
-    <ClCompile Include="Charactor\Enemy\State\EnemyIdling.cpp" />
-    <ClCompile Include="Charactor\Enemy\State\TrackingPlayer.cpp" />
     <ClCompile Include="Charactor\Field.cpp" />
     <ClCompile Include="Charactor\HPManager.cpp" />
-    <ClCompile Include="Charactor\Object.cpp" />
     <ClCompile Include="Charactor\Player\Player.cpp" />
-    <ClCompile Include="Charactor\Player\State\PlayerIdling.cpp" />
     <ClCompile Include="Charactor\ScoreManager.cpp" />
     <ClCompile Include="Charactor\Task\Number.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
@@ -271,8 +255,6 @@
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Scene\PlayScene.cpp" />
-    <ClCompile Include="TanakaLib\Graphics.cpp" />
-    <ClCompile Include="TanakaLib\Messenger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

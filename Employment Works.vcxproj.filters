@@ -29,17 +29,8 @@
     <Filter Include="Charactors\Player">
       <UniqueIdentifier>{2f8e583a-0300-4043-85b2-c301d1466d02}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Charactors\Player\State">
-      <UniqueIdentifier>{f3ffb9b3-a58c-4f21-8374-60d35290109b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Charactors\Enemy">
       <UniqueIdentifier>{528ce7ac-9d3b-4333-b8dd-7cc78c582f65}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Charactors\Enemy\State">
-      <UniqueIdentifier>{6587bbbe-63d3-4d31-b6ad-e579009289bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TanakaLib">
-      <UniqueIdentifier>{9ec88e79-bb97-4c73-a47d-320b67d0ba21}</UniqueIdentifier>
     </Filter>
     <Filter Include="Charactors\Task">
       <UniqueIdentifier>{fdc0b7f5-bf86-4d5a-982b-06f05f6c41b0}</UniqueIdentifier>
@@ -102,49 +93,13 @@
     <ClInclude Include="Charactor\Player\Player.h">
       <Filter>Charactors\Player</Filter>
     </ClInclude>
-    <ClInclude Include="Charactor\Player\State\PlayerIdling.h">
-      <Filter>Charactors\Player\State</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor\Enemy\Enemy.h">
       <Filter>Charactors\Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Enemy\State\EnemyIdling.h">
-      <Filter>Charactors\Enemy\State</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Enemy\State\TrackingPlayer.h">
-      <Filter>Charactors\Enemy\State</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\FloorPrimitive.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="TanakaLib\Geometry.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="TanakaLib\Graphics.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="TanakaLib\Message.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="TanakaLib\Messenger.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="TanakaLib\IObserver.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="TanakaLib\IState.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="TanakaLib\IMoving.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="TanakaLib\IObject.h">
-      <Filter>TanakaLib</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor\Field.h">
-      <Filter>Charactors</Filter>
-    </ClInclude>
-    <ClInclude Include="Charactor\Object.h">
       <Filter>Charactors</Filter>
     </ClInclude>
     <ClInclude Include="ItoLib\Camera.h">
@@ -234,31 +189,13 @@
     <ClCompile Include="Charactor\Player\Player.cpp">
       <Filter>Charactors\Player</Filter>
     </ClCompile>
-    <ClCompile Include="Charactor\Player\State\PlayerIdling.cpp">
-      <Filter>Charactors\Player\State</Filter>
-    </ClCompile>
     <ClCompile Include="Charactor\Enemy\Enemy.cpp">
       <Filter>Charactors\Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Enemy\State\EnemyIdling.cpp">
-      <Filter>Charactors\Enemy\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Enemy\State\TrackingPlayer.cpp">
-      <Filter>Charactors\Enemy\State</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\FloorPrimitive.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="TanakaLib\Graphics.cpp">
-      <Filter>TanakaLib</Filter>
-    </ClCompile>
-    <ClCompile Include="TanakaLib\Messenger.cpp">
-      <Filter>TanakaLib</Filter>
-    </ClCompile>
     <ClCompile Include="Charactor\Field.cpp">
-      <Filter>Charactors</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Object.cpp">
       <Filter>Charactors</Filter>
     </ClCompile>
     <ClCompile Include="ItoLib\Camera.cpp">
