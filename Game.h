@@ -81,6 +81,9 @@ private:
     // ユーザー定義のリソース
     std::unique_ptr<UserResources> m_userResources;
 
+    // キーコンフィグ
+    std::unique_ptr<KeyConfig> m_keyconfig;
+
     HWND m_window;
 public:
     // 画面モード

@@ -12,8 +12,6 @@
 #include <sstream>
 #include <functional>
 
-namespace Ito
-{
 	class TaskManager;
 	class Task;
 
@@ -226,6 +224,4 @@ namespace Ito
 		return task;
 	}
 #pragma endregion
-
-}
 

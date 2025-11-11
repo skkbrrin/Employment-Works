@@ -10,6 +10,7 @@
 #include "StepTimer.h"
 #include "DeviceResources.h"
 #include "ItoLib/DebugFont.h"
+#include "Charactor/KeyConfig.h"
 
 // 各シーンに渡す共通リソースを記述してください
 class UserResources
@@ -34,6 +35,9 @@ private:
 	// 共通ステート
 	DirectX::CommonStates* m_states;
 
+	// キーコンフィグ
+	KeyConfig* m_keyconfig;
+
 public:
 
 	// コンストラクタ
@@ -44,6 +48,7 @@ public:
 		, m_mouseTracker(nullptr)
 		, m_debugFont(nullptr)
 		, m_states(nullptr)
+		, m_keyconfig(nullptr)
 	{
 	}
 
@@ -107,5 +112,14 @@ public:
 	// デバッグフォントを取得する関数
 	Ito::DebugFont* GetDebugFont() { return m_debugFont; }
 
+	// ------------------------------------------ //
+	// キーコンフィグ
+	// ------------------------------------------ //
+
+	// キーコンフィグを設定する関数
+	void SetKeyConfig(KeyConfig* keyconfig) { m_keyconfig = keyconfig; }
+
+	// キーコンフィグを取得する関数
+	KeyConfig* GetKeyConfig() { return m_keyconfig; }
 };
 

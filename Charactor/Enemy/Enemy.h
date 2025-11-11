@@ -1,5 +1,6 @@
 #pragma once
 #include "ItoLib/GameCamera.h"
+#include "ItoLib/ModelCollision.h"]
 
 class Player;
 
@@ -15,13 +16,13 @@ class Enemy
 public:
 	Enemy();
 	~Enemy();
-	void Inisialize(ID3D11Device* device);
+	void Inisialize(ID3D11Device* device, ID3D11DeviceContext* context);
 	void Update(float elapsedTime, Player* player);
 	void Render( ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
 	void Finalize();
 
 public:
-	void Attack(Player* player);
+	void Attack(Player* player, float elapsedTime);
 	void Roll(float elapsedTime);
 	void Chase(float elapsedTime, Player* player);
 
@@ -34,7 +35,7 @@ private:
 	float m_speed;
 
 	State m_state = State::Chase; // ステート
-	float m_detectionRange = 3.0f; // 攻撃可能距離
+	float m_detectionRange = -1.0f; // 攻撃可能距離
 	float m_distance;
 
 	int m_HP;
@@ -42,6 +43,9 @@ private:
 	float attackCooldown;
 
 	bool m_isDie = false;
+
+	std::unique_ptr<Ito::ModelCollision> m_collition;
+	std::unique_ptr<Ito::DisplayCollision> m_displayCol;
 
 public:
 	bool Getrigth() { return rigth; }

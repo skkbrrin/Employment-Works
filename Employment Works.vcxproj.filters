@@ -35,6 +35,12 @@
     <Filter Include="Charactors\Task">
       <UniqueIdentifier>{fdc0b7f5-bf86-4d5a-982b-06f05f6c41b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Include">
+      <UniqueIdentifier>{3847d028-302f-41b5-839d-ae6457828715}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\nlohmann">
+      <UniqueIdentifier>{f92b6439-a180-4642-94dd-651dcf27161e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -139,6 +145,24 @@
     <ClInclude Include="GameObject\BinaryFile.h">
       <Filter>GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Charactor\KeyConfig.h">
+      <Filter>Charactors</Filter>
+    </ClInclude>
+    <ClInclude Include="Include\nlohmann\json.hpp">
+      <Filter>Include\nlohmann</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\OptionScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\Object.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\Collision.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
+    <ClInclude Include="ItoLib\ModelCollision.h">
+      <Filter>ItoLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -233,6 +257,15 @@
     </ClCompile>
     <ClCompile Include="GameObject\BinaryFile.cpp">
       <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\KeyConfig.cpp">
+      <Filter>Charactors</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\OptionScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ItoLib\ModelCollision.cpp">
+      <Filter>ItoLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

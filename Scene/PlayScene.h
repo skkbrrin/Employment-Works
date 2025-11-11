@@ -3,19 +3,6 @@
 #include "ItoLib/SceneManager.h"
 #include "ItoLib/DebugCamera.h"
 #include "ItoLib/UserResources.h"
-#include "ItoLib/GridFloor.h"
-#include "GameObject/FloorPrimitive.h"
-#include "ItoLib/GameCamera.h"
-
-#include "Charactor/Player/Player.h"
-#include "Charactor/Enemy/Enemy.h"
-#include "Charactor/ScoreManager.h"
-
-#include "Charactor/ScoreManager.h"
-#include "ItoLib/TaskManager.h"
-#include "Charactor/Task/Number.h"
-
-#include "Charactor/HPManager.h"
 
 class PlayScene : public Ito::Scene<UserResources>
 {
@@ -49,12 +36,6 @@ private:
 	// カメラのポインタ
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
 
-	// グリッド床
-	std::unique_ptr<Ito::GridFloor> m_gridFloor;
-
-	// 空
-	std::unique_ptr<DirectX::Model> m_skyModel;
-
 	// ビュー行列
 	DirectX::SimpleMath::Matrix m_view;
 
@@ -70,54 +51,10 @@ private:
 	// 入力レイアウトへのポインタ
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
-	std::unique_ptr<kHorikawa::FloorPrimitive> m_floorPrimitive;
-
-	std::unique_ptr<Player> m_player;
-	std::unique_ptr<Enemy> m_enemy;
-	std::vector<std::unique_ptr<Enemy>> m_enemies; // 複数
-
-	// カメラ
-	bool m_cameraDebug = false;
-	bool m_cameraGame = false;
-
-	bool act = false;
-	bool gameC = false;
-
-	GameCamera m_camera;
-	int cameraNum;
-
-	// スコア　タイマー
-	float timer;
-	float startcount;
-	Ito::TaskManager m_taskManager;
-	Number* m_timeNumber;
-	Number* m_countNumber;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV;
-	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
-
-	std::unique_ptr<HPManager> m_hpManager; // HPマネージャー
-
-	int m_windowWidth, m_windowHeigth; // 画面サイズ
-
-	bool m_prevIsAttacking = false; // 攻撃しているか
-
-	bool m_stoppingAttack = false;
-
-	int m_attackScore, m_timeScore;
-
 	// 音楽
 	std::unique_ptr<DirectX::AudioEngine> m_audioE;
 	std::unique_ptr<DirectX::SoundEffect> m_bgm;
 	std::unique_ptr<DirectX::SoundEffectInstance> m_bgmInstance;
-
-private:
-	float m_skyRotate = 0.0f;
-
-public:
-	float GetSkyRotation() { return m_skyRotate; }
-	int GetCameraNumber() { return cameraNum; }
-	void SetCameraNumber(int modeNumber) { cameraNum = modeNumber; }
-
 
 
 };

@@ -8,7 +8,7 @@
 //        モデル情報の衝突判定用のコリジョン情報の表示などに使用してください。
 //        ※コリジョンの個別の色指定は、描画の高速化のためラインのみ対応しています。
 //
-// Date: 2025.6.1
+// Date: 2025.6.15
 //
 //--------------------------------------------------------------------------------------
 #pragma once
@@ -21,11 +21,6 @@
 #include "DirectXHelpers.h"
 #include "PrimitiveBatch.h"
 #include "VertexTypes.h"
-
-// ラインの表示をしたい場合は定義してください。
-// DebugDraw.cppとDebugDraw.hが必要になります。
-// https://github.com/microsoft/DirectXTK/wiki/Utilities
-#define _COLLISION_LINE_ON 
 
 namespace Ito
 {
@@ -76,11 +71,49 @@ namespace Ito
 				: center(center), extents(extents), rotate(rotate), lineColor(lineColor) {}
 		};
 
+		// メッシュの情報
+		struct Mesh
+		{
+			const std::vector<DirectX::VertexPosition>& vertexes;	// 頂点バッファ
+			const std::vector<uint16_t>& indexes;			// インデックスバッファ
+			DirectX::SimpleMath::Vector3 position;			// 移動
+			DirectX::SimpleMath::Quaternion rotate;			// 回転
+			DirectX::SimpleMath::Color lineColor;			// 色（ライン用）
+
+			constexpr Mesh(
+				const std::vector<DirectX::VertexPosition>& vertexes,
+				const std::vector<uint16_t>& indexes,
+				const DirectX::SimpleMath::Vector3& position,
+				const DirectX::SimpleMath::Quaternion& rotate,
+				DirectX::SimpleMath::Color lineColor) noexcept
+				: vertexes(vertexes), indexes(indexes), position(position), rotate(rotate), lineColor(lineColor) {}
+		};
+
+		// 線分の情報
+		struct LineSegment
+		{
+			DirectX::SimpleMath::Vector3 a;			// 始点
+			DirectX::SimpleMath::Vector3 b;			// 終点
+			DirectX::SimpleMath::Color lineColor;	// 色（ライン用）
+
+			constexpr LineSegment(
+				const DirectX::SimpleMath::Vector3& a,
+				const DirectX::SimpleMath::Vector3& b,
+				DirectX::SimpleMath::Color lineColor) noexcept
+				: a(a), b(b), lineColor(lineColor) {}
+		};
+
 		// 球のコリジョン情報
 		std::vector<Sphere> m_spheres;
 
 		// ボックスのコリジョン情報
 		std::vector<Box> m_boxes;
+
+		// メッシュのコリジョン情報
+		std::vector<Mesh> m_meshes;
+
+		// 線分のコリジョン情報
+		std::vector<LineSegment> m_lineSegments;
 
 		// 球のモデル
 		std::unique_ptr<DirectX::GeometricPrimitive> m_modelSphere;
@@ -93,6 +126,15 @@ namespace Ito
 
 		// 入力レイアウト（モデル用）
 		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_modelInputLayout;
+
+		// エフェクト（メッシュ用）
+		std::unique_ptr<DirectX::BasicEffect> m_meshEffect;
+
+		// 入力レイアウト（メッシュ用）
+		Microsoft::WRL::ComPtr<ID3D11InputLayout> m_meshInputLayout;
+
+		// プリミティブバッチ（メッシュ用）
+		std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPosition>> m_meshBatch;
 
 		// インスタンス用頂点バッファ
 		Microsoft::WRL::ComPtr<ID3D11Buffer> m_instancedVB;
@@ -149,7 +191,7 @@ namespace Ito
 		);
 		
 		// 球のコリジョンを登録する関数
-		void AddBoundingSphere(
+		void AddBoundingVolume(
 			DirectX::BoundingSphere shpere,
 			DirectX::FXMVECTOR lineColor = DirectX::XMVECTORF32{ 0.0f, 0.0f, 0.0f, 0.0f })
 		{
@@ -158,7 +200,7 @@ namespace Ito
 		}
 
 		// ボックスのコリジョンを登録する関数
-		void AddBoundingBox(
+		void AddBoundingVolume(
 			DirectX::BoundingBox box,
 			DirectX::FXMVECTOR lineColor = DirectX::XMVECTORF32{ 0.0f, 0.0f, 0.0f, 0.0f })
 		{
@@ -166,11 +208,31 @@ namespace Ito
 		}
 
 		// 回転したボックスのコリジョンを登録する関数
-		void AddBoundingOrientedBox(
+		void AddBoundingVolume(
 			DirectX::BoundingOrientedBox box,
 			DirectX::FXMVECTOR lineColor = DirectX::XMVECTORF32{ 0.0f, 0.0f, 0.0f, 0.0f })
 		{
 			m_boxes.push_back(Box(box.Center, box.Extents, DirectX::SimpleMath::Quaternion(box.Orientation), lineColor));
+		}
+
+		// メッシュのコリジョンを登録する関数
+		void AddBoundingVolume(
+			const std::vector<DirectX::VertexPosition>& vertexes,
+			const std::vector<uint16_t>& indexes,
+			DirectX::SimpleMath::Vector3 position,
+			DirectX::SimpleMath::Quaternion rotate,
+			DirectX::FXMVECTOR lineColor = DirectX::XMVECTORF32{ 0.0f, 0.0f, 0.0f, 0.0f })
+		{
+			m_meshes.push_back(Mesh(vertexes, indexes, position, rotate, lineColor));
+		}
+
+		// 線分を登録する関数
+		void AddLineSegment(
+			DirectX::SimpleMath::Vector3 a,
+			DirectX::SimpleMath::Vector3 b,
+			DirectX::FXMVECTOR lineColor = DirectX::XMVECTORF32{ 0.0f, 0.0f, 0.0f, 0.0f })
+		{
+			m_lineSegments.push_back(LineSegment(a, b, lineColor));
 		}
 
 		// コリジョンモデルの表示（ON/OFF）
@@ -182,5 +244,3 @@ namespace Ito
 	};
 
 }
-
-

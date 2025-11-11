@@ -9,6 +9,11 @@
 #include "Scene/TitleScene.h"
 #include "Scene/PlayScene.h"
 #include "Scene/ResultScene.h"
+#include "Scene/OptionScene.h"
+
+#include "Charactor/KeyConfig.h"
+
+KeyConfig g_keyConfig; //< キーコンフィグの変数
 
 extern void ExitGame() noexcept;
 
@@ -28,6 +33,9 @@ Game::Game() noexcept(false)
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
+    // オプション設定ファイルのロード
+    g_keyConfig.Load("Resources\File\keycon.json");
+
     m_deviceResources->SetWindow(window, width, height);
 
     m_deviceResources->CreateDeviceResources();
@@ -45,6 +53,8 @@ void Game::Initialize(HWND window, int width, int height)
 
     // 始まりのシーンセット
     m_sceneManager->SetScene<TitleScene>();
+    
+
 }
 
 #pragma region Frame Update
@@ -133,6 +143,9 @@ void Game::Clear()
     context->RSSetViewports(1, &viewport);
 
     m_deviceResources->PIXEndEvent();
+
+    // 終了時に現在のキー設定を保存
+    g_keyConfig.Save("Resources/File/keycon.json");
 }
 #pragma endregion
 
@@ -209,12 +222,15 @@ void Game::CreateDeviceDependentResources()
     m_debugFont = std::make_unique<Ito::DebugFont>
         (device, context, L"Resources/Font/SegoeUI_18.spritefont");
 
+    m_keyconfig = std::make_unique<KeyConfig>();
+
     m_userResources->SetCommonStates(m_states.get());
     m_userResources->SetDebugFont(m_debugFont.get());
     m_userResources->SetDeviceResources(m_deviceResources.get());
     m_userResources->SetKeyboardStateTracker(&m_kbTracker);
     m_userResources->SetMouseStateTracker(&m_msTracker);
     m_userResources->SetStepTimerStates(&m_timer);
+    m_userResources->SetKeyConfig(m_keyconfig.get());
 
     m_sceneManager->CreateDeviceDependentResources();
 

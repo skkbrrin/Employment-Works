@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Charactor/Player/Player.h"
 #include "Scene/PlayScene.h"
-
+#include "Ene"
 
 using namespace DirectX;
 
@@ -13,11 +13,16 @@ Player::~Player()
 {
 }
 
-void Player::Initialize( ID3D11Device* device )
+void Player::Initialize( ID3D11Device* device , ID3D11DeviceContext* context)
 {
 	std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
 	fx->SetDirectory(L"Resources/Models");
-	m_player = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Dog.sdkmesh", *fx);
+	m_player = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Player.sdkmesh", *fx);
+
+    m_collition = Ito::ModelCollisionFactory::CreateCollision
+    (Ito::ModelCollision::CollisionType::OBB, m_player.get());
+
+    m_displayCol = std::make_unique<Ito::DisplayCollision>(device, context);
 
 	m_rotate = SimpleMath::Quaternion::Identity;
 	m_position = SimpleMath::Vector3(0.0f, -0.5f, 0.0f);
@@ -50,16 +55,21 @@ void Player::Update(float elapsedTime, Enemy* enemy)
 
     if (kb.Up) m_position += SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 0.1f), m_rotate);
     if (m_tracker.pressed.Down) m_position -= SimpleMath::Vector3::Transform(SimpleMath::Vector3(0.0f, 0.0f, 7.0f), m_rotate);
+
+    m_collition->UpdateBoundingInfo(m_position, m_rotate);
+    m_collition->AddDisplayCollision(m_displayCol.get());
 }
 
 
 void Player::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
 	SimpleMath::Matrix p_world;
-	p_world = SimpleMath::Matrix::CreateRotationY(XMConvertToRadians(180.0f)) * SimpleMath::Matrix::CreateFromQuaternion(m_rotate) * SimpleMath::Matrix::CreateTranslation(m_position);
+    p_world = SimpleMath::Matrix::CreateFromQuaternion(m_rotate)
+        * SimpleMath::Matrix::CreateTranslation(m_position);
 
 	m_player->Draw(context, *states, p_world, view, proj);
 
+    m_displayCol->DrawCollision(context, states, view, proj);
 }
 
 void Player::Finalize()

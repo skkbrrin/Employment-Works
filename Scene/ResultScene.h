@@ -1,15 +1,11 @@
 #pragma once
 
-#include "../ItoLib/SceneManager.h"
-#include "../ItoLib/DebugCamera.h"
-#include "../ItoLib/UserResources.h"
+#include "Managers/SceneManager.h"
+#include "Managers/DebugCamera.h"
+#include "Managers/UserResources.h"
 
-#include "Charactor/ScoreManager.h"
-#include "ItoLib/TaskManager.h"
-#include "Charactor/Task/Number.h"
-
-#include "GameObject/TextureSprite.h"
-#include "GameObject/TextureAlpha.h"
+#include "Managers/MyUI/TextureSprite.h"
+#include "Managers/MyUI/TextureAlpha.h"
 
 class ResultScene : public Ito::Scene<UserResources>
 {
@@ -47,18 +43,6 @@ private:
 
 	std::unique_ptr<TextureSprite> m_textureSprite;
 	std::unique_ptr<TextureAlpha> m_textureAlpha;
-
-	Ito::TaskManager m_taskManager;
-	Number* m_attackNumber;
-	Number* m_timeNumber;
-	Number* m_totalNumber;
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV; // êîéö
-
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_rankSRV; // ÉâÉìÉN
-
-	int attack;
-	int time;
-	int total;
 
 	// âπäy
 	std::unique_ptr<DirectX::AudioEngine> m_audioE;

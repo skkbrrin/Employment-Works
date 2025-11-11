@@ -2,6 +2,7 @@
 #include "TitleScene.h"
 #include "Scene/LoadingScreen.h"
 #include "Scene/PlayScene.h"
+#include "Scene/OptionScene.h"
 
 #include <CommonStates.h>
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "ItoLib/GameCamera.h"
 #include "Audio.h"
+#include "ItoLib/ModelCollision.h"
 
 class Enemy;
 
@@ -10,7 +11,7 @@ public:
 	// ’ÊíŠÖ”
 	Player();
 	~Player();
-	void Initialize(ID3D11Device* device);
+	void Initialize(ID3D11Device* device, ID3D11DeviceContext* context);
 	void Update(float elapsedTime, Enemy* enemy);
 	void Render(
 		ID3D11DeviceContext* context, DirectX::CommonStates* states,
@@ -46,6 +47,11 @@ private:
 	std::unique_ptr<DirectX::AudioEngine> m_audioEngine;
 	std::unique_ptr<DirectX::SoundEffect> m_sound;
 	std::unique_ptr<DirectX::SoundEffectInstance> m_soundInstance;
+
+	// “–‚½‚è”»’è
+	std::unique_ptr<Ito::ModelCollision> m_collition;
+	std::unique_ptr<Ito::DisplayCollision> m_displayCol;
+
 
 // æ“¾@İ’è
 public:

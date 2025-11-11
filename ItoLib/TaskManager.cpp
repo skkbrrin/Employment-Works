@@ -8,8 +8,6 @@
 #include "pch.h"
 #include "TaskManager.h"
 
-using namespace Ito;
-
 // 子供タスクリストから指定タスクを削除する関数
 bool TaskConnectInfo::DeleteChildList(Task* task)
 {
