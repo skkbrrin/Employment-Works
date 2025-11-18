@@ -15,6 +15,7 @@
 #include "thread"
 #include "mutex"
 #endif
+#include <functional>
 
 namespace Ito
 {

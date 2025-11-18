@@ -180,16 +180,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\3DPG応用\3DPG_0\SpriteSheet.h" />
-    <ClInclude Include="Charactor\Enemy\Enemy.h" />
-    <ClInclude Include="Charactor\Enemy\State\EnemyIdling.h" />
-    <ClInclude Include="Charactor\Enemy\State\TrackingPlayer.h" />
+    <ClInclude Include="Charactor\CharactorBase.h" />
     <ClInclude Include="Charactor\Field.h" />
     <ClInclude Include="Charactor\HPManager.h" />
     <ClInclude Include="Charactor\Object.h" />
     <ClInclude Include="Charactor\Player\Player.h" />
-    <ClInclude Include="Charactor\Player\State\PlayerIdling.h" />
+    <ClInclude Include="Charactor\Player\PlayerAttackState.h" />
+    <ClInclude Include="Charactor\Player\PlayerIdleState.h" />
+    <ClInclude Include="Charactor\Player\PlayerState.h" />
+    <ClInclude Include="Charactor\Player\PlayerWalkState.h" />
     <ClInclude Include="Charactor\ScoreManager.h" />
     <ClInclude Include="Charactor\Task\Number.h" />
+    <ClInclude Include="Charactor\TransformNode.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
@@ -229,14 +231,13 @@
     <ClInclude Include="TanakaLib\Messenger.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Charactor\Enemy\Enemy.cpp" />
-    <ClCompile Include="Charactor\Enemy\State\EnemyIdling.cpp" />
-    <ClCompile Include="Charactor\Enemy\State\TrackingPlayer.cpp" />
     <ClCompile Include="Charactor\Field.cpp" />
     <ClCompile Include="Charactor\HPManager.cpp" />
     <ClCompile Include="Charactor\Object.cpp" />
     <ClCompile Include="Charactor\Player\Player.cpp" />
-    <ClCompile Include="Charactor\Player\State\PlayerIdling.cpp" />
+    <ClCompile Include="Charactor\Player\PlayerAttackState.cpp" />
+    <ClCompile Include="Charactor\Player\PlayerIdleState.cpp" />
+    <ClCompile Include="Charactor\Player\PlayerWalkState.cpp" />
     <ClCompile Include="Charactor\ScoreManager.cpp" />
     <ClCompile Include="Charactor\Task\Number.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
