@@ -26,11 +26,7 @@ public:
     void RotateY(float deg);
 
     // 攻撃ヒットボックス
-    std::vector<DirectX::BoundingOrientedBox>
-        GetLocalHitBoxes() const override;
-
-    std::vector<DirectX::BoundingOrientedBox>
-        GetWorldHitBoxes() const override;
+    std::vector<HitBoxPart> GetHitBoxes() const override;
 
 private:
     std::unique_ptr<PlayerState> m_state;

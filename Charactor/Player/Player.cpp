@@ -48,7 +48,7 @@ void Player::Initialize(ID3D11Device* device)
 	
 	auto legFR = std::make_unique<TransformNode>(L"LegFrontR");
 	legFR->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/LegFR.sdkmesh", *fx)); 
-	legFR->m_position = { 0.04f, -0.0f, 0.0f };
+	legFR->m_position = { 0.0f, -0.0f, 0.0f };
 	m_parts["LegFrontR"] = legFR.get(); 
 	
 	// 後足 
@@ -97,8 +97,8 @@ void Player::Update(float dt)
 // 描画
 void Player::RenderP(ID3D11DeviceContext* context, DirectX::CommonStates* states, Matrix view, Matrix proj)
 {
-	if (m_root)
-		m_root->Render(context, states, view, proj);
+	/*if (m_root)
+		m_root->Render(context, states, view, proj);*/
 }
 	
 // 状態変更
@@ -126,34 +126,53 @@ void Player::RotateY(float deg)
 			XMConvertToRadians(deg));
 }
 
-// ローカルの当たり判定
-std::vector<BoundingOrientedBox> Player::GetLocalHitBoxes() const
+// 当たり判定
+std::vector<HitBoxPart> Player::GetHitBoxes() const
 {
-	std::vector<BoundingOrientedBox> boxes;
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 
-	BoundingOrientedBox axe;
-	axe.Center = { 0,0,0.4f };
-	axe.Extents = { 0.15f, 0.3f, 0.6f };
-	axe.Orientation = Quaternion::Identity;
+	std::vector<HitBoxPart> result;
 
-	boxes.push_back(axe);
-	return boxes;
-}
+	// パーツ用配列(名前、中心、範囲、武器かどうか、敵に当たったらダメージを受けるか)
+	struct PartDef { const char* name; Vector3 center; Vector3 extents; bool isWeapon; bool isDamageable; };
 
-// ワールド座標の当たり判定
-std::vector<BoundingOrientedBox> Player::GetWorldHitBoxes() const
-{
-	auto locals = GetLocalHitBoxes();
-	std::vector<BoundingOrientedBox> result;
+	// パーツの登録
+	PartDef parts[] = {
+		{"Body",      {0.0f,1.5f,0.0f},  {0.5f, 0.5f,1.1f}, false, true},
+		{"Head",      {0.0f,2.65f,1.4f},  {0.7f,0.7f,0.5f}, false, true},
+		{"LegFrontL", {-0.35f,0.5f,0.9f},   {0.2f,0.45f,0.2f}, false, true},
+		{"LegFrontR", {0.35f,0.5f,0.9f},    {0.2f,0.45f,0.2f}, false, true},
+		{"LegBackL",  {-0.35f,0.5f,-0.9f},  {0.2f,0.45f,0.2f}, false, true},
+		{"LegBackR",  {0.35f,0.5f,-0.9f},  {0.2f,0.45f,0.2f}, false, true},
+		{"Axe",       {1.35f,2.1f,2.8f},     {0.8f,0.05f,0.8f}, true, false}
+	};
 
-	TransformNode* axe = GetPart("Axe");
-	if (!axe) return result;
-
-	for (auto& b : locals)
+	// パーツ分当たり判定ボックスを作る
+	for (auto& def : parts)
 	{
-		BoundingOrientedBox wb;
-		b.Transform(wb, axe->GetWorldMatrix());
-		result.push_back(wb);
+		HitBoxPart hb;
+		hb.name = def.name;
+		hb.isWeapon = def.isWeapon;
+		hb.isDamageable = def.isDamageable;
+
+		auto it = m_parts.find(def.name);
+		if (it != m_parts.end())
+		{
+			TransformNode* part = it->second;
+
+			// OBBにする
+			hb.obb.Center = def.center;
+			hb.obb.Extents = def.extents;
+			hb.obb.Orientation = Quaternion::Identity;
+
+			// ワールド行列を反映
+			hb.obb.Transform(hb.obb, part->GetWorldMatrix());
+		}
+
+		result.push_back(hb);
 	}
+
 	return result;
 }
+

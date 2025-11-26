@@ -30,22 +30,19 @@ private:
 
 	void CheckCollision();
 
-	void DrawHitBox(
-		ID3D11DeviceContext* context,
-		DirectX::CommonStates* states,
-		const DirectX::BoundingOrientedBox& box,
-		DirectX::SimpleMath::Matrix view,
-		DirectX::SimpleMath::Matrix proj)
+	void DrawHitBox(ID3D11DeviceContext* context, DirectX::CommonStates* states,
+		const DirectX::BoundingOrientedBox& obb,
+		const DirectX::SimpleMath::Matrix& view,
+		const DirectX::SimpleMath::Matrix& proj,
+		DirectX::XMVECTOR color)
 	{
 		using namespace DirectX::SimpleMath;
 
 		Matrix world =
-			Matrix::CreateScale(box.Extents * 2.0f) *
-			Matrix::CreateFromQuaternion(box.Orientation) *
-			Matrix::CreateTranslation(box.Center);
+			Matrix::CreateScale(obb.Extents * 2.0f) *
+			Matrix::CreateFromQuaternion(obb.Orientation) *
+			Matrix::CreateTranslation(obb.Center);
 
-		m_debugOBB->Draw(world, view, proj,
-			DirectX::Colors::Red, nullptr,
-			false); // false = ワイヤーフレーム
+		m_debugOBB->Draw(world, view, proj, color, nullptr, false);
 	}
 };

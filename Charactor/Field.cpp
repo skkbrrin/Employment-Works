@@ -47,39 +47,63 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
         e->RenderE(context, states, view, proj);
 
 #if defined(_DEBUG)
-    auto pHit = m_player.GetWorldHitBoxes();
-    for (auto& b : pHit)
-        DrawHitBox(context, states, b, view, proj);
+    auto playerBoxes = m_player.GetHitBoxes();
 
     for (auto& e : m_enemies)
     {
-        auto eHit = e->GetWorldHitBoxes();
-        for (auto& b : eHit)
-            DrawHitBox(context, states, b, view, proj);
+        auto enemyBoxes = e->GetHitBoxes();
+
+        for (auto& pBox : playerBoxes)
+        {
+            for (auto& eBox : enemyBoxes)
+            {
+                bool hit = pBox.obb.Intersects(eBox.obb);
+
+                if (hit)
+                {
+                    if (pBox.isWeapon && eBox.isDamageable)
+                        e->TakeDamage(10); 
+                    else if (eBox.isWeapon && pBox.isDamageable)
+                        m_player.TakeDamage(5);
+                }
+
+                auto color = hit ? DirectX::Colors::Red : (pBox.isWeapon ? DirectX::Colors::Blue : DirectX::Colors::Green);
+                DrawHitBox(context, states, pBox.obb, view, proj, color);
+
+                color = hit ? DirectX::Colors::Red : (eBox.isWeapon ? DirectX::Colors::Blue : DirectX::Colors::Green);
+                DrawHitBox(context, states, eBox.obb, view, proj, color);
+            }
+        }
     }
+
 #endif
 }
 
 void Field::CheckCollision()
 {
-    auto playerHit = m_player.GetWorldHitBoxes();
+    // プレイヤーのヒットボックス取得
+    auto playerBoxes = m_player.GetHitBoxes();
 
     for (auto& enemy : m_enemies)
     {
-        auto enemyHit = enemy->GetWorldHitBoxes();
+        auto enemyBoxes = enemy->GetHitBoxes();
 
-        for (auto& pb : playerHit)
+        // プレイヤーの各パーツと敵の各パーツをチェック
+        for (auto& pBox : playerBoxes)
         {
-            for (auto& eb : enemyHit)
+            for (auto& eBox : enemyBoxes)
             {
-                if (pb.Intersects(eb))
+                if (pBox.obb.Intersects(eBox.obb))
                 {
-                    enemy->TakeDamage(10);
-                    goto HIT_END;
+                    // 斧が敵に当たった
+                    if (pBox.isWeapon && eBox.isDamageable)
+                        enemy->TakeDamage(10);
+
+                    // 敵の手がプレイヤーに当たった
+                    if (pBox.isDamageable && eBox.isWeapon)
+                        m_player.TakeDamage(10);
                 }
             }
         }
     }
-
-HIT_END:;
 }

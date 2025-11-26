@@ -48,11 +48,7 @@ public:
         }
     }
 
-    std::vector<DirectX::BoundingOrientedBox>
-        GetLocalHitBoxes() const override;
-
-    std::vector<DirectX::BoundingOrientedBox>
-        GetWorldHitBoxes() const override;
+    std::vector<HitBoxPart> GetHitBoxes() const override;
 
 private:
     std::unique_ptr<EnemyState> m_state;

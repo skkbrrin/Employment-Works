@@ -100,39 +100,48 @@ void Enemy::RotateY(float deg)
 		Quaternion::CreateFromAxisAngle(Vector3::UnitY, XMConvertToRadians(deg));
 }
 
-// ローカルの当たり判定
-std::vector<BoundingOrientedBox> Enemy::GetLocalHitBoxes() const
+std::vector<HitBoxPart> Enemy::GetHitBoxes() const
 {
-	std::vector<BoundingOrientedBox> boxes;
+	using namespace DirectX;
+	using namespace DirectX::SimpleMath;
 
-	BoundingOrientedBox body;
-	body.Center = { 0, 0.9f, 0 };
-	body.Extents = { 0.3f, 0.9f, 0.3f };
-	body.Orientation = Quaternion::Identity;
+	std::vector<HitBoxPart> result;
 
-	boxes.push_back(body);
-	return boxes;
-}
+	// パーツ用配列(名前、中心、範囲、武器かどうか、プレイヤーに当たったらダメージを受けるか)
+	struct PartDef { const char* name; Vector3 center; DirectX::SimpleMath::Quaternion rotation; Vector3 extents; bool isWeapon; bool isDamageable; };
 
-// ワールド座標の当たり判定
-std::vector<BoundingOrientedBox> Enemy::GetWorldHitBoxes() const
-{
-	std::vector<BoundingOrientedBox> result;
-	auto locals = GetLocalHitBoxes();
+	// パーツの登録
+	PartDef parts[] = {
+		{"Body", {0,4.0f,0},  DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f),  {0.7f,4.0f,0.7f}, false, true},
+		{"LegL", {-2.1f,4.1f,0}, DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, XMConvertToRadians(65.0f)) ,  {0.25f,1.7f,0.3f}, true, true},
+		{"LegR", {1.5f,4.15f,0}, DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, XMConvertToRadians(-62.0f)) ,  {0.25f,2.1f,0.25f}, true, true},
+	};
 
-	auto it = m_parts.find("Body");
-	if (it == m_parts.end())
-		return result;
-
-	TransformNode* body = it->second;
-	auto world = body->GetWorldMatrix();
-
-	for (auto& b : locals)
+	// パーツ分当たり判定ボックスを作る
+	for (auto& def : parts)
 	{
-		BoundingOrientedBox wb;
-		b.Transform(wb, world);
-		result.push_back(wb);
+		HitBoxPart hb;
+		hb.name = def.name;
+		hb.isWeapon = def.isWeapon;
+		hb.isDamageable = def.isDamageable;
+
+		auto it = m_parts.find(def.name);
+		if (it != m_parts.end())
+		{
+			TransformNode* part = it->second;
+
+			// OBBにする
+			hb.obb.Center = def.center;
+			hb.obb.Extents = def.extents;
+			hb.obb.Orientation = def.rotation;
+
+			// ワールド行列を反映
+			hb.obb.Transform(hb.obb, part->GetWorldMatrix());
+		}
+
+		result.push_back(hb);
 	}
 
 	return result;
 }
+
