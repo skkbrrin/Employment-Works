@@ -181,8 +181,14 @@
   <ItemGroup>
     <ClInclude Include="..\3DPG応用\3DPG_0\SpriteSheet.h" />
     <ClInclude Include="Charactor\CharactorBase.h" />
+    <ClInclude Include="Charactor\Enemy\Enemy.h" />
+    <ClInclude Include="Charactor\Enemy\EnemyAttackState.h" />
+    <ClInclude Include="Charactor\Enemy\EnemyIdleState.h" />
+    <ClInclude Include="Charactor\Enemy\EnemyState.h" />
+    <ClInclude Include="Charactor\Enemy\EnemyWalkState.h" />
     <ClInclude Include="Charactor\Field.h" />
     <ClInclude Include="Charactor\HPManager.h" />
+    <ClInclude Include="Charactor\IHitBoxProvider.h" />
     <ClInclude Include="Charactor\Object.h" />
     <ClInclude Include="Charactor\Player\Player.h" />
     <ClInclude Include="Charactor\Player\PlayerAttackState.h" />
@@ -231,6 +237,10 @@
     <ClInclude Include="TanakaLib\Messenger.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Charactor\Enemy\Enemy.cpp" />
+    <ClCompile Include="Charactor\Enemy\EnemyAttackState.cpp" />
+    <ClCompile Include="Charactor\Enemy\EnemyIdleState.cpp" />
+    <ClCompile Include="Charactor\Enemy\EnemyWalkState.cpp" />
     <ClCompile Include="Charactor\Field.cpp" />
     <ClCompile Include="Charactor\HPManager.cpp" />
     <ClCompile Include="Charactor\Object.cpp" />

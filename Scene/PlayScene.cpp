@@ -14,7 +14,7 @@ void PlayScene::Initialize()
 	auto windowSize = GetUserResources()->GetDeviceResources()->GetWindow();
 
 	// カメラ
-	m_camera.SetPlayer(&m_player->m_position, &m_player->m_rotation);
+	//m_camera.SetPlayer(&m_player->m_position, &m_player->m_rotation);
 
 	// BGM
 	AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
@@ -50,10 +50,10 @@ void PlayScene::Update(float elapsedTime)
 	// カメラ更新
 	//デバッグカメラ
 	m_debugCamera->Update();
-	m_camera.Update(elapsedTime);
+	//m_camera.Update(elapsedTime);
 
-	//プレイヤー
-	m_player->Update(elapsedTime);
+	// フィールド
+	m_field->Update(elapsedTime);
 
 	//タイマー
 
@@ -87,9 +87,8 @@ void PlayScene::Render()
 	world_S = SimpleMath::Matrix::CreateScale(9000);
 	m_skyModel->Draw(context, *states,world_S, m_view, m_proj);
 
-	// プレイヤー
-	m_player->RenderP(context, states, m_view, m_proj);
-
+	// フィールド
+	m_field->Render(context, states, m_view, m_proj);
 }
 
 void PlayScene::Finalize()
@@ -98,7 +97,7 @@ void PlayScene::Finalize()
 
 void PlayScene::CreateDeviceDependentResources()
 {
-	std::this_thread::sleep_for(std::chrono::seconds{ 2 });
+	//std::this_thread::sleep_for(std::chrono::seconds{ 2 });
 
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
@@ -122,9 +121,9 @@ void PlayScene::CreateDeviceDependentResources()
 	// 天球
 	m_skyModel = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Sky.sdkmesh", *fx);
 
-	// プレイヤー
-	m_player = std::make_unique<Player>();
-	m_player->Initialize(device);
+	// フィールド
+	m_field = std::make_unique<Field>();
+	m_field->Initialize(device, context);
 }
 
 void PlayScene::CreateWindowSizeDependentResources()

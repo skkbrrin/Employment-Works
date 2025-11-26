@@ -20,18 +20,14 @@ void PlayerAttackState::Update(Player* player, float elapsedTime)
 
     // 攻撃アニメーション
     head->m_rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY, swing * 0.8f);
-    //axe->m_rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitZ, swing * 0.5f);
 
-
-
-    // -------------- ここから ↓ 攻撃判定 ------------------
-    //if (m_timer > 0.15f && m_timer < 0.35f) // 振り抜き中だけ攻撃判定ON
+    // --------------  攻撃判定 ---------------------------
+    //if (m_timer > 0.15f && m_timer < 0.55f)
     //{
-    //    // 武器のワールド座標取得
     //    Matrix weaponWorld = weapon->GetWorldMatrix();
     //    Vector3 hitPos = weaponWorld.Translation();
 
-    //    // Sphere コライダー（半径は調整）
+    //    // Sphere コライダー
     //    float weaponRadius = 0.3f;
 
     //    Sphere weaponHit(hitPos, weaponRadius);
@@ -42,7 +38,7 @@ void PlayerAttackState::Update(Player* player, float elapsedTime)
     //        if (weaponHit.Intersects(enemy->GetCollider()))
     //        {
     //            enemy->TakeDamage(10);
-    //            enemy->OnHitEffect(); // ノックバックなどしたければ
+    //            enemy->OnHitEffect();
     //        }
     //    }
     //}

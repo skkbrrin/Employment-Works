@@ -190,6 +190,24 @@
     <ClInclude Include="Charactor\CharactorBase.h">
       <Filter>Charactors</Filter>
     </ClInclude>
+    <ClInclude Include="Charactor\Enemy\Enemy.h">
+      <Filter>Charactors\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\EnemyState.h">
+      <Filter>Charactors\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\EnemyAttackState.h">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\EnemyIdleState.h">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\EnemyWalkState.h">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\IHitBoxProvider.h">
+      <Filter>Charactors</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -299,6 +317,18 @@
     </ClCompile>
     <ClCompile Include="Charactor\Player\PlayerWalkState.cpp">
       <Filter>Charactors\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\Enemy.cpp">
+      <Filter>Charactors\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\EnemyAttackState.cpp">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\EnemyIdleState.cpp">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\EnemyWalkState.cpp">
+      <Filter>Charactors\Enemy\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

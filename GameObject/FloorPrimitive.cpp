@@ -13,14 +13,11 @@
 
 using namespace DirectX;
 
-//	今回は、3D空間の頂点座標と、各頂点に設定するUV座標だけを指定する
-//	TODO:01)頂点は4つのみとし、画像を10回ループさせるにはUV座標としてどんな値を設定すれば良いか？
-//			※初期状態は1枚がベタ張りされる設定
 const VertexPositionTexture kHorikawa::FloorPrimitive::VERTICES[4] =
 {
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f, -100.0f), DirectX::SimpleMath::Vector2( 1.0f,  0.0f)),  // 0:左上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 1.0f,  1.0f)),  // 1:右上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3(-100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 0.0f,  1.0f)),  // 3:右下
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f, -100.0f), DirectX::SimpleMath::Vector2( 100.0f,  0.0f)),  // 0:左上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 100.0f, 100.0f)),  // 1:右上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3(-100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 0.0f,  100.0f)),  // 3:右下
 	VertexPositionTexture(DirectX::SimpleMath::Vector3(-100.0f, 0.0f, -100.0f), DirectX::SimpleMath::Vector2( 0.0f,  0.0f)),  // 2:左下
 };
 
@@ -48,21 +45,15 @@ kHorikawa::FloorPrimitive::FloorPrimitive(ID3D11Device1* device)
 	m_States = std::make_unique<CommonStates>(device);
 
 	//	テクスチャのロード
-	//	TODO:02)「Resources/Textures/floor.png」ファイルを読み込む、CreateWICTextureFromFile関数の
-	//			呼び出しを記述する。
-	//			ヒント：m_Texture変数はID3D11ShaderResourceView*型を持つunique_ptrなので、
-	//					第三引数がnullptr、第四引数がnullptr以外、となる
 	DirectX::CreateWICTextureFromFile(
-		device, //< ID3D11Device*の変数　引数で受け取り
-		L"Resources/Textures/Floor.png", //< 画像のファイル名
+		device,
+		L"Resources/Textures/Floor.png",
 		nullptr,
-		m_Texture.GetAddressOf()//< テクスチャのアドレス
+		m_Texture.GetAddressOf()
 		);
 
-	//	TODO:03)テクスチャデータをBatchEffectに設定する
 	m_BatchEffect->SetTexture(m_Texture.Get());
 
-	//	初期化（原点）
 	m_position = DirectX::SimpleMath::Vector3::Zero;
 }
 
@@ -85,8 +76,6 @@ void kHorikawa::FloorPrimitive::Render(ID3D11DeviceContext1* context,SimpleMath:
 
 	//	頂点情報（板ポリゴンの頂点） 
 	VertexPositionTexture vertex[4];
-	//	TODO:04)vertex変数を、DrawQuad関数に渡して描画したい。
-	//			VERTICESの内容をコピーする処理を記述しよう
 	for(int i = 0; i < 4; i++)
 	{
 		vertex[i] = VERTICES[i];
@@ -94,8 +83,7 @@ void kHorikawa::FloorPrimitive::Render(ID3D11DeviceContext1* context,SimpleMath:
 
 
 	//	テクスチャサンプラーの設定
-	//	TODO:05)サンプラーの設定を、PointWrapにしよう
-	ID3D11SamplerState* samplers[1] = { m_States->PointWrap() };
+	ID3D11SamplerState* samplers[1] = { m_States->LinearWrap()};
 	context->PSSetSamplers(0, 1, samplers);
 
 	//	深度バッファに書き込み参照する 
@@ -115,8 +103,6 @@ void kHorikawa::FloorPrimitive::Render(ID3D11DeviceContext1* context,SimpleMath:
 
 	//	半透明部分が含まれることを想定した描画 
 	m_Batch->Begin();
-	//	TODO:06)DrawQuad関数を使って頂点の描画が出来るように、引数の記述をしよう
-	//			ヒント：頂点データはvertexの内容を使用する
 	m_Batch->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
 	m_Batch->End();
 }

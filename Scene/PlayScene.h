@@ -7,7 +7,7 @@
 #include "GameObject/FloorPrimitive.h"
 #include "ItoLib/GameCamera.h"
 
-#include "Charactor/Player/Player.h"
+#include "Charactor/Field.h"
 #include "Charactor/ScoreManager.h"
 
 #include "ItoLib/TaskManager.h"
@@ -75,6 +75,9 @@ private:
 	// プレイヤー
 	std::unique_ptr<Player> m_player;
 
+	// エネミー
+	std::unique_ptr<Enemy> m_enemy;
+
 	// カメラ
 	GameCamera m_camera;
 
@@ -82,5 +85,8 @@ private:
 	std::unique_ptr<DirectX::AudioEngine> m_audioE;
 	std::unique_ptr<DirectX::SoundEffect> m_bgm;
 	std::unique_ptr<DirectX::SoundEffectInstance> m_bgmInstance;
+
+	// フィールド
+	std::unique_ptr<Field> m_field;
 };
 

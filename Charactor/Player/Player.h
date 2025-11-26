@@ -5,31 +5,36 @@
 #include <SimpleMath.h>
 #include "Charactor/CharactorBase.h"
 #include "PlayerState.h"
+#include "Charactor/IHitBoxProvider.h"
+#include <Charactor/TransformNode.h>
 
-class Player : public CharacterBase
+class Player : public CharacterBase, public IHitBoxProvider
 {
 public:
     Player();
     ~Player();
-
-    void Initialize(ID3D11Device* device);
-    void Update(float dt) override;
-    void RenderP(ID3D11DeviceContext* context,
-        DirectX::CommonStates* states,
-        DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj);
-
     void ChangeState(std::unique_ptr<PlayerState> newState);
+    
+    void Initialize(ID3D11Device* device);
+    void Update(float dt);
+    void RenderP(ID3D11DeviceContext* ctx,
+        DirectX::CommonStates* states,
+        DirectX::SimpleMath::Matrix view,
+        DirectX::SimpleMath::Matrix proj);
 
     void MoveForward(float dist);
     void RotateY(float deg);
 
-    bool IsAttacking() const { return m_isAttacking; }
-    DirectX::BoundingBox GetWeaponBox() const;
+    // 攻撃ヒットボックス
+    std::vector<DirectX::BoundingOrientedBox>
+        GetLocalHitBoxes() const override;
+
+    std::vector<DirectX::BoundingOrientedBox>
+        GetWorldHitBoxes() const override;
 
 private:
     std::unique_ptr<PlayerState> m_state;
     std::unique_ptr<TransformNode> m_root;
 
-    bool m_isAttacking = false;   // 攻撃中フラグ
 };
 

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PlayerWalkState.h"
 #include "PlayerIdleState.h"
+#include "PlayerAttackState.h"
 #include "Player.h"
 
 using namespace DirectX::SimpleMath;
@@ -43,9 +44,15 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
         Quaternion::CreateFromAxisAngle(Vector3::UnitZ, tailAngle);
 
     // ƒL[‚ð—£‚µ‚½‚çIdle‚É–ß‚·
+    if (kb.Space)
+    {
+        player->ChangeState(std::make_unique<PlayerAttackState>());
+        return;
+    }
     if (!kb.Up && !kb.Left && !kb.Right && !kb.Down)
     {
         player->ChangeState(std::make_unique<PlayerIdleState>());
+        return;
     }
 }
 

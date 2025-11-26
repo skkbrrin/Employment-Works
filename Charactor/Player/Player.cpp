@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Player.h"
+#include "Charactor/Enemy/Enemy.h"
 #include "PlayerIdleState.h"
 using namespace DirectX;
 
@@ -13,8 +14,11 @@ Player::~Player()
 {
 }
 
+// 初期更新
 void Player::Initialize(ID3D11Device* device)
 {
+	// モデル読み込み --------------------------------------------------------------------------------
+
 	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device); 
 	fx->SetDirectory(L"Resources/Models"); 
 	m_root = std::make_unique<TransformNode>(L"Root"); 
@@ -62,6 +66,8 @@ void Player::Initialize(ID3D11Device* device)
 	auto tail = std::make_unique<TransformNode>(L"Tail");
 	tail->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/Tail.sdkmesh", *fx)); 
 	tail->m_position = { 0.0f, -0.0f, -0.0f }; m_parts["Tail"] = tail.get(); 
+
+	// ---------------------------------------------------------------------------------------------
 	
 	// 階層構築 
 	body->AddChild(std::move(head));
@@ -78,29 +84,24 @@ void Player::Initialize(ID3D11Device* device)
 
 void Player::Update(float dt)
 {
-	// 状態更新
-	if (m_state)
-		m_state->Update(this, dt);
+	if (m_state) m_state->Update(this, dt);
 
-	// TransformNode の root をプレイヤー座標に合わせる
 	if (m_root)
 	{
-		m_root->m_position = m_position;
-		m_root->m_rotation = m_rotation;
-	}
-
-	// 子ノードのワールド行列更新
-	if (m_root)
+		// CharacterBase のワールド行列を反映
+		m_root->SetWorldParent(GetWorldMatrix());
 		m_root->UpdateWorldMatrix();
+	}
 }
 
+// 描画
 void Player::RenderP(ID3D11DeviceContext* context, DirectX::CommonStates* states, Matrix view, Matrix proj)
 {
 	if (m_root)
 		m_root->Render(context, states, view, proj);
 }
 	
-
+// 状態変更
 void Player::ChangeState(std::unique_ptr<PlayerState> newState)
 {
 	if (m_state) m_state->Exit(this);
@@ -110,36 +111,49 @@ void Player::ChangeState(std::unique_ptr<PlayerState> newState)
 	if (m_state) m_state->Enter(this);
 }
 
+// 移動
 void Player::MoveForward(float dist)
 {
-	Vector3 forward = Vector3::Transform(Vector3::UnitZ, m_rotation);
-	m_position += forward * dist;
+	Vector3 f = Vector3::Transform(Vector3::UnitZ, m_rotation);
+	m_position += f * dist;
 }
 
+// 回転
 void Player::RotateY(float deg)
 {
 	m_rotation = m_rotation *
-		Quaternion::CreateFromAxisAngle(Vector3::UnitY, XMConvertToRadians(deg));
+		Quaternion::CreateFromAxisAngle(Vector3::UnitY,
+			XMConvertToRadians(deg));
 }
 
-DirectX::BoundingBox Player::GetWeaponBox() const
+// ローカルの当たり判定
+std::vector<BoundingOrientedBox> Player::GetLocalHitBoxes() const
 {
-	using namespace DirectX;
+	std::vector<BoundingOrientedBox> boxes;
 
-	TransformNode* weapon = GetPart("Axe");
-	if (!weapon)
-		return BoundingBox();
+	BoundingOrientedBox axe;
+	axe.Center = { 0,0,0.4f };
+	axe.Extents = { 0.15f, 0.3f, 0.6f };
+	axe.Orientation = Quaternion::Identity;
 
-	// ローカル AABB
-	BoundingBox localBox;
-	BoundingBox::CreateFromPoints(
-		localBox,
-		SimpleMath::Vector3(-0.1f, -0.3f, -0.1f),
-		SimpleMath::Vector3(0.1f, 0.3f, 0.1f)
-	);
+	boxes.push_back(axe);
+	return boxes;
+}
 
-	// ワールド行列に変換
-	BoundingBox worldBox;
-	localBox.Transform(worldBox, weapon->GetWorldMatrix());
-	return worldBox;
+// ワールド座標の当たり判定
+std::vector<BoundingOrientedBox> Player::GetWorldHitBoxes() const
+{
+	auto locals = GetLocalHitBoxes();
+	std::vector<BoundingOrientedBox> result;
+
+	TransformNode* axe = GetPart("Axe");
+	if (!axe) return result;
+
+	for (auto& b : locals)
+	{
+		BoundingOrientedBox wb;
+		b.Transform(wb, axe->GetWorldMatrix());
+		result.push_back(wb);
+	}
+	return result;
 }
