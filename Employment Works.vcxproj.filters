@@ -44,6 +44,9 @@
     <Filter Include="Charactors\Task">
       <UniqueIdentifier>{fdc0b7f5-bf86-4d5a-982b-06f05f6c41b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Charactors\Items">
+      <UniqueIdentifier>{9ca96adb-dd24-42ab-8e5e-c41718f6ba0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -150,9 +153,6 @@
     <ClInclude Include="Scene\LoadingScreen.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Charactor\ScoreManager.h">
-      <Filter>Charactors</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor\Task\Number.h">
       <Filter>Charactors\Task</Filter>
     </ClInclude>
@@ -193,9 +193,6 @@
     <ClInclude Include="Charactor\Enemy\Enemy.h">
       <Filter>Charactors\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Charactor\Enemy\EnemyState.h">
-      <Filter>Charactors\Enemy</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor\Enemy\EnemyAttackState.h">
       <Filter>Charactors\Enemy\State</Filter>
     </ClInclude>
@@ -207,6 +204,18 @@
     </ClInclude>
     <ClInclude Include="Charactor\IHitBoxProvider.h">
       <Filter>Charactors</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\EnemyState.h">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Enemy\EnemyDeathState.h">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Items\ItemManager.h">
+      <Filter>Charactors\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Items\Item.h">
+      <Filter>Charactors\Items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -288,9 +297,6 @@
     <ClCompile Include="Scene\LoadingScreen.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Charactor\ScoreManager.cpp">
-      <Filter>Charactors</Filter>
-    </ClCompile>
     <ClCompile Include="Charactor\Task\Number.cpp">
       <Filter>Charactors\Task</Filter>
     </ClCompile>
@@ -329,6 +335,15 @@
     </ClCompile>
     <ClCompile Include="Charactor\Enemy\EnemyWalkState.cpp">
       <Filter>Charactors\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Enemy\EnemyDeathState.cpp">
+      <Filter>Charactors\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Items\ItemManager.cpp">
+      <Filter>Charactors\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Items\Item.cpp">
+      <Filter>Charactors\Items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

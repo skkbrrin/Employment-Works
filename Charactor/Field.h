@@ -3,6 +3,7 @@
 #include "Enemy/Enemy.h"
 #include "Player/Player.h"
 #include <GeometricPrimitive.h>
+#include "Items/Item.h"
 
 class Field
 {
@@ -13,6 +14,8 @@ public:
 		DirectX::CommonStates* states,
 		DirectX::SimpleMath::Matrix view,
 		DirectX::SimpleMath::Matrix proj);
+	void SpawnItem(const DirectX::SimpleMath::Matrix& world);
+	void CheckItemPickup();
 
 private:
 	Player m_player;
@@ -45,4 +48,7 @@ private:
 
 		m_debugOBB->Draw(world, view, proj, color, nullptr, false);
 	}
+
+	std::vector<std::unique_ptr<Item>> m_items;
+
 };

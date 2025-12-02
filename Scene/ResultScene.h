@@ -4,12 +4,12 @@
 #include "../ItoLib/DebugCamera.h"
 #include "../ItoLib/UserResources.h"
 
-#include "Charactor/ScoreManager.h"
 #include "ItoLib/TaskManager.h"
 #include "Charactor/Task/Number.h"
 
 #include "GameObject/TextureSprite.h"
 #include "GameObject/TextureAlpha.h"
+#include <Audio.h>
 
 class ResultScene : public Ito::Scene<UserResources>
 {

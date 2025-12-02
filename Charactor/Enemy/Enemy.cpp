@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Enemy.h"
 #include "EnemyIdleState.h"
+#include "EnemyDeathState.h"
+#include "Charactor/Items/ItemManager.h"
+
 using namespace DirectX;
 
 using namespace DirectX::SimpleMath;
@@ -144,4 +147,55 @@ std::vector<HitBoxPart> Enemy::GetHitBoxes() const
 
 	return result;
 }
+
+void Enemy::TakeDamege(int dt)
+{
+	if (!m_isAlive)return;
+	m_hp -= dt;
+
+	if (m_hp <= 0)
+	{
+		Die();
+		return;
+	}
+
+	Damaging();
+}
+
+void Enemy::Damaging()
+{
+}
+
+void Enemy::Die()
+{
+	if (!m_isAlive) return;
+	m_isAlive = false;
+
+	// ここでドロップする（薪）
+	if (m_itemManager)
+	{
+		// ランダムで 1～3 個
+		int dropCount = (rand() % 3) + 1;
+
+		for (int i = 0; i < dropCount; i++)
+		{
+			// 少し散らした位置でドロップ
+			Matrix dropMat = Matrix::CreateTranslation(
+				m_position +
+				Vector3(
+					((rand() % 100) - 50) * 0.05f,
+					0.0f,
+					((rand() % 100) - 50) * 0.05f
+				)
+			);
+
+			m_itemManager->Spawn(Item::Type::Wood, dropMat);
+		}
+	}
+
+	// 敵死亡ステートへ
+	ChangeState(std::make_unique<EnemyDeathState>());
+}
+
+
 

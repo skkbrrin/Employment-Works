@@ -28,9 +28,15 @@ public:
     // 攻撃ヒットボックス
     std::vector<HitBoxPart> GetHitBoxes() const override;
 
+    void AddWood(int value) { woodCount += value; }
+    int GetWoodCount() const { return woodCount; }
+
 private:
     std::unique_ptr<PlayerState> m_state;
     std::unique_ptr<TransformNode> m_root;
+
+    int woodCount = 0;
+
 
 };
 

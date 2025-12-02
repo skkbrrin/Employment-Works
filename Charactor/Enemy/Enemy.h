@@ -9,6 +9,8 @@
 #include "EnemyState.h"
 #include "Charactor/TransformNode.h"
 
+class ItemManager;
+
 class Enemy : public CharacterBase, public IHitBoxProvider
 {
 public:
@@ -37,6 +39,7 @@ public:
             m_root->UpdateWorldMatrix();
         }
     }
+    DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 
     void SetRotation(const DirectX::SimpleMath::Quaternion& rot)
     {
@@ -47,8 +50,20 @@ public:
             m_root->UpdateWorldMatrix();
         }
     }
+    DirectX::SimpleMath::Quaternion GetRotation() { return m_rotation; }
+
+    void SetDeleteFlag(bool v) { m_deleteFlag = v; }
+    bool GetDeleteFlag() const { return m_deleteFlag; }
 
     std::vector<HitBoxPart> GetHitBoxes() const override;
+
+    void TakeDamege(int dt);
+    void Damaging();
+    void Die();
+    void SetItemManager(ItemManager* manager) { m_itemManager = manager; }
+    void RequestDrop() { m_shouldDropItem = true; }
+    bool ShouldDropItem() const { return m_shouldDropItem; }
+
 
 private:
     std::unique_ptr<EnemyState> m_state;
@@ -59,4 +74,9 @@ private:
     DirectX::SimpleMath::Quaternion  m_rotation = DirectX::SimpleMath::Quaternion::Identity;
 
     bool m_isAttacking = false;
+    bool m_isAlive = true;
+    bool m_deleteFlag = false;
+    bool m_shouldDropItem = false;
+
+    ItemManager* m_itemManager = nullptr;
 };

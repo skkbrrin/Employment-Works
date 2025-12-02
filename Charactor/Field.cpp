@@ -26,6 +26,8 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
         m_enemies.push_back(std::move(e));
     }
 
+    Item::LoadModels(device);
+
     m_debugOBB = DirectX::GeometricPrimitive::CreateBox(context, DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 }
 
@@ -37,6 +39,28 @@ void Field::Update(float elapsedTime)
         e->Update(elapsedTime);
 
     CheckCollision();
+
+    // アイテムドロップ
+    for (auto& enemy : m_enemies)
+    {
+        if (enemy->GetDeleteFlag())
+        {
+            if (enemy->ShouldDropItem())
+            {
+                SpawnItem(enemy->GetWorldMatrix());
+            }
+        }
+    }
+
+    // 死亡した敵の消去
+    m_enemies.erase(
+        std::remove_if(m_enemies.begin(), m_enemies.end(),
+            [](const std::unique_ptr<Enemy>& e)
+            {
+                return e->GetDeleteFlag();
+            }),
+        m_enemies.end()
+    );
 }
 
 void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
@@ -45,6 +69,9 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
 
     for (auto& e : m_enemies)
         e->RenderE(context, states, view, proj);
+
+    for (auto& item : m_items)
+        item->Render(context, states, view, proj);
 
 #if defined(_DEBUG)
     auto playerBoxes = m_player.GetHitBoxes();
@@ -62,7 +89,9 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
                 if (hit)
                 {
                     if (pBox.isWeapon && eBox.isDamageable)
-                        e->TakeDamage(10); 
+                    {
+                        e->TakeDamege(10);
+                    }
                     else if (eBox.isWeapon && pBox.isDamageable)
                         m_player.TakeDamage(5);
                 }
@@ -78,6 +107,7 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
 
 #endif
 }
+
 
 void Field::CheckCollision()
 {
@@ -106,4 +136,15 @@ void Field::CheckCollision()
             }
         }
     }
+}
+
+// アイテムの出現
+void Field::SpawnItem(const DirectX::SimpleMath::Matrix& world)
+{
+    // 種類を決める
+    Item::Type type = Item::Type::Wood;
+
+    m_items.push_back(
+        std::make_unique<Item>(type, world)
+    );
 }

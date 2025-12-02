@@ -97,8 +97,8 @@ void Player::Update(float dt)
 // •`‰æ
 void Player::RenderP(ID3D11DeviceContext* context, DirectX::CommonStates* states, Matrix view, Matrix proj)
 {
-	/*if (m_root)
-		m_root->Render(context, states, view, proj);*/
+	if (m_root)
+		m_root->Render(context, states, view, proj);
 }
 	
 // ó‘Ô•ÏX

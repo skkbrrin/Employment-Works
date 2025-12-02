@@ -59,7 +59,6 @@ void TitleScene::Finalize()
 	bgm.reset();
 	audioEngine.reset();
 
-	ScoreManager::Instance().Reset();
 }
 
 void TitleScene::CreateDeviceDependentResources()

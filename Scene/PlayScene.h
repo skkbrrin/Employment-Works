@@ -8,7 +8,6 @@
 #include "ItoLib/GameCamera.h"
 
 #include "Charactor/Field.h"
-#include "Charactor/ScoreManager.h"
 
 #include "ItoLib/TaskManager.h"
 #include "Charactor/Task/Number.h"

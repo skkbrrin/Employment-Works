@@ -33,7 +33,7 @@ void PlayScene::Initialize()
 void PlayScene::Update(float elapsedTime)
 {
 	auto kb = GetUserResources()->GetKeyboardStateTracker();
-	
+	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 
 	// ƒŠƒUƒ‹ƒgØ‚è‘Ö‚¦ğŒ
 	if (kb->pressed.Q)
