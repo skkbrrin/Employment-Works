@@ -37,7 +37,7 @@ void ItemManager::CheckPickup(Player* player)
         float dist = (item->GetWorldMatrix().Translation()
             - player->GetWorldMatrix().Translation()).Length();
 
-        if (dist < 0.01f) // E‚¦‚é‹——£
+        if (dist < 2.0f) // E‚¦‚é‹——£
         {
             // d‚È‚çƒJƒEƒ“ƒg‚·‚é
             if (item->GetType() == Item::Type::Wood)

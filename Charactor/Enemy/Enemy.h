@@ -52,6 +52,11 @@ public:
     }
     DirectX::SimpleMath::Quaternion GetRotation() { return m_rotation; }
 
+    DirectX::SimpleMath::Matrix GetWorldMatrix() const
+    {
+        return m_root ? m_root->GetWorldMatrix() : DirectX::SimpleMath::Matrix::Identity;
+    }
+
     void SetDeleteFlag(bool v) { m_deleteFlag = v; }
     bool GetDeleteFlag() const { return m_deleteFlag; }
 

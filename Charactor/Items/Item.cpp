@@ -16,15 +16,14 @@ void Item::LoadModels(ID3D11Device* device)
     m_woodModel = Model::CreateFromSDKMESH(device, L"Resources/Models/Wood.sdkmesh", *fx);
 }
 
-Item::Item(Type type, const Matrix& world)
-    : m_type(type), m_world(world)
+Item::Item(Type type, DirectX::SimpleMath::Matrix world)
+    : m_type(type)
 {
+    SetWorld(world);
 }
 
 void Item::Update(float dt)
 {
-    // ââèoìIÇ…åyÇ≠âÒì]
-    m_world = m_world * Matrix::CreateRotationY(dt);
 }
 
 void Item::Render(ID3D11DeviceContext* context, CommonStates* states, Matrix view, Matrix proj)

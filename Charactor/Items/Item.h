@@ -10,7 +10,7 @@ public:
         Wood,
     };
 
-    Item(Type type, const DirectX::SimpleMath::Matrix& world);
+    Item(Type type, DirectX::SimpleMath::Matrix world);
     
     static void LoadModels(ID3D11Device* device);
     
@@ -22,6 +22,7 @@ public:
 
     Type GetType() const { return m_type; }
     const DirectX::SimpleMath::Matrix& GetWorldMatrix() const { return m_world; }
+    void SetWorld(DirectX::SimpleMath::Matrix& world) { m_world = world; }
 
 private:
     Type m_type;

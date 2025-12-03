@@ -9,6 +9,8 @@ using namespace DirectX::SimpleMath;
 void PlayerWalkState::Enter(Player* player)
 {
     m_timer = 0.0f;
+    m_movedist = 0.05f;
+    m_legSpeed = 20.0f;
 }
 
 void PlayerWalkState::Update(Player* player, float elapsedTime)
@@ -16,11 +18,17 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
     m_timer += elapsedTime;
     auto kb = DirectX::Keyboard::Get().GetState();
 
+    if (kb.LeftShift)
+    {
+        m_movedist = 1.0f;
+        m_legSpeed = 40.0f;
+    }
+
     // 移動処理
-    if (kb.Up) player->MoveForward(0.05f);
-    if (kb.Left) player->RotateY(2.0f);
-    if (kb.Right) player->RotateY(-2.0f);
-    if (kb.Down) player->MoveForward(-0.08f);
+    if (kb.W) player->MoveForward(m_movedist);
+    if (kb.A) player->RotateY(2.0f);
+    if (kb.D) player->RotateY(-2.0f);
+    if (kb.S) player->MoveForward(-m_movedist);
 
     // 歩行アニメーション用サイン波
     float swing = sinf(m_timer * 8.0f); // 周期早めにすると歩いてる感UP
@@ -49,7 +57,7 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
         player->ChangeState(std::make_unique<PlayerAttackState>());
         return;
     }
-    if (!kb.Up && !kb.Left && !kb.Right && !kb.Down)
+    if (!kb.W && !kb.A && !kb.S && !kb.D)
     {
         player->ChangeState(std::make_unique<PlayerIdleState>());
         return;

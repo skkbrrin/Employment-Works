@@ -15,10 +15,10 @@ using namespace DirectX;
 
 const VertexPositionTexture kHorikawa::FloorPrimitive::VERTICES[4] =
 {
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f, -100.0f), DirectX::SimpleMath::Vector2( 100.0f,  0.0f)),  // 0:左上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3( 100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 100.0f, 100.0f)),  // 1:右上
-	VertexPositionTexture(DirectX::SimpleMath::Vector3(-100.0f, 0.0f,  100.0f), DirectX::SimpleMath::Vector2( 0.0f,  100.0f)),  // 3:右下
-	VertexPositionTexture(DirectX::SimpleMath::Vector3(-100.0f, 0.0f, -100.0f), DirectX::SimpleMath::Vector2( 0.0f,  0.0f)),  // 2:左下
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 110.0f, 0.0f, -110.0f), DirectX::SimpleMath::Vector2( 110.0f,  0.0f)),  // 0:左上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3( 110.0f, 0.0f,  110.0f), DirectX::SimpleMath::Vector2( 110.0f, 110.0f)),  // 1:右上
+	VertexPositionTexture(DirectX::SimpleMath::Vector3(-110.0f, 0.0f,  110.0f), DirectX::SimpleMath::Vector2( 0.0f,  110.0f)),  // 3:右下
+	VertexPositionTexture(DirectX::SimpleMath::Vector3(-110.0f, 0.0f, -110.0f), DirectX::SimpleMath::Vector2( 0.0f,  0.0f)),  // 2:左下
 };
 
 /// <summary>

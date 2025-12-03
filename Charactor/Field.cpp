@@ -38,7 +38,12 @@ void Field::Update(float elapsedTime)
     for (auto& e : m_enemies)
         e->Update(elapsedTime);
 
+
     CheckCollision();
+
+    m_itemManager.Update(elapsedTime, &m_player);
+
+    DirectX::SimpleMath::Matrix ItemWorld = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0, 1, 0));
 
     // アイテムドロップ
     for (auto& enemy : m_enemies)
@@ -47,7 +52,7 @@ void Field::Update(float elapsedTime)
         {
             if (enemy->ShouldDropItem())
             {
-                SpawnItem(enemy->GetWorldMatrix());
+                SpawnItem(enemy->GetWorldMatrix() * ItemWorld);
             }
         }
     }
@@ -70,8 +75,7 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
     for (auto& e : m_enemies)
         e->RenderE(context, states, view, proj);
 
-    for (auto& item : m_items)
-        item->Render(context, states, view, proj);
+    m_itemManager.Render(context, states, view, proj);
 
 #if defined(_DEBUG)
     auto playerBoxes = m_player.GetHitBoxes();
@@ -141,10 +145,5 @@ void Field::CheckCollision()
 // アイテムの出現
 void Field::SpawnItem(const DirectX::SimpleMath::Matrix& world)
 {
-    // 種類を決める
-    Item::Type type = Item::Type::Wood;
-
-    m_items.push_back(
-        std::make_unique<Item>(type, world)
-    );
+    m_itemManager.Spawn(Item::Type::Wood, world);
 }

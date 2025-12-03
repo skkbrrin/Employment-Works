@@ -36,7 +36,7 @@ void PlayerIdleState::Update(Player* player, float elapsedTime)
         Quaternion::CreateFromAxisAngle(Vector3::UnitZ, angle);
 
     // •à‚«‚Ö
-    if (kb.Up || kb.Down || kb.Left || kb.Right)
+    if (kb.W || kb.A || kb.D || kb.S)
     {
         player->ChangeState(std::make_unique<PlayerWalkState>());
         return;

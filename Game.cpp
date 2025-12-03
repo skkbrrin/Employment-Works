@@ -44,7 +44,7 @@ void Game::Initialize(HWND window, int width, int height)
     */
 
     // 始まりのシーンセット
-    m_sceneManager->SetScene<TitleScene>();
+    m_sceneManager->SetScene<PlayScene>();
 }
 
 #pragma region Frame Update
@@ -124,7 +124,7 @@ void Game::Clear()
     auto renderTarget = m_deviceResources->GetRenderTargetView();
     auto depthStencil = m_deviceResources->GetDepthStencilView();
 
-    context->ClearRenderTargetView(renderTarget, Colors::AliceBlue);
+    context->ClearRenderTargetView(renderTarget, Colors::Red);
     context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
     context->OMSetRenderTargets(1, &renderTarget, depthStencil);
 

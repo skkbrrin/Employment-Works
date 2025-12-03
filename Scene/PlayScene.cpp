@@ -84,7 +84,7 @@ void PlayScene::Render()
 
 	// 天球
 	SimpleMath::Matrix world_S = SimpleMath::Matrix::Identity;
-	world_S = SimpleMath::Matrix::CreateScale(9000);
+	world_S = SimpleMath::Matrix::CreateScale(110);
 	m_skyModel->Draw(context, *states,world_S, m_view, m_proj);
 
 	// フィールド
