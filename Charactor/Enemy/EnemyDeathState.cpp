@@ -1,7 +1,5 @@
 #include "pch.h"
 #include "EnemyDeathState.h"
-#include "EnemyIdleState.h"
-#include "EnemyAttackState.h"
 #include "Enemy.h"
 
 using namespace DirectX::SimpleMath;
@@ -21,7 +19,6 @@ void EnemyDeathState::Update(Enemy* enemy, float elapsedTime)
         enemy->SetDeleteFlag(true);
     }
 }
-
 
 void EnemyDeathState::Exit(Enemy* enemy)
 {

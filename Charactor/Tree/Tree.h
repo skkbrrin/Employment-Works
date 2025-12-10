@@ -6,30 +6,29 @@
 
 #include "Charactor/CharactorBase.h"
 #include "Charactor/IHitBoxProvider.h"
-#include "EnemyState.h"
+#include "TreeState.h"
 #include "Charactor/TransformNode.h"
 
 class ItemManager;
 class Player;
 
-class Enemy : public CharacterBase, public IHitBoxProvider
+class Tree : public CharacterBase, public IHitBoxProvider
 {
 public:
-    Enemy();
-    ~Enemy();
+    Tree();
+    ~Tree();
 
-    void ChangeState(std::unique_ptr<EnemyState> newState);
+    void ChangeState(std::unique_ptr<TreeState> newState);
 
     void Initialize(ID3D11Device* device);
     void Update(float dt) override;
-    void RenderE(
+    void RenderT(
         ID3D11DeviceContext* ctx,
         DirectX::CommonStates* states,
         DirectX::SimpleMath::Matrix view,
         DirectX::SimpleMath::Matrix proj);
 
-    void MoveForward(float dist);
-    void RotateY(float deg);
+
 
     void SetPosition(const DirectX::SimpleMath::Vector3& pos)
     {
@@ -74,7 +73,7 @@ public:
     DirectX::SimpleMath::Vector3& GetPlayerPosition();
 
 private:
-    std::unique_ptr<EnemyState> m_state;
+    std::unique_ptr<TreeState> m_state;
 
     std::unique_ptr<TransformNode> m_root;
 

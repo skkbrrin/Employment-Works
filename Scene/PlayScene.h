@@ -12,7 +12,6 @@
 #include "ItoLib/TaskManager.h"
 #include "Charactor/Task/Number.h"
 
-#include "Charactor/HPManager.h"
 #include <Audio.h>
 
 class PlayScene : public Ito::Scene<UserResources>

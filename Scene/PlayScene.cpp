@@ -14,7 +14,7 @@ void PlayScene::Initialize()
 	auto windowSize = GetUserResources()->GetDeviceResources()->GetWindow();
 
 	// カメラ
-	//m_camera.SetPlayer(&m_player->m_position, &m_player->m_rotation);
+	m_camera.SetPlayer(&m_player->GetPosition(), &m_player->GetRotation());
 
 	// BGM
 	AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
@@ -50,7 +50,8 @@ void PlayScene::Update(float elapsedTime)
 	// カメラ更新
 	//デバッグカメラ
 	m_debugCamera->Update();
-	//m_camera.Update(elapsedTime);
+	m_player->Update(elapsedTime);
+	m_camera.Update(elapsedTime);
 
 	// フィールド
 	m_field->Update(elapsedTime);
@@ -72,12 +73,12 @@ void PlayScene::Render()
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetUserResources()->GetCommonStates();
 
-	m_view = m_debugCamera->GetCameraMatrix();
-	/*m_view = SimpleMath::Matrix::CreateLookAt(
+	//m_view = m_debugCamera->GetCameraMatrix();
+	m_view = SimpleMath::Matrix::CreateLookAt(
 		m_camera.GetEyePosition(),
 		m_camera.GetTargetPosition(),
 		SimpleMath::Vector3::UnitY
-	);*/
+	);
 
 	// 床
 	m_floorPrimitive->Render(context, m_view, m_proj);
@@ -124,6 +125,9 @@ void PlayScene::CreateDeviceDependentResources()
 	// フィールド
 	m_field = std::make_unique<Field>();
 	m_field->Initialize(device, context);
+
+	m_player = std::make_unique<Player>();
+	m_player->Initialize(device);
 }
 
 void PlayScene::CreateWindowSizeDependentResources()

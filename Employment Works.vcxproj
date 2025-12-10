@@ -188,7 +188,6 @@
     <ClInclude Include="Charactor\Enemy\EnemyState.h" />
     <ClInclude Include="Charactor\Enemy\EnemyWalkState.h" />
     <ClInclude Include="Charactor\Field.h" />
-    <ClInclude Include="Charactor\HPManager.h" />
     <ClInclude Include="Charactor\IHitBoxProvider.h" />
     <ClInclude Include="Charactor\Items\Item.h" />
     <ClInclude Include="Charactor\Items\ItemManager.h" />
@@ -200,6 +199,9 @@
     <ClInclude Include="Charactor\Player\PlayerWalkState.h" />
     <ClInclude Include="Charactor\Task\Number.h" />
     <ClInclude Include="Charactor\TransformNode.h" />
+    <ClInclude Include="Charactor\Tree\Tree.h" />
+    <ClInclude Include="Charactor\Tree\TreeDeathState.h" />
+    <ClInclude Include="Charactor\Tree\TreeState.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
@@ -245,7 +247,6 @@
     <ClCompile Include="Charactor\Enemy\EnemyIdleState.cpp" />
     <ClCompile Include="Charactor\Enemy\EnemyWalkState.cpp" />
     <ClCompile Include="Charactor\Field.cpp" />
-    <ClCompile Include="Charactor\HPManager.cpp" />
     <ClCompile Include="Charactor\Items\Item.cpp" />
     <ClCompile Include="Charactor\Items\ItemManager.cpp" />
     <ClCompile Include="Charactor\Object.cpp" />
@@ -254,6 +255,8 @@
     <ClCompile Include="Charactor\Player\PlayerIdleState.cpp" />
     <ClCompile Include="Charactor\Player\PlayerWalkState.cpp" />
     <ClCompile Include="Charactor\Task\Number.cpp" />
+    <ClCompile Include="Charactor\Tree\Tree.cpp" />
+    <ClCompile Include="Charactor\Tree\TreeDeathState.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />

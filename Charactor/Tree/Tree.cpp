@@ -1,8 +1,6 @@
 #include "pch.h"
-#include "Enemy.h"
-#include "EnemyIdleState.h"
-#include "EnemyDeathState.h"
-#include "EnemyAttackState.h"
+#include "Tree.h"
+#include "TreeDeathState.h"
 #include "Charactor/Items/ItemManager.h"
 #include "Charactor/Player/Player.h"
 
@@ -10,16 +8,16 @@ using namespace DirectX;
 
 using namespace DirectX::SimpleMath;
 
-Enemy::Enemy()
+Tree::Tree()
 {
 }
 
-Enemy::~Enemy()
+Tree::~Tree()
 {
 }
 
 // 初期更新
-void Enemy::Initialize(ID3D11Device* device)
+void Tree::Initialize(ID3D11Device* device)
 {
 	// モデル読み込み --------------------------------------------------------------------------------
 
@@ -29,18 +27,18 @@ void Enemy::Initialize(ID3D11Device* device)
 	
 	// 胴体
 	auto body = std::make_unique<TransformNode>(L"Body");
-	body->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/EnemyBody.sdkmesh", *fx));
+	body->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/TreeBody.sdkmesh", *fx));
 	m_parts["Body"] = body.get(); 
 	
 	// 左手
 	auto legL = std::make_unique<TransformNode>(L"LegL");
-	legL->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/EnemyLegL.sdkmesh", *fx)); 
+	legL->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/TreeLegL.sdkmesh", *fx)); 
 	legL->m_position = { 0.0f, 0.0f, 0.0f }; 
 	m_parts["LegL"] = legL.get();
 	
 	// 右手
 	auto legR = std::make_unique<TransformNode>(L"LegR");
-	legR->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/EnemyLegR.sdkmesh", *fx)); 
+	legR->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/TreeLegR.sdkmesh", *fx)); 
 	legR->m_position = { 0.0f, 0.0f, 0.0f };
 	m_parts["LegR"] = legR.get(); 
 	
@@ -52,11 +50,9 @@ void Enemy::Initialize(ID3D11Device* device)
 	body->AddChild(std::move(legR)); 
 	m_root->AddChild(std::move(body));
 	
-	// 初期状態 
-	ChangeState(std::make_unique<EnemyAttackState>());
 }
 
-void Enemy::Update(float dt)
+void Tree::Update(float dt)
 {
 	// 状態更新
 	if (m_state)
@@ -75,14 +71,14 @@ void Enemy::Update(float dt)
 }
 
 // 描画
-void Enemy::RenderE(ID3D11DeviceContext* context, DirectX::CommonStates* states, Matrix view, Matrix proj)
+void Tree::RenderT(ID3D11DeviceContext* context, DirectX::CommonStates* states, Matrix view, Matrix proj)
 {
 	if (m_root)
 		m_root->Render(context, states, view, proj);
 }
 	
 // 状態変更
-void Enemy::ChangeState(std::unique_ptr<EnemyState> newState)
+void Tree::ChangeState(std::unique_ptr<TreeState> newState)
 {
 	if (m_state) m_state->Exit(this);
 
@@ -91,35 +87,19 @@ void Enemy::ChangeState(std::unique_ptr<EnemyState> newState)
 	if (m_state) m_state->Enter(this);
 }
 
-// 移動
-void Enemy::MoveForward(float dist)
-{
-	Vector3 forward = Vector3::Transform(Vector3::UnitZ, m_rotation);
-	m_position += forward * dist;
-}
-
-// 回転
-void Enemy::RotateY(float deg)
-{
-	m_rotation = m_rotation *
-		Quaternion::CreateFromAxisAngle(Vector3::UnitY, XMConvertToRadians(deg));
-}
-
-std::vector<HitBoxPart> Enemy::GetHitBoxes() const
+std::vector<HitBoxPart> Tree::GetHitBoxes() const
 {
 	using namespace DirectX;
 	using namespace DirectX::SimpleMath;
 
 	std::vector<HitBoxPart> result;
 
-	// パーツ用配列(名前、中心、範囲、武器かどうか、プレイヤーに当たったらダメージを受けるか)
+	// パーツ用配列(名前、中心、回転角、 範囲、武器かどうか、プレイヤーに当たったらダメージを受けるか)
 	struct PartDef { const char* name; Vector3 center; DirectX::SimpleMath::Quaternion rotation; Vector3 extents; bool isWeapon; bool isDamageable; };
 
 	// パーツの登録
 	PartDef parts[] = {
-		{"Body", {0,4.0f,0},  DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f),  {0.7f,4.0f,0.7f}, false, true},
-		{"LegL", {-2.1f,4.1f,0}, DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, XMConvertToRadians(65.0f)) ,  {0.25f,1.7f,0.3f}, true, true},
-		{"LegR", {1.5f,4.15f,0}, DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, XMConvertToRadians(-62.0f)) ,  {0.25f,2.1f,0.25f}, true, true},
+		{"Body", {-4.3f,4.0f,0},  DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f),  {0.7f,4.0f,0.7f}, false, true},
 	};
 
 	// パーツ分当たり判定ボックスを作る
@@ -150,7 +130,7 @@ std::vector<HitBoxPart> Enemy::GetHitBoxes() const
 	return result;
 }
 
-void Enemy::TakeDamage(int dt)
+void Tree::TakeDamage(int dt)
 {
 	if (!m_isAlive) return;
 	m_hp -= dt;
@@ -164,11 +144,11 @@ void Enemy::TakeDamage(int dt)
 	Damaging();
 }
 
-void Enemy::Damaging()
+void Tree::Damaging()
 {
 }
 
-void Enemy::Die()
+void Tree::Die()
 {
 	if (!m_isAlive) return;
 	m_isAlive = false;
@@ -195,11 +175,10 @@ void Enemy::Die()
 		}
 	}
 
-	// 敵死亡ステートへ
-	ChangeState(std::make_unique<EnemyDeathState>());
+	ChangeState(std::make_unique<TreeDeathState>());
 }
 
-Vector3& Enemy::GetPlayerPosition()
+Vector3& Tree::GetPlayerPosition()
 {
 	return m_player->GetPosition();
 }

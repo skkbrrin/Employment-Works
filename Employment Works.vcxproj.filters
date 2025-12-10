@@ -47,6 +47,12 @@
     <Filter Include="Charactors\Items">
       <UniqueIdentifier>{9ca96adb-dd24-42ab-8e5e-c41718f6ba0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Charactors\Tree">
+      <UniqueIdentifier>{c12a88d0-4940-4657-b84a-75aa2fa78390}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Charactors\Tree\State">
+      <UniqueIdentifier>{5f8a81f7-a527-4195-bfc9-cedaeb318e1b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -163,9 +169,6 @@
     <ClInclude Include="GameObject\TextureAlpha.h">
       <Filter>GameObject</Filter>
     </ClInclude>
-    <ClInclude Include="Charactor\HPManager.h">
-      <Filter>Charactors</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\Gauge.h">
       <Filter>GameObject</Filter>
     </ClInclude>
@@ -216,6 +219,15 @@
     </ClInclude>
     <ClInclude Include="Charactor\Items\Item.h">
       <Filter>Charactors\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Tree\Tree.h">
+      <Filter>Charactors\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Tree\TreeState.h">
+      <Filter>Charactors\Tree\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Tree\TreeDeathState.h">
+      <Filter>Charactors\Tree\State</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -306,9 +318,6 @@
     <ClCompile Include="GameObject\TextureAlpha.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="Charactor\HPManager.cpp">
-      <Filter>Charactors</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject\Gauge.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
@@ -344,6 +353,12 @@
     </ClCompile>
     <ClCompile Include="Charactor\Items\Item.cpp">
       <Filter>Charactors\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Tree\Tree.cpp">
+      <Filter>Charactors\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Tree\TreeDeathState.cpp">
+      <Filter>Charactors\Tree\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

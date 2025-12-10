@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <DirectXCollision.h>
+#include <string>
 
 struct HitBoxPart
 {
@@ -8,6 +9,7 @@ struct HitBoxPart
     DirectX::BoundingOrientedBox obb;
     bool isWeapon = false;
     bool isDamageable = false;
+    bool hit = false;
 };
 
 class IHitBoxProvider

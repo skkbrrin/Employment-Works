@@ -30,6 +30,10 @@ public:
 
     void AddWood(int value) { woodCount += value; }
     int GetWoodCount() const { return woodCount; }
+    DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
+    DirectX::SimpleMath::Quaternion& GetRotation() { return m_rotation; }
+    void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
+    void SetRotation(DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
 
 private:
     std::unique_ptr<PlayerState> m_state;
