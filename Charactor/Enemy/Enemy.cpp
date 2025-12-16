@@ -176,22 +176,24 @@ void Enemy::Die()
 	// ここでドロップする（薪）
 	if (m_itemManager)
 	{
-		// ランダムで 1～3 個
-		int dropCount = (rand() % 3) + 1;
+		int dropCount = (rand() % 3) + 12;
 
 		for (int i = 0; i < dropCount; i++)
 		{
-			// 少し散らした位置でドロップ
-			Matrix dropMat = Matrix::CreateTranslation(
-				m_position +
-				Vector3(
-					((rand() % 100) - 50) * 0.05f,
-					0.0f,
-					((rand() % 100) - 50) * 0.05f
-				)
-			);
+			// 初期位置（敵の位置）
+			Vector3 startPos = m_position;
 
-			m_itemManager->Spawn(Item::Type::Wood, dropMat);
+			// 初速ランダム（水平）
+			float vx = ((rand() % 100) - 50) * 0.05f; // -2.5 ～ +2.5
+			float vz = ((rand() % 100) - 50) * 0.05f;
+
+			// 上方向にポーンと飛ばす
+			float vy = (rand() % 30) * 0.1f + 2.0f;   // 2.0～5.0ぐらい
+
+			Vector3 velocity(vx, vy, vz);
+
+			// ItemManagerに初速も渡す
+			m_itemManager->SpawnWithVelocity(Item::Type::Wood, startPos, velocity);
 		}
 	}
 

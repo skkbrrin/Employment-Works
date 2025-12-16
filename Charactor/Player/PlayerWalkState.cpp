@@ -9,7 +9,7 @@ using namespace DirectX::SimpleMath;
 void PlayerWalkState::Enter(Player* player)
 {
     m_timer = 0.0f;
-    m_movedist = 0.05f;
+    m_movedist = 0.1f;
     m_legSpeed = 20.0f;
 }
 
@@ -20,7 +20,7 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
 
     if (kb.LeftShift)
     {
-        m_movedist = 1.0f;
+        m_movedist = 0.8f;
         m_legSpeed = 40.0f;
     }
 

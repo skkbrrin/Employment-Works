@@ -12,7 +12,7 @@ using namespace DirectX;
 using namespace Ito;
 
 // 一応ディフォルト値を定義するけど調整して下さい
-const float Camera::EYE_SPEED_RATE = 1.0f;		// カメラの位置への距離の差分に対する割合
+const float Camera::EYE_SPEED_RATE = 0.1f;		// カメラの位置への距離の差分に対する割合
 const float Camera::TARGET_SPEED_RATE = 0.1f;	// 注視点への距離の差分に対する割合
 
 // コンストラクタ
@@ -30,17 +30,17 @@ void Camera::InitializeCamera()
 // カメラの位置とターゲットを指定する関数
 void Camera::SetPositionTarget(const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target)
 {
-	if (m_initFlag == true)
-	{
+	//if (m_initFlag == true)
+	//{
 		m_initFlag = false;
 		m_eyePt = eye;
 		m_targetPt = target;
-		return;
-	}
+		//return;
+	//}
 
-	// カメラの位置を移動
-	m_eyePt += (eye - m_eyePt) * m_eyeMoveRate;
+	//// カメラの位置を移動
+	//m_eyePt += (eye - m_eyePt) * m_eyeMoveRate;
 
-	// カメラのターゲットの位置を移動
-	m_targetPt += (target - m_targetPt) * m_targetMoveRate;
+	//// カメラのターゲットの位置を移動
+	//m_targetPt += (target - m_targetPt) * m_targetMoveRate;
 }

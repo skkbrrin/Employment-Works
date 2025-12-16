@@ -33,8 +33,6 @@ void ResultScene::Update(float elapsedTime)
 	{
 		ChangeScene<TitleScene>();
 	}
-
-	m_textureAlpha->Update(elapsedTime);
 }
 
 void ResultScene::Render()

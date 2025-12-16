@@ -7,6 +7,7 @@ using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 Player::Player()
+	: woodCount{0}
 {
 }
 

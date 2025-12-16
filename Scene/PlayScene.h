@@ -70,12 +70,6 @@ private:
 	// 床
 	std::unique_ptr<kHorikawa::FloorPrimitive> m_floorPrimitive;
 
-	// プレイヤー
-	std::unique_ptr<Player> m_player;
-
-	// エネミー
-	std::unique_ptr<Enemy> m_enemy;
-
 	// カメラ
 	GameCamera m_camera;
 

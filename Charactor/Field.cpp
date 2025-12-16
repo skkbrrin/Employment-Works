@@ -10,14 +10,18 @@ inline DirectX::SimpleMath::Matrix MakeBoxMatrix(const DirectX::BoundingBox& box
 void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
 {
     // プレイヤーの初期状態
-    m_player.Initialize(device);
+    if(m_player == nullptr)
+    {
+        m_player = new Player;
+    }
+    m_player->Initialize(device);
 
     // 敵の生成数、初期化
     for (int i = 0; i < 10; i++)
     {
         auto e = std::make_unique<Enemy>();
         e->Initialize(device);
-        e->SetPlayer(&m_player);
+        e->SetPlayer(m_player);
 
         float x = (rand() % 500 - 250) * 0.3f;
         float z = (rand() % 500 - 250) * 0.3f;
@@ -34,7 +38,7 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
     {
         auto t = std::make_unique<Tree>();
         t->Initialize(device);
-        t->SetPlayer(&m_player);
+        t->SetPlayer(m_player);
 
         float x = (rand() % 500 - 250) * 0.3f;
         float z = (rand() % 500 - 250) * 0.3f;
@@ -56,7 +60,7 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
 void Field::Update(float elapsedTime)
 {
     // プレイヤーの更新
-    m_player.Update(elapsedTime);
+    m_player->Update(elapsedTime);
 
     // 敵の更新
     for (auto& e : m_enemies)
@@ -68,7 +72,7 @@ void Field::Update(float elapsedTime)
     // 当たり判定
     CheckCollision();
 
-    m_itemManager.Update(elapsedTime, &m_player);
+    m_itemManager.Update(elapsedTime, m_player);
 
     DirectX::SimpleMath::Matrix ItemWorld = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0, 1, 0));
 
@@ -117,7 +121,7 @@ void Field::Update(float elapsedTime)
 
 void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
-    m_player.RenderP(context, states, view, proj);
+    m_player->RenderP(context, states, view, proj);
 
     for (auto& e : m_enemies)
         e->RenderE(context, states, view, proj);
@@ -129,7 +133,7 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
 
     //当たり判定ボックスの描画
 #if defined(_DEBUG)
-    auto playerBoxes = m_player.GetHitBoxes();
+    auto playerBoxes = m_player->GetHitBoxes();
 
     for (auto& enemy : m_enemies)
     {
@@ -179,7 +183,7 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
 
 void Field::CheckCollision()
 {
-    auto playerBoxes = m_player.GetHitBoxes();
+    auto playerBoxes = m_player->GetHitBoxes();
 
     for (auto& enemy : m_enemies)
     {
@@ -200,7 +204,7 @@ void Field::CheckCollision()
                         enemy->TakeDamage(10);
 
                     if (pBox.isDamageable && eBox.isWeapon)
-                        m_player.TakeDamage(10);
+                        m_player->TakeDamage(10);
                 }
             }
         }
@@ -232,7 +236,7 @@ void Field::CheckCollision()
 
 void Field::UpdateHitBox()
 {
-    auto playerBoxes = m_player.GetHitBoxes();
+    auto playerBoxes = m_player->GetHitBoxes();
 
     for (auto& enemy : m_enemies)
     {
@@ -252,7 +256,7 @@ void Field::UpdateHitBox()
                     }
                     else if (eBox.isWeapon && pBox.isDamageable)
                     {
-                        m_player.TakeDamage(5);
+                        m_player->TakeDamage(5);
                     }
                 }
 
@@ -290,5 +294,19 @@ void Field::UpdateHitBox()
 // アイテムの出現
 void Field::SpawnItem(const DirectX::SimpleMath::Matrix& world)
 {
-    m_itemManager.Spawn(Item::Type::Wood, world);
+    using namespace DirectX::SimpleMath;
+
+    // ワールド行列から位置を抽出
+    Vector3 pos = world.Translation();
+
+    // 水平方向ランダム
+    float vx = ((rand() % 100) - 50) * 0.03f;  // ±1.5くらい
+    float vz = ((rand() % 100) - 50) * 0.03f;
+
+    // 上方向に少し跳ねる
+    float vy = (rand() % 30) * 0.05f + 5.0f;
+
+    Vector3 vel(vx, vy, vz);
+
+    m_itemManager.SpawnWithVelocity(Item::Type::Wood, pos, vel);
 }

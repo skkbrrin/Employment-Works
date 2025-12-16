@@ -7,6 +7,7 @@
 #include "PlayerState.h"
 #include "Charactor/IHitBoxProvider.h"
 #include <Charactor/TransformNode.h>
+#include <iostream>
 
 class Player : public CharacterBase, public IHitBoxProvider
 {
@@ -28,7 +29,10 @@ public:
     // 攻撃ヒットボックス
     std::vector<HitBoxPart> GetHitBoxes() const override;
 
-    void AddWood(int value) { woodCount += value; }
+    void AddWood(int value) {
+        woodCount += value;
+        std::cout << "Field Player AddWood! count=" << woodCount << std::endl;
+    }
     int GetWoodCount() const { return woodCount; }
     DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
     DirectX::SimpleMath::Quaternion& GetRotation() { return m_rotation; }

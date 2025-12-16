@@ -161,17 +161,19 @@ void Tree::Die()
 
 		for (int i = 0; i < dropCount; i++)
 		{
-			// 少し散らした位置でドロップ
-			Matrix dropMat = Matrix::CreateTranslation(
-				m_position +
-				Vector3(
-					((rand() % 100) - 50) * 0.05f,
-					0.0f,
-					((rand() % 100) - 50) * 0.05f
-				)
-			);
+			// 初期位置
+			Vector3 startPos = m_position;
 
-			m_itemManager->Spawn(Item::Type::Wood, dropMat);
+			// 初速ランダム（水平）
+			float vx = ((rand() % 100) - 50) * 0.05f;
+			float vz = ((rand() % 100) - 50) * 0.05f;
+
+			// 上方向にポーンと飛ばす
+			float vy = (rand() % 30) * 0.1f + 2.0f;
+
+			Vector3 velocity(vx, vy, vz);
+
+			m_itemManager->SpawnWithVelocity(Item::Type::Wood, startPos, velocity);
 		}
 	}
 

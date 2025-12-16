@@ -16,9 +16,10 @@ public:
 		DirectX::SimpleMath::Matrix view,
 		DirectX::SimpleMath::Matrix proj);
 	void SpawnItem(const DirectX::SimpleMath::Matrix& world);
+
 	
 private:
-	Player m_player;
+	Player* m_player;
 	std::vector<std::unique_ptr<Enemy>> m_enemies;
 	std::vector<std::unique_ptr<Tree>> m_tries;
 
@@ -54,4 +55,8 @@ private:
 	}
 
 	ItemManager m_itemManager;
+
+public:
+	Player* GetPlayer() { return m_player; }
+
 };

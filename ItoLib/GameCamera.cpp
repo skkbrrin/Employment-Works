@@ -20,11 +20,21 @@ void GameCamera::Update(float elapsedTime)
 	{
 	case Type::Type_A:	// プレイヤーの後ろから追いかけるカメラ
 	{
-		SimpleMath::Vector3 targetPos =
-			*m_pPlayerPos + SimpleMath::Vector3(0.0f, 4.0f, -5.0f);
-		SimpleMath::Vector3 eyePos(0.0f, 6.0f, -8.0f);
-		eyePos = SimpleMath::Vector3::Transform(eyePos, *m_pPlayerRotate);
-		SetPositionTarget(targetPos + eyePos, targetPos);
+		// プレイヤー基準オフセット
+		SimpleMath::Vector3 targetOffset(0.0f, 6.5f, -5.0f);
+		SimpleMath::Vector3 eyeOffset(0.0f, 7.0f, -6.5f);
+
+		// 両方回転させる
+		targetOffset = SimpleMath::Vector3::Transform(
+			targetOffset, *m_pPlayerRotate);
+		eyeOffset = SimpleMath::Vector3::Transform(
+			eyeOffset, *m_pPlayerRotate);
+
+		// ワールド座標化
+		SimpleMath::Vector3 targetPos = *m_pPlayerPos + targetOffset;
+		SimpleMath::Vector3 eyePos = *m_pPlayerPos + eyeOffset;
+
+		SetPositionTarget(eyePos, targetPos);
 	}
 	break;
 	case Type::Type_B:	// プレイヤーの周りを回るカメラ

@@ -16,6 +16,8 @@ public:
     void Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, Matrix view, Matrix proj);
 
     void CheckPickup(Player* player);
+
+    void SpawnWithVelocity(Item::Type type, const Vector3& pos, const Vector3& vel);
     
 private:
     std::vector<std::unique_ptr<Item>> items;

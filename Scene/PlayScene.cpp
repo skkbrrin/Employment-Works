@@ -14,7 +14,7 @@ void PlayScene::Initialize()
 	auto windowSize = GetUserResources()->GetDeviceResources()->GetWindow();
 
 	// カメラ
-	m_camera.SetPlayer(&m_player->GetPosition(), &m_player->GetRotation());
+	m_camera.SetPlayer(&m_field->GetPlayer()->GetPosition(), &m_field->GetPlayer()->GetRotation());
 
 	// BGM
 	AUDIO_ENGINE_FLAGS flags = AudioEngine_Default;
@@ -41,16 +41,9 @@ void PlayScene::Update(float elapsedTime)
 		ChangeScene<ResultScene>();
 	}
 
-	// ゲームカメラ
-	// 攻撃カメラ----------------------------------------------------
-
-
-
-	//---------------------------------------------------------------
 	// カメラ更新
 	//デバッグカメラ
 	m_debugCamera->Update();
-	m_player->Update(elapsedTime);
 	m_camera.Update(elapsedTime);
 
 	// フィールド
@@ -73,7 +66,7 @@ void PlayScene::Render()
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetUserResources()->GetCommonStates();
 
-	//m_view = m_debugCamera->GetCameraMatrix();
+	m_view = m_debugCamera->GetCameraMatrix();
 	m_view = SimpleMath::Matrix::CreateLookAt(
 		m_camera.GetEyePosition(),
 		m_camera.GetTargetPosition(),
@@ -90,6 +83,11 @@ void PlayScene::Render()
 
 	// フィールド
 	m_field->Render(context, states, m_view, m_proj);
+
+	std::wostringstream oss;
+	oss << "WoodCount::" << m_field->GetPlayer()->GetWoodCount();
+	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 20.0f), DirectX::Colors::Black);
+
 }
 
 void PlayScene::Finalize()
@@ -103,6 +101,7 @@ void PlayScene::CreateDeviceDependentResources()
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto state = GetUserResources()->GetCommonStates();
+
 
 	// ベーシックエフェクトの作成
 	m_basicEffect = std::make_unique<BasicEffect>(device);
@@ -126,9 +125,8 @@ void PlayScene::CreateDeviceDependentResources()
 	m_field = std::make_unique<Field>();
 	m_field->Initialize(device, context);
 
-	m_player = std::make_unique<Player>();
-	m_player->Initialize(device);
 }
+
 
 void PlayScene::CreateWindowSizeDependentResources()
 {
