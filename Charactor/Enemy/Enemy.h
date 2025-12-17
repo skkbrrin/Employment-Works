@@ -15,6 +15,7 @@ class Player;
 class Enemy : public CharacterBase, public IHitBoxProvider
 {
 public:
+  
     Enemy();
     ~Enemy();
 
@@ -30,6 +31,7 @@ public:
 
     void MoveForward(float dist);
     void RotateY(float deg);
+    void RotatePlayer(float deg);
 
     void SetPosition(const DirectX::SimpleMath::Vector3& pos)
     {
@@ -72,6 +74,7 @@ public:
     void SetPlayer(Player* player){ m_player = player; }
 
     DirectX::SimpleMath::Vector3& GetPlayerPosition();
+    bool GetAnyEnemyDied() { return s_anyEnemyDied; }
 
 private:
     std::unique_ptr<EnemyState> m_state;
@@ -89,4 +92,7 @@ private:
     ItemManager* m_itemManager = nullptr;
 
     Player* m_player = nullptr;
+
+    static bool s_anyEnemyDied;
+    bool m_attackState; // çUåÇÇ…êÿÇËë÷Ç¶ÇΩÇ©
 };

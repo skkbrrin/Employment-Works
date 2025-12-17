@@ -10,6 +10,8 @@ using namespace DirectX;
 
 using namespace DirectX::SimpleMath;
 
+bool Enemy::s_anyEnemyDied = false;
+
 Enemy::Enemy()
 {
 }
@@ -53,12 +55,19 @@ void Enemy::Initialize(ID3D11Device* device)
 	m_root->AddChild(std::move(body));
 	
 	// ‰Šúó‘Ô 
-	ChangeState(std::make_unique<EnemyAttackState>());
+	ChangeState(std::make_unique<EnemyIdleState>());
+	m_attackState = false;
 }
 
 void Enemy::Update(float dt)
 {
 	// ó‘ÔXV
+	if (s_anyEnemyDied && !m_attackState)
+	{
+		m_attackState = true;
+		Damaging();
+	}
+
 	if (m_state)
 		m_state->Update(this, dt);
 
@@ -101,9 +110,9 @@ void Enemy::MoveForward(float dist)
 // ‰ñ“]
 void Enemy::RotateY(float deg)
 {
-	m_rotation = m_rotation *
-		Quaternion::CreateFromAxisAngle(Vector3::UnitY, XMConvertToRadians(deg));
+	m_rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY, deg);
 }
+
 
 std::vector<HitBoxPart> Enemy::GetHitBoxes() const
 {
@@ -150,22 +159,28 @@ std::vector<HitBoxPart> Enemy::GetHitBoxes() const
 	return result;
 }
 
-void Enemy::TakeDamage(int dt)
+void Enemy::TakeDamage(int dmg)
 {
 	if (!m_isAlive) return;
-	m_hp -= dt;
+	m_hp -= dmg;
 
 	if (m_hp <= 0)
 	{
 		Die();
+
+		if (!s_anyEnemyDied)
+		{
+			s_anyEnemyDied = true;
+		}
+
 		return;
 	}
-
-	Damaging();
 }
 
 void Enemy::Damaging()
 {
+	if (!m_isAlive) return;   // © •ÛŒ¯
+	ChangeState(std::make_unique<EnemyAttackState>());
 }
 
 void Enemy::Die()

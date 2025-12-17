@@ -13,25 +13,21 @@ void EnemyAttackState::Enter(Enemy* enemy)
 
     if (auto root = enemy->GetPart("Root"))
     {
-        root->m_rotation = Quaternion::Identity;
         root->m_position = Vector3::Zero;
     }
 
     if (auto body = enemy->GetPart("Body"))
     {
-        body->m_rotation = Quaternion::Identity;
         body->m_position = Vector3::Zero;
     }
 
     if (auto legR = enemy->GetPart("LegR"))
     {
-        legR->m_rotation = Quaternion::Identity;
         legR->m_position = Vector3::Zero;
     }
 
     if (auto legL = enemy->GetPart("LegL"))
     {
-        legL->m_rotation = Quaternion::Identity;
         legL->m_position = Vector3::Zero;
     }
 
@@ -42,34 +38,37 @@ void EnemyAttackState::Update(Enemy* enemy, float elapsedTime)
 {
     m_timer += elapsedTime;
 
-    //// --- プレイヤー方向 ---
-    //Vector3 playerPos = enemy->GetPlayerPosition();
-    //Vector3 enemyPos = enemy->GetPosition();
-    //Vector3 toPlayer = playerPos - enemyPos;
+    // プレイヤー方向に向かう
+    // プレイヤーと敵の場所を取る
+    Vector3 playerPos = enemy->GetPlayerPosition();
+    Vector3 enemyPos = enemy->GetPosition();
+    Vector3 toPlayer = playerPos - enemyPos;
 
-    //float targetYaw = atan2f(toPlayer.x, toPlayer.z);
-    //targetYaw -= XM_PIDIV2; // モデル90度補正
+    // プレイヤー方向に回転
+    float targetYaw = 0;
+    targetYaw = atan2f(toPlayer.x, toPlayer.z);
 
-    //enemy->GetPart("Body")->m_rotation =
-    //    Quaternion::CreateFromYawPitchRoll(targetYaw, 0, 0);
+    enemy->RotateY(targetYaw);
 
-    //// forwardもYaw補正後で
-    //Vector3 forward(
-    //    sinf(targetYaw),
-    //    0,
-    //    cosf(targetYaw)
-    //);
-    //float moveSpeed = 1.0f;
-    //enemy->SetPosition(enemyPos + forward * moveSpeed * elapsedTime);
+    // 前進方向
+    Vector3 forward =
+        Vector3::Transform(Vector3::UnitZ,
+            Matrix::CreateFromQuaternion(enemy->GetRotation()));
+    forward.Normalize();
+    float moveSpeed = 1.0f; // 移動スピード
 
-    // 足の交互切り替え（左右切り替えだけ）
+    // 場所の更新
+    enemy->SetPosition(enemyPos + forward * moveSpeed * elapsedTime);
+
+    // ------------------------------------------------------------------
+    // 足を交互に切り替え
     if (m_timer >= 0.8f)
     {
         m_whichLeg = 1 - m_whichLeg;
         m_timer = 0;
     }
 
-    // 足の振り（sin波でスムーズに）
+    // 足の振り
     float swing = abs(sinf(m_timer * 4.0f) * 1.5f);
 
     if (m_whichLeg == 0)

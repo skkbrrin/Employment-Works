@@ -64,7 +64,9 @@ void Field::Update(float elapsedTime)
 
     // “G‚ÌXV
     for (auto& e : m_enemies)
+    {
         e->Update(elapsedTime);
+    }
 
     for (auto& t : m_tries)
         t->Update(elapsedTime);
@@ -201,7 +203,9 @@ void Field::CheckCollision()
                 if (hit)
                 {
                     if (pBox.isWeapon && eBox.isDamageable)
+                    {
                         enemy->TakeDamage(10);
+                    }
 
                     if (pBox.isDamageable && eBox.isWeapon)
                         m_player->TakeDamage(10);
