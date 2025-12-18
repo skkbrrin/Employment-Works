@@ -33,7 +33,7 @@ TextureSprite::~TextureSprite()
 
 bool TextureSprite::Load(const wchar_t* texture)
 {
-	HRESULT hr = CreateWICTextureFromFile(
+	HRESULT hr = CreateDDSTextureFromFile(
 		m_device,
 		texture,
 		nullptr,

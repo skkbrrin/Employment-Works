@@ -3,6 +3,13 @@
 //
 
 #pragma once
+#include <combaseapi.h>
+#include <dxgiformat.h>
+#include <d3dcommon.h>
+#include <d3d11.h>
+#include <wrl/client.h>
+#include <dxgi1_3.h>
+#include <d3d11_1.h>
 
 namespace DX
 {

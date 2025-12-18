@@ -56,7 +56,7 @@ public:
         using namespace DirectX::SimpleMath;
         Matrix world = GetWorldMatrix();
         if (m_model)
-            m_model->Draw(context, *states, world, view, proj);
+            m_model->Draw(context, *states, m_world, view, proj);
 
         for (auto& c : m_children)
             c->Render(context, states, view, proj);
@@ -69,9 +69,9 @@ public:
         m_children.push_back(std::move(child));
     }
 
-    void SetModel(std::unique_ptr<DirectX::Model> model)
+    void SetModel(std::shared_ptr<DirectX::Model> model)
     {
-        m_model = std::move(model);
+        m_model = model;
     }
 
     DirectX::SimpleMath::Vector3 m_position = { 0, 0, 0 };
@@ -83,7 +83,7 @@ public:
     TransformNode* m_parent = nullptr;
 
 private:
-    std::unique_ptr<DirectX::Model> m_model;
+    std::shared_ptr<DirectX::Model> m_model;
     DirectX::SimpleMath::Matrix m_world =
         DirectX::SimpleMath::Matrix::Identity;
 

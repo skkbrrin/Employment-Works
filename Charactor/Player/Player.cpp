@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "Charactor/Enemy/Enemy.h"
 #include "PlayerIdleState.h"
+#include "ResourceManager/Resource.h"
+
 using namespace DirectX;
 
 using namespace DirectX::SimpleMath;
@@ -20,52 +22,59 @@ void Player::Initialize(ID3D11Device* device)
 {
 	// ÉÇÉfÉãì«Ç›çûÇ› --------------------------------------------------------------------------------
 
-	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device); 
-	fx->SetDirectory(L"Resources/Models"); 
+	Resource::Initialize(device);
 	m_root = std::make_unique<TransformNode>(L"Root"); 
 	
 	// ì∑ëÃ
 	auto body = std::make_unique<TransformNode>(L"Body");
-	body->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/DogBody.sdkmesh", *fx));
+	auto bodyModel = Resource::Model().Load(L"Resources/Models/DogBody.sdkmesh");
+	body->SetModel(bodyModel);
 	m_parts["Body"] = body.get(); 
 	
 	// ì™ 
 	auto head = std::make_unique<TransformNode>(L"Head");
-	head->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/DogHead.sdkmesh", *fx));
+	auto headModel = Resource::Model().Load(L"Resources/Models/DogHead.sdkmesh");
+	head->SetModel(headModel);
 	head->m_position = { 0.0f, 0.0f, 0.0f };
 	m_parts["Head"] = head.get(); 
 	
 	// ïÄ 
 	auto axe = std::make_unique<TransformNode>(L"Axe");
-	axe->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/Axe.sdkmesh", *fx)); 
+	auto axeModel = Resource::Model().Load(L"Resources/Models/Axe.sdkmesh");
+	axe->SetModel(axeModel);
 	axe->m_position = { 0.0f, 0.0f, 0.0f }; m_parts["Axe"] = axe.get();
 	head->AddChild(std::move(axe)); 
 	
 	// ëOë´ 
 	auto legFL = std::make_unique<TransformNode>(L"LegFrontL");
-	legFL->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/LegFL.sdkmesh", *fx)); 
+	auto legFLModel = Resource::Model().Load(L"Resources/Models/LegFL.sdkmesh");
+	legFL->SetModel(legFLModel);
 	legFL->m_position = { -0.0f, -0.0f, 0.0f }; 
 	m_parts["LegFrontL"] = legFL.get();
 	
 	auto legFR = std::make_unique<TransformNode>(L"LegFrontR");
-	legFR->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/LegFR.sdkmesh", *fx)); 
+	auto legFRModel = Resource::Model().Load(L"Resources/Models/LegFR.sdkmesh");
+	legFR->SetModel(legFRModel);
 	legFR->m_position = { 0.0f, -0.0f, 0.0f };
 	m_parts["LegFrontR"] = legFR.get(); 
 	
 	// å„ë´ 
 	auto legBL = std::make_unique<TransformNode>(L"LegBackL"); 
-	legBL->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/LegBL.sdkmesh", *fx)); 
+	auto legBLModel = Resource::Model().Load(L"Resources/Models/LegBL.sdkmesh");
+	legBL->SetModel(legBLModel);
 	legBL->m_position = { -0.0f, -0.0f, -0.0f }; 
 	m_parts["LegBackL"] = legBL.get(); 
 	
 	auto legBR = std::make_unique<TransformNode>(L"LegBackR");
-	legBR->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/LegBR.sdkmesh", *fx));
+	auto legBRModel = Resource::Model().Load(L"Resources/Models/LegBR.sdkmesh");
+	legBR->SetModel(legBRModel);
 	legBR->m_position = { 0.0f, -0.0f, -0.0f }; 
 	m_parts["LegBackR"] = legBR.get(); 
 	
 	// ÇµÇ¡Ç€
 	auto tail = std::make_unique<TransformNode>(L"Tail");
-	tail->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/Tail.sdkmesh", *fx)); 
+	auto tailModel = Resource::Model().Load(L"Resources/Models/Tail.sdkmesh");
+	tail->SetModel(tailModel);
 	tail->m_position = { 0.0f, -0.0f, -0.0f }; m_parts["Tail"] = tail.get(); 
 
 	// ---------------------------------------------------------------------------------------------

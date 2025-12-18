@@ -51,8 +51,6 @@ void PlayScene::Update(float elapsedTime)
 
 	//タイマー
 
-	//HPマネージャー
-
 	//シーンチェンジの時に、白い板を画面に出して、透明度を0→１に徐々にしてフェードアウト
 	//白フェードアウト→リザルトバンっとだす。(「大神」常闇之皇戦、戦績風)
 	
@@ -88,6 +86,7 @@ void PlayScene::Render()
 	oss << "WoodCount::" << m_field->GetPlayer()->GetWoodCount();
 	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 20.0f), DirectX::Colors::Black);
 
+	// HP
 }
 
 void PlayScene::Finalize()
@@ -125,6 +124,9 @@ void PlayScene::CreateDeviceDependentResources()
 	m_field = std::make_unique<Field>();
 	m_field->Initialize(device, context);
 
+	// HP
+	m_hp = std::make_unique<HPUI>();
+	m_hp->Initialize(device, context, L"Resources/Textures/Tomoe.png");
 }
 
 

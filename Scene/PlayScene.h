@@ -14,6 +14,8 @@
 
 #include <Audio.h>
 
+#include "Charactor/UI/HPUI.h"
+
 class PlayScene : public Ito::Scene<UserResources>
 {
 public:
@@ -80,5 +82,8 @@ private:
 
 	// フィールド
 	std::unique_ptr<Field> m_field;
+
+	// HP
+	std::unique_ptr<HPUI> m_hp;
 };
 

@@ -3,6 +3,7 @@
 #include "TreeDeathState.h"
 #include "Charactor/Items/ItemManager.h"
 #include "Charactor/Player/Player.h"
+#include "ResourceManager/Resource.h"
 
 using namespace DirectX;
 
@@ -20,25 +21,27 @@ Tree::~Tree()
 void Tree::Initialize(ID3D11Device* device)
 {
 	// ÉÇÉfÉãì«Ç›çûÇ› --------------------------------------------------------------------------------
+	Resource::Initialize(device);
 
-	std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device); 
-	fx->SetDirectory(L"Resources/Models"); 
 	m_root = std::make_unique<TransformNode>(L"Root"); 
 	
 	// ì∑ëÃ
 	auto body = std::make_unique<TransformNode>(L"Body");
-	body->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/TreeBody.sdkmesh", *fx));
+	auto bodyModel = Resource::Model().Load(L"Resources/Models/TreeBody.sdkmesh");
+	body->SetModel(bodyModel);
 	m_parts["Body"] = body.get(); 
 	
 	// ç∂éË
 	auto legL = std::make_unique<TransformNode>(L"LegL");
-	legL->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/TreeLegL.sdkmesh", *fx)); 
+	auto legLModel = Resource::Model().Load(L"Resources/Models/TreeLegL.sdkmesh");
+	legL->SetModel(legLModel);
 	legL->m_position = { 0.0f, 0.0f, 0.0f }; 
 	m_parts["LegL"] = legL.get();
 	
 	// âEéË
 	auto legR = std::make_unique<TransformNode>(L"LegR");
-	legR->SetModel(Model::CreateFromSDKMESH(device, L"Resources/Models/TreeLegR.sdkmesh", *fx)); 
+	auto legRModel = Resource::Model().Load(L"Resources/Models/TreeLegR.sdkmesh");
+	legR->SetModel(legRModel);
 	legR->m_position = { 0.0f, 0.0f, 0.0f };
 	m_parts["LegR"] = legR.get(); 
 	

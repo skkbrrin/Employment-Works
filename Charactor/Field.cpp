@@ -17,7 +17,7 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
     m_player->Initialize(device);
 
     // “G‚Ì¶¬”A‰Šú‰»
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 20; i++)
     {
         auto e = std::make_unique<Enemy>();
         e->Initialize(device);
@@ -34,7 +34,7 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
     }
 
     // –Ø‚Ì¶¬”A‰Šú‰»
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 40; i++)
     {
         auto t = std::make_unique<Tree>();
         t->Initialize(device);

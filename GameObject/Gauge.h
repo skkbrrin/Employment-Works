@@ -9,7 +9,6 @@
 
 #include "StepTimer.h"
 #include "UserInterface.h"
-#include <DeviceResources.h>
 #include <SimpleMath.h>
 #include <Effects.h>
 #include <PrimitiveBatch.h>
@@ -18,6 +17,7 @@
 #include <CommonStates.h>
 #include <vector>
 #include "Keyboard.h"
+#include <DeviceResources.h>
 namespace kHorikawa
 {
 	

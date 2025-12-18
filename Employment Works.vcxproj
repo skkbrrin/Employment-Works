@@ -202,6 +202,8 @@
     <ClInclude Include="Charactor\Tree\Tree.h" />
     <ClInclude Include="Charactor\Tree\TreeDeathState.h" />
     <ClInclude Include="Charactor\Tree\TreeState.h" />
+    <ClInclude Include="Charactor\UI\HPUI.h" />
+    <ClInclude Include="Charactor\UI\TimerUI.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="DeviceResources.h" />
     <ClInclude Include="Game.h" />
@@ -226,6 +228,11 @@
     <ClInclude Include="ItoLib\TaskManager.h" />
     <ClInclude Include="ItoLib\UserResources.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ResourceManager\ModelManager.h" />
+    <ClInclude Include="ResourceManager\Resource.h" />
+    <ClInclude Include="ResourceManager\SEManager.h" />
+    <ClInclude Include="ResourceManager\SoundData.h" />
+    <ClInclude Include="ResourceManager\TextureManager.h" />
     <ClInclude Include="Scene\LoadingScreen.h" />
     <ClInclude Include="Scene\ResultScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
@@ -257,6 +264,8 @@
     <ClCompile Include="Charactor\Task\Number.cpp" />
     <ClCompile Include="Charactor\Tree\Tree.cpp" />
     <ClCompile Include="Charactor\Tree\TreeDeathState.cpp" />
+    <ClCompile Include="Charactor\UI\HPUI.cpp" />
+    <ClCompile Include="Charactor\UI\TimerUI.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="DeviceResources.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -285,6 +294,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ResourceManager\SEManager.cpp" />
+    <ClCompile Include="ResourceManager\TextureManager.cpp" />
     <ClCompile Include="Scene\LoadingScreen.cpp" />
     <ClCompile Include="Scene\ResultScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />

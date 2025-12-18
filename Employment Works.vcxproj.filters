@@ -53,6 +53,12 @@
     <Filter Include="Charactors\Tree\State">
       <UniqueIdentifier>{5f8a81f7-a527-4195-bfc9-cedaeb318e1b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Charactors\UI">
+      <UniqueIdentifier>{35a4ffc1-0a6c-4426-8157-2c5dcbdd3b7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ResourceManager">
+      <UniqueIdentifier>{0065bc5d-447a-489b-9416-e8e28cdeaac0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -229,6 +235,27 @@
     <ClInclude Include="Charactor\Tree\TreeDeathState.h">
       <Filter>Charactors\Tree\State</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceManager\SEManager.h">
+      <Filter>ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager\ModelManager.h">
+      <Filter>ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager\TextureManager.h">
+      <Filter>ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager\SoundData.h">
+      <Filter>ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceManager\Resource.h">
+      <Filter>ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\UI\TimerUI.h">
+      <Filter>Charactors\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\UI\HPUI.h">
+      <Filter>Charactors\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -359,6 +386,18 @@
     </ClCompile>
     <ClCompile Include="Charactor\Tree\TreeDeathState.cpp">
       <Filter>Charactors\Tree\State</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager\SEManager.cpp">
+      <Filter>ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceManager\TextureManager.cpp">
+      <Filter>ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\UI\TimerUI.cpp">
+      <Filter>Charactors\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\UI\HPUI.cpp">
+      <Filter>Charactors\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
