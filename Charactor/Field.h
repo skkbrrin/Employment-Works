@@ -8,6 +8,9 @@
 
 class Field
 {
+private:
+	static int ENEMY_COUNT;
+	static int TREE_COUNT;
 public:
 	void Initialize(ID3D11Device* device, ID3D11DeviceContext* context);
 	void Update(float elapsedTime);

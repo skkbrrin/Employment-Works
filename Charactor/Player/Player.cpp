@@ -90,6 +90,8 @@ void Player::Initialize(ID3D11Device* device)
 	
 	// ‰Šúó‘Ô‚ğIdle‚É 
 	ChangeState(std::make_unique<PlayerIdleState>());
+
+	m_hp = m_maxHP;
 }
 
 void Player::Update(float dt)

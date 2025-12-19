@@ -65,11 +65,11 @@ void PlayScene::Render()
 	auto states = GetUserResources()->GetCommonStates();
 
 	m_view = m_debugCamera->GetCameraMatrix();
-	m_view = SimpleMath::Matrix::CreateLookAt(
+	/*m_view = SimpleMath::Matrix::CreateLookAt(
 		m_camera.GetEyePosition(),
 		m_camera.GetTargetPosition(),
 		SimpleMath::Vector3::UnitY
-	);
+	);*/
 
 	// 床
 	m_floorPrimitive->Render(context, m_view, m_proj);
@@ -86,7 +86,14 @@ void PlayScene::Render()
 	oss << "WoodCount::" << m_field->GetPlayer()->GetWoodCount();
 	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 20.0f), DirectX::Colors::Black);
 
+	std::wostringstream os;
+	os << "PlayerHP::" << m_field->GetPlayer()->GetHP();
+	debugFont->AddString(os.str().c_str(), SimpleMath::Vector2(0.0f, 40.0f), DirectX::Colors::Black);
+
 	// HP
+	m_spriteBatch->Begin();
+	m_hp->Render(m_spriteBatch.get(), m_field->GetPlayer()->GetHP(), m_field->GetPlayer()->GetMaxHP());
+	m_spriteBatch->End();
 }
 
 void PlayScene::Finalize()
@@ -123,6 +130,9 @@ void PlayScene::CreateDeviceDependentResources()
 	// フィールド
 	m_field = std::make_unique<Field>();
 	m_field->Initialize(device, context);
+
+	// スプライトバッチ
+	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 
 	// HP
 	m_hp = std::make_unique<HPUI>();

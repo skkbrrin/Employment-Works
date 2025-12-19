@@ -65,7 +65,7 @@ public:
 
     std::vector<HitBoxPart> GetHitBoxes() const override;
 
-    void TakeDamage(int dt) override;
+    void TakeDamage(float dt) override;
     void Damaging();
     void Die();
     void SetItemManager(ItemManager* manager) { m_itemManager = manager; }

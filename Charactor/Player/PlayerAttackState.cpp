@@ -21,29 +21,6 @@ void PlayerAttackState::Update(Player* player, float elapsedTime)
     // 攻撃アニメーション
     head->m_rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY, swing * 0.8f);
 
-    // --------------  攻撃判定 ---------------------------
-    //if (m_timer > 0.15f && m_timer < 0.55f)
-    //{
-    //    Matrix weaponWorld = weapon->GetWorldMatrix();
-    //    Vector3 hitPos = weaponWorld.Translation();
-
-    //    // Sphere コライダー
-    //    float weaponRadius = 0.3f;
-
-    //    Sphere weaponHit(hitPos, weaponRadius);
-
-    //    // 全ての敵に対して判定
-    //    for (auto enemy : EnemyManager::Instance().GetEnemies())
-    //    {
-    //        if (weaponHit.Intersects(enemy->GetCollider()))
-    //        {
-    //            enemy->TakeDamage(10);
-    //            enemy->OnHitEffect();
-    //        }
-    //    }
-    //}
-    // -----------------------------------------------------
-
     // 攻撃終了
     if (m_timer > 0.65f)
     {

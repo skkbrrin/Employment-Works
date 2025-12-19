@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Field.h"
 
+int Field::ENEMY_COUNT = 50;
+int Field::TREE_COUNT = 1;
+
 inline DirectX::SimpleMath::Matrix MakeBoxMatrix(const DirectX::BoundingBox& box)
 {
     using namespace DirectX::SimpleMath;
@@ -17,7 +20,7 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
     m_player->Initialize(device);
 
     // “G‚Ì¶¬”A‰Šú‰»
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < ENEMY_COUNT; i++)
     {
         auto e = std::make_unique<Enemy>();
         e->Initialize(device);
@@ -34,7 +37,7 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
     }
 
     // –Ø‚Ì¶¬”A‰Šú‰»
-    for (int i = 0; i < 40; i++)
+    for (int i = 0; i < TREE_COUNT; i++)
     {
         auto t = std::make_unique<Tree>();
         t->Initialize(device);
@@ -208,7 +211,7 @@ void Field::CheckCollision()
                     }
 
                     if (pBox.isDamageable && eBox.isWeapon)
-                        m_player->TakeDamage(10);
+                        m_player->TakeDamage(0.1f);
                 }
             }
         }

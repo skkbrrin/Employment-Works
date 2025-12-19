@@ -4,6 +4,14 @@
 #include "SimpleMath.h"
 #include <wrl/client.h>
 
+template <typename T>
+T Clamp(T value, T minValue, T maxValue)
+{
+    if (value < minValue) return minValue;
+    if (value > maxValue) return maxValue;
+    return value;
+}
+
 class HPUI
 {
 public:
@@ -12,8 +20,7 @@ public:
         ID3D11DeviceContext* context,
         const wchar_t* texturePath);
 
-    void SetHP(int hp);
-    void Render(DirectX::SpriteBatch* spriteBatch);
+    void Render(DirectX::SpriteBatch* spriteBatch, int currentHP, int maxHP);
 
 private:
     static constexpr int MAX_HP = 3;

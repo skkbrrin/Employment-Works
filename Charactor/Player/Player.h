@@ -39,12 +39,13 @@ public:
     void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
     void SetRotation(DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
 
+    int GetMaxHP() { return m_maxHP; }
 private:
     std::unique_ptr<PlayerState> m_state;
     std::unique_ptr<TransformNode> m_root;
 
     int woodCount = 0;
-
+    int m_maxHP = 90;
 
 };
 

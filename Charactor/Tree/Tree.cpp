@@ -35,16 +35,19 @@ void Tree::Initialize(ID3D11Device* device)
 	auto legL = std::make_unique<TransformNode>(L"LegL");
 	auto legLModel = Resource::Model().Load(L"Resources/Models/TreeLegL.sdkmesh");
 	legL->SetModel(legLModel);
-	legL->m_position = { 0.0f, 0.0f, 0.0f }; 
+	legL->m_position = { 3.0f, -1.0f, 0.0f }; 
 	m_parts["LegL"] = legL.get();
 	
 	// ‰EŽè
 	auto legR = std::make_unique<TransformNode>(L"LegR");
 	auto legRModel = Resource::Model().Load(L"Resources/Models/TreeLegR.sdkmesh");
 	legR->SetModel(legRModel);
-	legR->m_position = { 0.0f, 0.0f, 0.0f };
+	legR->m_position = { 1.5f, 0.0f, 0.0f };
 	m_parts["LegR"] = legR.get(); 
 	
+	body->m_scale = { 1.5, 2, 1.5 };
+	legL->m_scale = { 1.5, 1, 1.5 };
+	legR->m_scale = { 1.5, 1, 1.5 };
 	
 	// ---------------------------------------------------------------------------------------------
 	
@@ -133,7 +136,7 @@ std::vector<HitBoxPart> Tree::GetHitBoxes() const
 	return result;
 }
 
-void Tree::TakeDamage(int dt)
+void Tree::TakeDamage(float dt)
 {
 	if (!m_isAlive) return;
 	m_hp -= dt;

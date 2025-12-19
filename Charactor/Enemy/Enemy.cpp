@@ -34,20 +34,23 @@ void Enemy::Initialize(ID3D11Device* device)
 	auto body = std::make_unique<TransformNode>(L"Body");
 	auto bodyModel = Resource::Model().Load( L"Resources/Models/EnemyBody.sdkmesh");
 	body->SetModel(bodyModel);
+	body->m_scale = { 1.5, 2, 1.5 };
 	m_parts["Body"] = body.get(); 
 	
 	// ç∂éË
 	auto legL = std::make_unique<TransformNode>(L"LegL");
 	auto legLModel = Resource::Model().Load( L"Resources/Models/EnemyLegL.sdkmesh");
 	legL->SetModel(legLModel);
-	legL->m_position = { 0.0f, 0.0f, 0.0f }; 
+	legL->m_position = { 0.3f, 0.0f, 0.0f }; 
+	legL->m_scale = { 1.5, 1, 1.5 };
 	m_parts["LegL"] = legL.get();
 	
 	// âEéË
 	auto legR = std::make_unique<TransformNode>(L"LegR");
 	auto legRModel = Resource::Model().Load(L"Resources/Models/EnemyLegR.sdkmesh");
 	legR->SetModel(legRModel);
-	legR->m_position = { 0.0f, 0.0f, 0.0f };
+	legR->m_position = { -0.3f, 0.0f, 0.0f };
+	legR->m_scale = { 1.5, 1, 1.5 };
 	m_parts["LegR"] = legR.get(); 
 	
 	
@@ -163,7 +166,7 @@ std::vector<HitBoxPart> Enemy::GetHitBoxes() const
 	return result;
 }
 
-void Enemy::TakeDamage(int dmg)
+void Enemy::TakeDamage(float dmg)
 {
 	if (!m_isAlive) return;
 	m_hp -= dmg;

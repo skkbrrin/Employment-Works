@@ -16,6 +16,8 @@
 
 #include "Charactor/UI/HPUI.h"
 
+#include "SpriteBatch.h"
+
 class PlayScene : public Ito::Scene<UserResources>
 {
 public:
@@ -85,5 +87,6 @@ private:
 
 	// HP
 	std::unique_ptr<HPUI> m_hp;
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 };
 

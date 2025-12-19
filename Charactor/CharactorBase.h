@@ -17,7 +17,7 @@ public:
 
     // HP
     int GetHP() const { return m_hp; }
-    virtual void TakeDamage(int dmg) { m_hp -= dmg; }
+    virtual void TakeDamage(float dmg) { m_hp -= dmg; }
 
     // ƒ[ƒ‹ƒhs—ñ
     DirectX::SimpleMath::Matrix GetWorldMatrix() const
@@ -38,6 +38,6 @@ public:
     virtual void Update(float dt) = 0;
 
 protected:
-    int m_hp = 10;
+    float m_hp = 10;
     std::unordered_map<std::string, TransformNode*> m_parts;
 };

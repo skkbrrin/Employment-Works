@@ -11,21 +11,39 @@ void HPUI::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, const 
         m_texture.ReleaseAndGetAddressOf()
     );
 
-    m_pos = { 80.0f, 600.0f };
+    m_pos = { 150.0f, 100.0f };
 }
 
-void HPUI::Render(DirectX::SpriteBatch* spriteBatch)
+void HPUI::Render( DirectX::SpriteBatch* spriteBatch, int currentHP, int maxHP)
 {
-    for (int i = 0; i < m_hp; ++i)
+    float scale = 3.0f;
+    float radius = 50.0f;
+
+    // HP0‚È‚ç‰f‚³‚È‚¢
+    if (maxHP <= 0) return;
+
+    // HP‚ðŽO•ªŠ„‚µ‚Ä•\Ž¦
+    int hpStage = (currentHP * 3) / maxHP;
+    hpStage = Clamp(hpStage, 0, 3);
+
+
+    for (int i = 0; i < hpStage; ++i)
     {
+        float angle = (2.0f * DirectX::XM_PI / 3) * i;
+
+        DirectX::SimpleMath::Vector2 offset(
+            radius,
+            radius
+        );
+       
         spriteBatch->Draw(
             m_texture.Get(),
-            m_pos + DirectX::SimpleMath::Vector2(i * 40.0f, 0.0f),
+            m_pos + offset,
             nullptr,
-            DirectX::Colors::White,
-            0.0f,
-            { 0, 0 },
-            1.0f
+            DirectX::Colors::Black,
+            angle,
+            { 60.0f / 2.0f, 60.0f / 2.0f },
+            scale
         );
     }
 }
