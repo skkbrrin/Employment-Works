@@ -98,6 +98,27 @@ void Player::Update(float dt)
 {
 	if (m_state) m_state->Update(this, dt);
 
+	// ノックバック処理
+	if (m_isNockBack)
+	{
+		m_NockBackVelocity.y -= 9.8f * dt;
+		m_position += m_NockBackVelocity * dt;
+
+		// 地面に着地したら止める
+		const float groundY = 0.0f;
+
+		if (m_position.y <= groundY)
+		{
+			m_position.y = groundY;
+			m_NockBackVelocity.y = 0.0f;
+			m_isNockBack = false;
+		}
+
+		// 横方向減衰
+		m_NockBackVelocity.x *= 0.98f;
+		m_NockBackVelocity.z *= 0.98f;
+	}
+
 	if (m_root)
 	{
 		// CharacterBase のワールド行列を反映
@@ -188,3 +209,26 @@ std::vector<HitBoxPart> Player::GetHitBoxes() const
 	return result;
 }
 
+void Player::TakeDamage(float dmg, const Vector3& attackerPos)
+{
+	m_hp -= dmg;
+
+	// -------- ノックバック方向 --------
+	Vector3 playerPos = GetPosition();
+	Vector3 dir = playerPos - attackerPos;
+
+	if (dir.LengthSquared() > 0.0001f)
+	{
+		dir.Normalize();
+
+		// 横方向
+		float knockPowerXZ = 6.0f;
+		// 上方向
+		float knockPowerY = 3.5f;
+
+		m_NockBackVelocity = dir * knockPowerXZ;
+		m_NockBackVelocity.y = knockPowerY;
+
+		m_isNockBack = true;
+	}
+}

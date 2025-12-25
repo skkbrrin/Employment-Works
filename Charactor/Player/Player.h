@@ -26,8 +26,19 @@ public:
     void MoveForward(float dist);
     void RotateY(float deg);
 
+    DirectX::SimpleMath::Vector3 GetForward() const
+    {
+        // Z+ ‚ğ‘O‚Æ‚·‚é
+        return DirectX::SimpleMath::Vector3::Transform(
+            DirectX::SimpleMath::Vector3::UnitZ,
+            m_rotation
+        );
+    }
+
     // UŒ‚ƒqƒbƒgƒ{ƒbƒNƒX
     std::vector<HitBoxPart> GetHitBoxes() const override;
+
+    void TakeDamage(float dmg, const DirectX::SimpleMath::Vector3& attackerPos);
 
     void AddWood(int value) {
         woodCount += value;
@@ -37,9 +48,21 @@ public:
     DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
     DirectX::SimpleMath::Quaternion& GetRotation() { return m_rotation; }
     void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
-    void SetRotation(DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
+    void SetRotation(const DirectX::SimpleMath::Quaternion& rot) { m_rotation = rot; }
 
     int GetMaxHP() { return m_maxHP; }
+    
+    // ”ÍˆÍUŒ‚’†‚©‚Ç‚¤‚©
+    bool GetPowerAttacking() const { return m_isPowerAttacking; }
+    void SetPowerAttacking(bool isattack) { m_isPowerAttacking = isattack; }
+    
+    // ”ÍˆÍUŒ‚‚Ì”¼Œa
+    void SetPowerAttackRadius(float r) { m_powerAttackRadius = r; }
+    float GetPowerAttackRadius() const { return m_powerAttackRadius; }
+
+    // ƒ_ƒbƒVƒ…UŒ‚’†‚©‚Ç‚¤‚©
+    bool GetDashAttacking() const { return m_isDashAttacking; }
+    void SetDashAttacking(bool v) { m_isDashAttacking = v; }
 private:
     std::unique_ptr<PlayerState> m_state;
     std::unique_ptr<TransformNode> m_root;
@@ -47,5 +70,16 @@ private:
     int woodCount = 0;
     int m_maxHP = 90;
 
+    DirectX::SimpleMath::Vector3 m_NockBackVelocity = DirectX::SimpleMath::Vector3::Zero;
+    bool m_isNockBack = false;
+
+    // ”ÍˆÍUŒ‚’†‚©‚Ç‚¤‚©
+    bool m_isPowerAttacking = false;
+
+    // ”ÍˆÍUŒ‚‚Ì”¼Œa
+    float m_powerAttackRadius = 0.0f;
+
+    // ƒ_ƒbƒVƒ…UŒ‚’†‚©‚Ç‚¤‚©
+    bool m_isDashAttacking = false;
 };
 

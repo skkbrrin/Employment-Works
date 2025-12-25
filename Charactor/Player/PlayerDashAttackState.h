@@ -1,12 +1,11 @@
 #pragma once
 #include "PlayerState.h"
 
-class PlayerAttackState : public PlayerState
+class PlayerDashAttackState : public PlayerState
 {
 private:
     float m_timer = 0.0f;
-    int m_spaceCount;
-    float m_typeTimer = 0.0f;
+    DirectX::SimpleMath::Vector3 m_dashDir = DirectX::SimpleMath::Vector3::Zero;
 
     DirectX::Keyboard::State m_kb;
     DirectX::Keyboard::KeyboardStateTracker m_kbTracker;

@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Field.h"
 
-int Field::ENEMY_COUNT = 50;
-int Field::TREE_COUNT = 1;
+int Field::ENEMY_COUNT = 35;
+int Field::TREE_COUNT = 45;
 
 inline DirectX::SimpleMath::Matrix MakeBoxMatrix(const DirectX::BoundingBox& box)
 {
@@ -27,7 +27,7 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
         e->SetPlayer(m_player);
 
         float x = (rand() % 500 - 250) * 0.3f;
-        float z = (rand() % 500 - 250) * 0.3f;
+        float z = (rand() % 500 - 200) * 0.3f;
         e->SetPosition({ x, 0.0f, z });
 
         float rot = (rand() % 360);
@@ -58,6 +58,13 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
 
     // コライダー
     m_debugOBB = DirectX::GeometricPrimitive::CreateBox(context, DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
+
+    m_debugSphere =
+        DirectX::GeometricPrimitive::CreateSphere(
+            context,
+            1.0f,    // 半径1の球（描画時にスケール）
+            16       // 分割数（軽めでOK）
+        );
 }
 
 void Field::Update(float elapsedTime)
@@ -84,21 +91,39 @@ void Field::Update(float elapsedTime)
     // アイテムドロップ
     for (auto& enemy : m_enemies)
     {
-        if (enemy->GetDeleteFlag())
+        if (enemy->GetDeleteFlag() && enemy->ShouldDropItem())
         {
-            if (enemy->ShouldDropItem())
+            int dropCount = 12 + (rand() % 3);
+
+            for (int i = 0; i < dropCount; i++)
             {
-                SpawnItem(enemy->GetWorldMatrix() * ItemWorld);
+                Vector3 pos = enemy->GetPosition();
+                Vector3 vel(
+                    ((rand() % 100) - 50) * 0.05f,
+                    (rand() % 30) * 0.1f + 2.0f,
+                    ((rand() % 100) - 50) * 0.05f
+                );
+
+                m_itemManager.SpawnWithVelocity(Item::Type::Wood, pos, vel);
             }
         }
     }
     for (auto& tree : m_tries)
     {
-        if (tree->GetDeleteFlag())
+        if (tree->GetDeleteFlag() && tree->ShouldDropItem())
         {
-            if (tree->ShouldDropItem())
+            int dropCount = (rand() % 3);
+
+            for (int i = 0; i < dropCount; i++)
             {
-                SpawnItem(tree->GetWorldMatrix() * ItemWorld);
+                Vector3 pos = tree->GetPosition();
+                Vector3 vel(
+                    ((rand() % 100) - 50) * 0.05f,
+                    (rand() % 30) * 0.1f + 2.0f,
+                    ((rand() % 100) - 50) * 0.05f
+                );
+
+                m_itemManager.SpawnWithVelocity(Item::Type::Wood, pos, vel);
             }
         }
     }
@@ -183,6 +208,43 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
     }
 #endif
 
+#if defined(_DEBUG)
+    if (m_player->GetPowerAttacking())
+    {
+        using namespace DirectX::SimpleMath;
+
+        float r = m_player->GetPowerAttackRadius();
+
+        Matrix world =
+            Matrix::CreateScale(r) *
+            Matrix::CreateTranslation(m_player->GetPosition());
+
+        m_debugSphere->Draw(
+            world,
+            view,
+            proj,
+            DirectX::XMVECTORF32{1, 1, 1, 0.5f}
+        );
+    }
+
+    if (m_player->GetDashAttacking())
+    {
+        using namespace DirectX::SimpleMath;
+
+        float r = m_player->GetPowerAttackRadius();
+
+        Matrix world =
+            Matrix::CreateScale(r) *
+            Matrix::CreateTranslation(m_player->GetPosition());
+
+        m_debugSphere->Draw(
+            world,
+            view,
+            proj,
+            DirectX::XMVECTORF32{ 1, 1, 1, 0.5f }
+        );
+    }
+#endif
 }
 
 
@@ -211,13 +273,12 @@ void Field::CheckCollision()
                     }
 
                     if (pBox.isDamageable && eBox.isWeapon)
-                        m_player->TakeDamage(0.1f);
+                        m_player->TakeDamage(0.1f, enemy->GetPosition());
                 }
             }
         }
     }
 
-    // 木も同様
     for (auto& tree : m_tries)
     {
         auto treeBoxes = tree->GetHitBoxes();
@@ -227,14 +288,85 @@ void Field::CheckCollision()
             for (auto& tBox : treeBoxes)
             {
                 bool hit = pBox.obb.Intersects(tBox.obb);
+
                 pBox.hit = hit;
                 tBox.hit = hit;
 
                 if (hit)
                 {
                     if (pBox.isWeapon && tBox.isDamageable)
+                    {
                         tree->TakeDamage(10);
+                    }
                 }
+            }
+        }
+    }
+
+    if (m_player->GetPowerAttacking())
+    {
+        const float radius = m_player->GetPowerAttackRadius();
+        Vector3 center = m_player->GetPosition();
+
+        for (auto& enemy : m_enemies)
+        {
+            Vector3 toEnemy = enemy->GetPosition() - center;
+            float distSq = toEnemy.LengthSquared();
+
+            if (distSq <= radius * radius)
+            {
+                // ダメージ
+                enemy->TakeDamage(20);
+
+                // ノックバック
+                toEnemy.Normalize();
+            }
+        }
+
+        // 木も同様
+        for (auto& tree : m_tries)
+        {
+            Vector3 toTree = tree->GetPosition() - center;
+            float distSq = toTree.LengthSquared();
+
+            if (distSq <= radius * radius)
+            {
+                // ダメージ
+                tree->TakeDamage(20);
+            }
+        }
+    }
+
+    if (m_player->GetDashAttacking())
+    {
+        const float radius = m_player->GetPowerAttackRadius();
+        Vector3 center = m_player->GetPosition();
+
+        for (auto& enemy : m_enemies)
+        {
+            Vector3 toEnemy = enemy->GetPosition() - center;
+            float distSq = toEnemy.LengthSquared();
+
+            if (distSq <= radius * radius)
+            {
+                // ダメージ
+                enemy->TakeDamage(20);
+
+                // ノックバック
+                toEnemy.Normalize();
+            }
+        }
+
+        // 木も同様
+        for (auto& tree : m_tries)
+        {
+            Vector3 toTree = tree->GetPosition() - center;
+            float distSq = toTree.LengthSquared();
+
+            if (distSq <= radius * radius)
+            {
+                // ダメージ
+                tree->TakeDamage(20);
             }
         }
     }
@@ -263,7 +395,7 @@ void Field::UpdateHitBox()
                     }
                     else if (eBox.isWeapon && pBox.isDamageable)
                     {
-                        m_player->TakeDamage(5);
+                        m_player->TakeDamage(5, enemy->GetPosition());
                     }
                 }
 

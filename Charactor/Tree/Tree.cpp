@@ -159,29 +159,7 @@ void Tree::Die()
 	if (!m_isAlive) return;
 	m_isAlive = false;
 
-	// ここでドロップする（薪）
-	if (m_itemManager)
-	{
-		// ランダムで 1～3 個
-		int dropCount = (rand() % 3) + 1;
-
-		for (int i = 0; i < dropCount; i++)
-		{
-			// 初期位置
-			Vector3 startPos = m_position;
-
-			// 初速ランダム（水平）
-			float vx = ((rand() % 100) - 50) * 0.05f;
-			float vz = ((rand() % 100) - 50) * 0.05f;
-
-			// 上方向にポーンと飛ばす
-			float vy = (rand() % 30) * 0.1f + 2.0f;
-
-			Vector3 velocity(vx, vy, vz);
-
-			m_itemManager->SpawnWithVelocity(Item::Type::Wood, startPos, velocity);
-		}
-	}
+	m_shouldDropItem = true;   // ← フラグだけ
 
 	ChangeState(std::make_unique<TreeDeathState>());
 }

@@ -30,7 +30,7 @@ public:
 
 private:
     Type m_type;
-    static std::unique_ptr<DirectX::Model> m_woodModel;
+    static std::shared_ptr<DirectX::Model> m_woodModel;
     DirectX::SimpleMath::Matrix m_world;
     DirectX::SimpleMath::Vector3 m_position;
     DirectX::SimpleMath::Vector3 m_velocity;

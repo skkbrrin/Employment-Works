@@ -27,6 +27,7 @@ private:
 	std::vector<std::unique_ptr<Tree>> m_tries;
 
 	std::unique_ptr<DirectX::GeometricPrimitive> m_debugOBB;
+	std::unique_ptr<DirectX::GeometricPrimitive> m_debugSphere;
 
 	struct HitInfo
 	{

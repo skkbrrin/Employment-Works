@@ -2,6 +2,8 @@
 #include "ResourceManager/Resource.h"
 #include "HPUI.h"
 
+
+
 void HPUI::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, const wchar_t* texturePath)
 {
     DirectX::CreateWICTextureFromFile(
@@ -11,7 +13,7 @@ void HPUI::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, const 
         m_texture.ReleaseAndGetAddressOf()
     );
 
-    m_pos = { 150.0f, 100.0f };
+    m_pos = { 50.0f, 50.0f };
 }
 
 void HPUI::Render( DirectX::SpriteBatch* spriteBatch, int currentHP, int maxHP)
@@ -40,7 +42,7 @@ void HPUI::Render( DirectX::SpriteBatch* spriteBatch, int currentHP, int maxHP)
             m_texture.Get(),
             m_pos + offset,
             nullptr,
-            DirectX::Colors::Black,
+            DirectX::Colors::White,
             angle,
             { 60.0f / 2.0f, 60.0f / 2.0f },
             scale

@@ -194,7 +194,9 @@
     <ClInclude Include="Charactor\Object.h" />
     <ClInclude Include="Charactor\Player\Player.h" />
     <ClInclude Include="Charactor\Player\PlayerAttackState.h" />
+    <ClInclude Include="Charactor\Player\PlayerDashAttackState.h" />
     <ClInclude Include="Charactor\Player\PlayerIdleState.h" />
+    <ClInclude Include="Charactor\Player\PlayerPowerAttackState.h" />
     <ClInclude Include="Charactor\Player\PlayerState.h" />
     <ClInclude Include="Charactor\Player\PlayerWalkState.h" />
     <ClInclude Include="Charactor\Task\Number.h" />
@@ -259,7 +261,9 @@
     <ClCompile Include="Charactor\Object.cpp" />
     <ClCompile Include="Charactor\Player\Player.cpp" />
     <ClCompile Include="Charactor\Player\PlayerAttackState.cpp" />
+    <ClCompile Include="Charactor\Player\PlayerDashAttackState.cpp" />
     <ClCompile Include="Charactor\Player\PlayerIdleState.cpp" />
+    <ClCompile Include="Charactor\Player\PlayerPowerAttackState.cpp" />
     <ClCompile Include="Charactor\Player\PlayerWalkState.cpp" />
     <ClCompile Include="Charactor\Task\Number.cpp" />
     <ClCompile Include="Charactor\Tree\Tree.cpp" />

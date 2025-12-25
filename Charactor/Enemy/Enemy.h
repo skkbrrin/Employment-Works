@@ -95,4 +95,6 @@ private:
 
     static bool s_anyEnemyDied;
     bool m_attackState; // UŒ‚‚ÉØ‚è‘Ö‚¦‚½‚©
+
+    DirectX::SimpleMath::Vector3 m_NockBackVelocity;
 };

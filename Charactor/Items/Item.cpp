@@ -2,18 +2,16 @@
 #include "Item.h"
 #include <Model.h>
 #include <Effects.h>
+#include "ResourceManager/Resource.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-std::unique_ptr<Model> Item::m_woodModel = nullptr;
+std::shared_ptr<DirectX::DX11::Model> Item::m_woodModel = nullptr;
 
 void Item::LoadModels(ID3D11Device* device)
 {
-    std::unique_ptr<EffectFactory> fx = std::make_unique<EffectFactory>(device);
-    fx->SetDirectory(L"Resources/Models");
-
-    m_woodModel = Model::CreateFromSDKMESH(device, L"Resources/Models/Wood.sdkmesh", *fx);
+    m_woodModel = Resource::Model().Load(L"Resources/Models/Wood.sdkmesh");
 }
 
 Item::Item(Type type, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& velocity)

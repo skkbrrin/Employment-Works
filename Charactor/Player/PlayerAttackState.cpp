@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PlayerAttackState.h"
 #include "PlayerIdleState.h"
+#include "PlayerPowerAttackState.h"
 #include "Player.h"
 
 using namespace DirectX::SimpleMath;
@@ -12,6 +13,9 @@ void PlayerAttackState::Enter(Player* player)
 
 void PlayerAttackState::Update(Player* player, float elapsedTime)
 {
+    m_kb = DirectX::Keyboard::Get().GetState();
+    m_kbTracker.Update(m_kb);
+
     m_timer += elapsedTime;
 
     float swing = sinf(m_timer * 10.0f);
@@ -21,10 +25,36 @@ void PlayerAttackState::Update(Player* player, float elapsedTime)
     // UŒ‚ƒAƒjƒ[ƒVƒ‡ƒ“
     head->m_rotation = Quaternion::CreateFromAxisAngle(Vector3::UnitY, swing * 0.8f);
 
-    // UŒ‚I—¹
+    // UŒ‚˜A‘Å‚µ‚Ä‚é‚©‚Ç‚¤‚©
+    if (m_spaceCount > 0)
+    {
+        m_typeTimer += elapsedTime;
+    }
+
+    if (m_typeTimer >= 0.5f)
+    {
+        m_spaceCount = 0;
+        m_typeTimer = 0.0f;
+    }
+
+    if (m_kbTracker.pressed.Space)
+    {
+        m_spaceCount++;
+        m_typeTimer = 0.0f;
+    }
+
+    // ”ÍˆÍUŒ‚
+    if (m_spaceCount >= 5)
+    {
+        player->ChangeState( std::make_unique<PlayerPowerAttackState>());
+        return;
+    }
+
+    // ˜A‘Å–³‚µ UŒ‚I—¹
     if (m_timer > 0.65f)
     {
         player->ChangeState(std::make_unique<PlayerIdleState>());
+        return;
     }
 }
 

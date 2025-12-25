@@ -68,6 +68,9 @@ void Enemy::Initialize(ID3D11Device* device)
 
 void Enemy::Update(float dt)
 {
+	m_NockBackVelocity *= 0.85f; // 減衰
+	SetPosition(GetPosition() + m_NockBackVelocity * dt);
+
 	// 状態更新
 	if (s_anyEnemyDied && !m_attackState)
 	{
@@ -95,6 +98,8 @@ void Enemy::RenderE(ID3D11DeviceContext* context, DirectX::CommonStates* states,
 {
 	if (m_root)
 		m_root->Render(context, states, view, proj);
+
+	
 }
 	
 // 状態変更
@@ -173,6 +178,11 @@ void Enemy::TakeDamage(float dmg)
 
 	if (m_hp <= 0)
 	{
+		Vector3 knockDir = GetPosition() - m_player->GetPosition();
+		knockDir.Normalize();
+
+		float knockBackPower = 8.0f;
+		m_NockBackVelocity += knockDir * knockBackPower;
 		Die();
 
 		if (!s_anyEnemyDied)
@@ -195,31 +205,7 @@ void Enemy::Die()
 	if (!m_isAlive) return;
 	m_isAlive = false;
 
-	// ここでドロップする（薪）
-	if (m_itemManager)
-	{
-		int dropCount = (rand() % 3) + 12;
-
-		for (int i = 0; i < dropCount; i++)
-		{
-			// 初期位置（敵の位置）
-			Vector3 startPos = m_position;
-
-			// 初速ランダム（水平）
-			float vx = ((rand() % 100) - 50) * 0.05f; // -2.5 ～ +2.5
-			float vz = ((rand() % 100) - 50) * 0.05f;
-
-			// 上方向にポーンと飛ばす
-			float vy = (rand() % 30) * 0.1f + 2.0f;   // 2.0～5.0ぐらい
-
-			Vector3 velocity(vx, vy, vz);
-
-			// ItemManagerに初速も渡す
-			m_itemManager->SpawnWithVelocity(Item::Type::Wood, startPos, velocity);
-		}
-	}
-
-	// 敵死亡ステートへ
+	m_shouldDropItem = true;   // ← フラグだけ
 	ChangeState(std::make_unique<EnemyDeathState>());
 }
 

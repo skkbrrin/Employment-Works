@@ -2,6 +2,7 @@
 #include "PlayerWalkState.h"
 #include "PlayerIdleState.h"
 #include "PlayerAttackState.h"
+#include "PlayerDashAttackState.h"
 #include "Player.h"
 
 using namespace DirectX::SimpleMath;
@@ -17,6 +18,7 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
 {
     m_timer += elapsedTime;
     auto kb = DirectX::Keyboard::Get().GetState();
+    m_kbTracker.Update(kb);
 
     if (kb.LeftShift)
     {
@@ -52,9 +54,9 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
         Quaternion::CreateFromAxisAngle(Vector3::UnitZ, tailAngle);
 
     // ƒL[‚ð—£‚µ‚½‚çIdle‚É–ß‚·
-    if (kb.Space)
+    if (m_kbTracker.pressed.Space)
     {
-        player->ChangeState(std::make_unique<PlayerAttackState>());
+        player->ChangeState(std::make_unique<PlayerDashAttackState>());
         return;
     }
     if (!kb.W && !kb.A && !kb.S && !kb.D)

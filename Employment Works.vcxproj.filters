@@ -256,6 +256,12 @@
     <ClInclude Include="Charactor\UI\HPUI.h">
       <Filter>Charactors\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Charactor\Player\PlayerPowerAttackState.h">
+      <Filter>Charactors\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\Player\PlayerDashAttackState.h">
+      <Filter>Charactors\Player\State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -398,6 +404,12 @@
     </ClCompile>
     <ClCompile Include="Charactor\UI\HPUI.cpp">
       <Filter>Charactors\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\PlayerPowerAttackState.cpp">
+      <Filter>Charactors\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\Player\PlayerDashAttackState.cpp">
+      <Filter>Charactors\Player\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

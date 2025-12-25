@@ -36,7 +36,7 @@ void PlayScene::Update(float elapsedTime)
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 
 	// リザルト切り替え条件
-	if (kb->pressed.Q)
+	if (kb->pressed.Q || m_field->GetPlayer()->GetHP() <= 0)
 	{
 		ChangeScene<ResultScene>();
 	}
@@ -65,11 +65,28 @@ void PlayScene::Render()
 	auto states = GetUserResources()->GetCommonStates();
 
 	m_view = m_debugCamera->GetCameraMatrix();
-	/*m_view = SimpleMath::Matrix::CreateLookAt(
-		m_camera.GetEyePosition(),
-		m_camera.GetTargetPosition(),
-		SimpleMath::Vector3::UnitY
-	);*/
+	if (!m_field->GetPlayer()->GetPowerAttacking())
+	{
+		m_view = SimpleMath::Matrix::CreateLookAt(
+			m_camera.GetEyePosition(),
+			m_camera.GetTargetPosition(),
+			SimpleMath::Vector3::UnitY
+		);
+	}
+	else
+	{
+		auto playerPos = m_field->GetPlayer()->GetPosition();
+
+		// プレイヤーの位置からのカメラオフセット
+		SimpleMath::Vector3 cameraOffset(0.0f, 10.0f, -30.0f); // Yが上方向、Zが後ろ方向
+		SimpleMath::Vector3 eyePos = playerPos + cameraOffset;
+
+		m_view = SimpleMath::Matrix::CreateLookAt(
+			eyePos,
+			playerPos, // 注視点はプレイヤー
+			SimpleMath::Vector3::UnitY
+		);
+	}
 
 	// 床
 	m_floorPrimitive->Render(context, m_view, m_proj);
