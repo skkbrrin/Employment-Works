@@ -15,6 +15,7 @@
 #include <Audio.h>
 
 #include "Charactor/UI/HPUI.h"
+#include "Charactor/UI/TimerUI.h"
 
 #include "SpriteBatch.h"
 
@@ -85,8 +86,14 @@ private:
 	// フィールド
 	std::unique_ptr<Field> m_field;
 
-	// HP
+	// HP タイマー
 	std::unique_ptr<HPUI> m_hp;
+	std::unique_ptr<TimerUI> m_timerUI;
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+
+	Number* m_number;
+	Ito::TaskManager m_taskManager;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV; // 数字
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_woodTexture;
 };
 

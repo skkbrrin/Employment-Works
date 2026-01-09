@@ -1,6 +1,13 @@
 #include "pch.h"
 #include "ItemManager.h"
 #include "Charactor/Player/Player.h"
+#include "WoodManager.h"
+
+void ItemManager::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
+{
+    m_device = device;
+    m_context = context;
+}
 
 void ItemManager::Update(float elapsedTime, Player* player)
 {
@@ -38,10 +45,10 @@ void ItemManager::CheckPickup(Player* player)
         float dist = (item->GetWorldMatrix().Translation()
             - playerRealPos).Length();
 
-        if (dist < 0.5f)
+        if (dist < 2.0f)
         {
             if (item->GetType() == Item::Type::Wood)
-                player->AddWood(1);
+                WoodManager::Instance().Add(1);
 
             item->SetPickedUp(true);
         }
@@ -50,5 +57,16 @@ void ItemManager::CheckPickup(Player* player)
 
 void ItemManager::SpawnWithVelocity(Item::Type type, const Vector3& pos, const Vector3& vel)
 {
-    items.emplace_back(std::make_unique<Item>(type, pos, vel));
+    auto item = std::make_unique<Item>(type, pos, vel);
+    item->Initialize(m_device, m_context);
+    items.emplace_back(std::move(item));
+}
+
+void ItemManager::CollectAll(Player* player)
+{
+    // プレイヤーに加算
+    WoodManager::Instance().Add(items.size());
+
+    // 全削除
+    items.clear();
 }

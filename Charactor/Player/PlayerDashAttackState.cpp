@@ -14,6 +14,8 @@ void PlayerDashAttackState::Enter(Player* player)
     // Œ»İŒü‚¢‚Ä‚¢‚é•ûŒü‚ğ‚»‚Ì‚Ü‚Üƒ_ƒbƒVƒ…•ûŒü‚É‚·‚é
     m_dashDir = player->GetForward();
     m_dashDir.Normalize();
+
+    player->GetDashParticle()->Start();
 }
 
 void PlayerDashAttackState::Update(Player* player, float elapsedTime)
@@ -33,6 +35,7 @@ void PlayerDashAttackState::Update(Player* player, float elapsedTime)
 
     if (m_timer > 0.2f)
     {
+        player->GetDashParticle()->Stop();
         player->ChangeState(std::make_unique<PlayerIdleState>());
         return;
     }

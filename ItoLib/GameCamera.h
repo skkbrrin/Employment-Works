@@ -11,7 +11,6 @@ public:
 	enum class Type
 	{
 		Type_A,	//プレイヤーを追尾するカメラ
-		Type_B	//プレイヤーの周りをまわるカメラ
 	};
 
 private:
@@ -28,6 +27,13 @@ private:
 	// プレイヤーの回転
 	const DirectX::SimpleMath::Quaternion* m_pPlayerRotate;
 
+	// プレイヤーからの相対オフセット
+	DirectX::SimpleMath::Vector3 m_eyeOffset;
+	DirectX::SimpleMath::Vector3 m_targetOffset;
+
+	// デフォルトオフセット
+	DirectX::SimpleMath::Vector3 m_defaultEyeOffset;
+	DirectX::SimpleMath::Vector3 m_defaultTargetOffset;
 public:
 
 	//コンストラクタ
@@ -46,4 +52,17 @@ public:
 		m_pPlayerRotate = rotate;
 	}
 
+	// カメラのオフセット設定
+	void SetOffset( const DirectX::SimpleMath::Vector3& eye, const DirectX::SimpleMath::Vector3& target )
+	{
+		m_eyeOffset = eye;
+		m_targetOffset = target;
+	}
+
+	// リセット関数
+	void Reset()
+	{
+		m_eyeOffset = m_defaultEyeOffset;
+		m_targetOffset = m_defaultTargetOffset;
+	}
 };

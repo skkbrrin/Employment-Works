@@ -6,13 +6,14 @@
 #include <GeometricPrimitive.h>
 #include "Items/ItemManager.h"
 
+
 class Field
 {
 private:
 	static int ENEMY_COUNT;
 	static int TREE_COUNT;
 public:
-	void Initialize(ID3D11Device* device, ID3D11DeviceContext* context);
+	void Initialize(ID3D11Device* device, ID3D11DeviceContext* context, DX::DeviceResources* dr);
 	void Update(float elapsedTime);
 	void Render(ID3D11DeviceContext* context,
 		DirectX::CommonStates* states,
@@ -59,7 +60,6 @@ private:
 	}
 
 	ItemManager m_itemManager;
-
 public:
 	Player* GetPlayer() { return m_player; }
 

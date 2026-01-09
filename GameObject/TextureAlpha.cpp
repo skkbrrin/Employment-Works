@@ -35,7 +35,7 @@ TextureAlpha::~TextureAlpha()
 
 bool TextureAlpha::Load(const wchar_t* texture)
 {
-	HRESULT hr = CreateDDSTextureFromFile(
+	HRESULT hr = CreateWICTextureFromFile(
 		m_device,
 		texture,
 		nullptr,

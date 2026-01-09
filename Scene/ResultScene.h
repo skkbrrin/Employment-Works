@@ -11,6 +11,9 @@
 #include "GameObject/TextureAlpha.h"
 #include <Audio.h>
 
+#include "Charactor/Player/Player.h"
+#include "Charactor/Field.h"
+
 class ResultScene : public Ito::Scene<UserResources>
 {
 public:
@@ -45,16 +48,15 @@ private:
 	// カメラのポインタ
 	std::unique_ptr<Ito::DebugCamera> m_debugCamera;
 
-	std::unique_ptr<TextureSprite> m_textureSprite;
-	std::unique_ptr<TextureAlpha> m_textureAlpha;
-
 	Ito::TaskManager m_taskManager;
 	Number* m_attackNumber;
 	Number* m_timeNumber;
 	Number* m_totalNumber;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV; // 数字
 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_rankSRV; // ランク
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_backTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_textTexture_02;
 
 	int attack;
 	int time;
@@ -64,5 +66,7 @@ private:
 	std::unique_ptr<DirectX::AudioEngine> m_audioE;
 	std::unique_ptr<DirectX::SoundEffect> m_bgm;
 	std::unique_ptr<DirectX::SoundEffectInstance> m_bgmInstance;
+
+	Number* m_number;
 };
 

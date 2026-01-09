@@ -53,12 +53,11 @@ void Number::Render()
 
 	pos.x += static_cast<float>(w) * m_scale * (m_digit - 1);
 
-	
-	while (number != 0)
+	do
 	{
 		uint32_t no = number % 10;
 		number /= 10;
 		m_sprites->Draw((*m_spriteBatch).get(), *m_frame[no], pos, m_color, 0.0f, m_scale);
 		pos.x -= static_cast<float>(w) * m_scale;
-	}
+	} while (number != 0);
 }

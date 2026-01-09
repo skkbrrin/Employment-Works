@@ -10,14 +10,14 @@ inline DirectX::SimpleMath::Matrix MakeBoxMatrix(const DirectX::BoundingBox& box
     return Matrix::CreateScale(box.Extents * 2.0f) * Matrix::CreateTranslation(box.Center.x, box.Center.y + 0.7f, box.Center.z - 0.3f);
 }
 
-void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
+void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, DX::DeviceResources* dr)
 {
     // プレイヤーの初期状態
     if(m_player == nullptr)
     {
         m_player = new Player;
     }
-    m_player->Initialize(device);
+    m_player->Initialize(device, dr);
 
     // 敵の生成数、初期化
     for (int i = 0; i < ENEMY_COUNT; i++)
@@ -32,6 +32,8 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
 
         float rot = (rand() % 360);
         e->RotateY(rot);
+
+        e->Initialize(device);
 
         m_enemies.push_back(std::move(e));
     }
@@ -50,11 +52,15 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
         float rot = (rand() % 360);
         t->SetRotation(Quaternion::CreateFromAxisAngle(Vector3::UnitY, rot));
 
+        t->Initialize(device);
+
         m_tries.push_back(std::move(t));
     }
 
     // アイテムのロード
     Item::LoadModels(device);
+
+    m_itemManager.Initialize(device, context);
 
     // コライダー
     m_debugOBB = DirectX::GeometricPrimitive::CreateBox(context, DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
@@ -69,6 +75,26 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
 
 void Field::Update(float elapsedTime)
 {
+    auto kb = DirectX::Keyboard::Get().GetState();
+
+    if (kb.F1)
+    {
+        for (auto& enemy : m_enemies)
+        {
+            enemy->TakeDamage(999999);
+        }
+
+        for (auto& tree : m_tries)
+        {
+            tree->TakeDamage(999999);
+        }
+
+    }
+    if (kb.F9)
+    {
+        m_itemManager.CollectAll(m_player);
+    }
+
     // プレイヤーの更新
     m_player->Update(elapsedTime);
 
@@ -208,7 +234,6 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
     }
 #endif
 
-#if defined(_DEBUG)
     if (m_player->GetPowerAttacking())
     {
         using namespace DirectX::SimpleMath;
@@ -227,6 +252,7 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
         );
     }
 
+#if defined(_DEBUG)
     if (m_player->GetDashAttacking())
     {
         using namespace DirectX::SimpleMath;
@@ -273,7 +299,7 @@ void Field::CheckCollision()
                     }
 
                     if (pBox.isDamageable && eBox.isWeapon)
-                        m_player->TakeDamage(0.1f, enemy->GetPosition());
+                        m_player->TakeDamage(1.0f, enemy->GetPosition());
                 }
             }
         }
@@ -443,7 +469,7 @@ void Field::SpawnItem(const DirectX::SimpleMath::Matrix& world)
     float vz = ((rand() % 100) - 50) * 0.03f;
 
     // 上方向に少し跳ねる
-    float vy = (rand() % 30) * 0.05f + 5.0f;
+    float vy = (rand() % 30) * 0.05f + 15.0f;
 
     Vector3 vel(vx, vy, vz);
 

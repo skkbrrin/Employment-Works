@@ -64,6 +64,7 @@ void Enemy::Initialize(ID3D11Device* device)
 	// ‰Šúó‘Ô 
 	ChangeState(std::make_unique<EnemyIdleState>());
 	m_attackState = false;
+	s_anyEnemyDied = false;
 }
 
 void Enemy::Update(float dt)

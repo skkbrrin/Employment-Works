@@ -20,17 +20,21 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
     auto kb = DirectX::Keyboard::Get().GetState();
     m_kbTracker.Update(kb);
 
-    if (kb.LeftShift)
-    {
-        m_movedist = 0.8f;
-        m_legSpeed = 40.0f;
-    }
+    bool top = kb.W || kb.Up || kb.NumPad8;
+    bool bottom = kb.S || kb.Down || kb.NumPad2;
+    bool left = kb.A || kb.Left || kb.NumPad4;
+    bool right = kb.D || kb.Right || kb.NumPad6;
+
+    if (kb.Up)    OutputDebugStringA("Up\n");
+    if (kb.Down)  OutputDebugStringA("Down\n");
+    if (kb.Left)  OutputDebugStringA("Left\n");
+    if (kb.Right) OutputDebugStringA("Right\n");
 
     // 移動処理
-    if (kb.W) player->MoveForward(m_movedist);
-    if (kb.A) player->RotateY(2.0f);
-    if (kb.D) player->RotateY(-2.0f);
-    if (kb.S) player->MoveForward(-m_movedist);
+    if (top) player->MoveForward(m_movedist);
+    if (left) player->RotateY(2.0f);
+    if (right) player->RotateY(-2.0f);
+    if (bottom) player->MoveForward(-m_movedist);
 
     // 歩行アニメーション用サイン波
     float swing = sinf(m_timer * 8.0f); // 周期早めにすると歩いてる感UP
@@ -59,7 +63,7 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
         player->ChangeState(std::make_unique<PlayerDashAttackState>());
         return;
     }
-    if (!kb.W && !kb.A && !kb.S && !kb.D)
+    if (!top && !left && !right && !bottom)
     {
         player->ChangeState(std::make_unique<PlayerIdleState>());
         return;

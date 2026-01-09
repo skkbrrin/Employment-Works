@@ -20,10 +20,6 @@ void PlayerIdleState::Update(Player* player, float elapsedTime)
     // タイマー継続
     m_timer += elapsedTime;
 
-    char buf[64];
-    sprintf_s(buf, "SpaceCount = %d\n", (int)m_spaceCount);
-    OutputDebugStringA(buf);
-
     // 前足
     player->GetPart("LegFrontL")->m_rotation =
         Quaternion::CreateFromAxisAngle(Vector3::UnitX, 0);
@@ -42,7 +38,7 @@ void PlayerIdleState::Update(Player* player, float elapsedTime)
         Quaternion::CreateFromAxisAngle(Vector3::UnitZ, angle);
 
     // 歩きへ
-    if (m_kb.W || m_kb.A || m_kb.D || m_kb.S)
+    if (m_kb.W || m_kb.A || m_kb.D || m_kb.S || m_kb.Up || m_kb.Right || m_kb.Left || m_kb.Down)
     {
         player->ChangeState(std::make_unique<PlayerWalkState>());
         return;

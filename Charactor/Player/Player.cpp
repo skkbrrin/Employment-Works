@@ -18,7 +18,7 @@ Player::~Player()
 }
 
 // 初期更新
-void Player::Initialize(ID3D11Device* device)
+void Player::Initialize(ID3D11Device* device, DX::DeviceResources* dr)
 {
 	// モデル読み込み --------------------------------------------------------------------------------
 
@@ -87,16 +87,44 @@ void Player::Initialize(ID3D11Device* device)
 	body->AddChild(std::move(legBR)); 
 	body->AddChild(std::move(tail));
 	m_root->AddChild(std::move(body));
+
+	// パーティクル生成
+	m_dashParticle = std::make_unique<DashParticle>();
+	m_dashParticle->Create(dr);
+
+	m_spinWindParticle = std::make_unique<WindParticle>();
+	m_spinWindParticle->Create(dr);
+
+	m_spinDustParticle = std::make_unique<DustParticle>();
+	m_spinDustParticle->Create(dr);
 	
 	// 初期状態をIdleに 
 	ChangeState(std::make_unique<PlayerIdleState>());
 
 	m_hp = m_maxHP;
+	woodCount = 0;
 }
 
 void Player::Update(float dt)
 {
 	if (m_state) m_state->Update(this, dt);
+
+	// 画面端
+	if (m_position.x > 100.0f)
+	{
+		m_position.x = 100.0f;
+	}
+	if (m_position.z > 100.0f)
+	{
+		m_position.z = 100.0f;
+	}
+
+	if (m_invincibleTimer > 0.0f)
+	{
+		m_invincibleTimer -= dt;
+		if (m_invincibleTimer < 0.0f)
+			m_invincibleTimer = 0.0f;
+	}
 
 	// ノックバック処理
 	if (m_isNockBack)
@@ -130,8 +158,13 @@ void Player::Update(float dt)
 // 描画
 void Player::RenderP(ID3D11DeviceContext* context, DirectX::CommonStates* states, Matrix view, Matrix proj)
 {
+	if (IsBlink())
+		return;
+
 	if (m_root)
 		m_root->Render(context, states, view, proj);
+
+	m_dashParticle->Render(view, proj);
 }
 	
 // 状態変更
@@ -211,7 +244,14 @@ std::vector<HitBoxPart> Player::GetHitBoxes() const
 
 void Player::TakeDamage(float dmg, const Vector3& attackerPos)
 {
+
+	if (IsInvincible())
+		return;
+
 	m_hp -= dmg;
+
+	// -------- 無敵時間開始 --------
+	m_invincibleTimer = 1.0f;
 
 	// -------- ノックバック方向 --------
 	Vector3 playerPos = GetPosition();

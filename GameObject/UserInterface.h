@@ -95,6 +95,10 @@ namespace kHorikawa
 			, DirectX::SimpleMath::Vector2 position
 			, DirectX::SimpleMath::Vector2 scale
 			, ANCHOR anchor);
+		void Create(DX::DeviceResources* pDR
+			, const wchar_t* path
+			, DirectX::SimpleMath::Vector2 position
+			, DirectX::SimpleMath::Vector2 scale);
 
 		void Render();
 

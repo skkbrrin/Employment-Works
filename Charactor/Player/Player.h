@@ -9,6 +9,18 @@
 #include <Charactor/TransformNode.h>
 #include <iostream>
 
+#include "Charactor/UI/DashParticle.h"
+#include "Charactor/UI/DustParticle.h"
+#include "Charactor/UI/WindParticle.h"
+
+enum class CameraRequest
+{
+    None,
+    SpinPrepare,
+    SpinMain,
+    SpinEnd,
+};
+
 class Player : public CharacterBase, public IHitBoxProvider
 {
 public:
@@ -16,7 +28,7 @@ public:
     ~Player();
     void ChangeState(std::unique_ptr<PlayerState> newState);
     
-    void Initialize(ID3D11Device* device);
+    void Initialize(ID3D11Device* device, DX::DeviceResources* dr);
     void Update(float dt);
     void RenderP(ID3D11DeviceContext* ctx,
         DirectX::CommonStates* states,
@@ -35,16 +47,17 @@ public:
         );
     }
 
+    DirectX::SimpleMath::Vector3 GetRight() const
+    {
+        // 回転から右方向を取得
+        return DirectX::SimpleMath::Vector3::Transform(DirectX::SimpleMath::Vector3::UnitX, m_rotation);
+    }
+
     // 攻撃ヒットボックス
     std::vector<HitBoxPart> GetHitBoxes() const override;
 
     void TakeDamage(float dmg, const DirectX::SimpleMath::Vector3& attackerPos);
 
-    void AddWood(int value) {
-        woodCount += value;
-        std::cout << "Field Player AddWood! count=" << woodCount << std::endl;
-    }
-    int GetWoodCount() const { return woodCount; }
     DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
     DirectX::SimpleMath::Quaternion& GetRotation() { return m_rotation; }
     void SetPosition(DirectX::SimpleMath::Vector3& pos) { m_position = pos; }
@@ -63,12 +76,31 @@ public:
     // ダッシュ攻撃中かどうか
     bool GetDashAttacking() const { return m_isDashAttacking; }
     void SetDashAttacking(bool v) { m_isDashAttacking = v; }
+
+    // 無敵時間
+    bool IsInvincible() const { return m_invincibleTimer > 0.0f; }
+    bool IsBlink() const
+    {
+        return IsInvincible() && ((int)(m_invincibleTimer * 10) % 2 == 0);
+    }
+
+    // パーティクル
+    DashParticle* GetDashParticle() { return m_dashParticle.get(); }
+    WindParticle* GetSpinWindParticle() { return m_spinWindParticle.get(); }
+    DustParticle* GetSpinDustParticle() { return m_spinDustParticle.get(); }
+
+    // カメラ
+    void RequestCamera(CameraRequest req)
+    {
+        m_cameraRequest = req;
+    }
+    CameraRequest GetCameraRequest() { return m_cameraRequest; }
 private:
     std::unique_ptr<PlayerState> m_state;
     std::unique_ptr<TransformNode> m_root;
 
     int woodCount = 0;
-    int m_maxHP = 90;
+    int m_maxHP = 3;
 
     DirectX::SimpleMath::Vector3 m_NockBackVelocity = DirectX::SimpleMath::Vector3::Zero;
     bool m_isNockBack = false;
@@ -81,5 +113,17 @@ private:
 
     // ダッシュ攻撃中かどうか
     bool m_isDashAttacking = false;
+
+    // 無敵時間
+    float m_invincibleTimer = 0.0f;
+    const float INVINCIBLE_TIME = 2.0f;
+
+    // パーティクル
+    std::unique_ptr<DashParticle> m_dashParticle;
+    std::unique_ptr<WindParticle> m_spinWindParticle;
+    std::unique_ptr<DustParticle> m_spinDustParticle;
+
+    // カメラ
+    CameraRequest m_cameraRequest = CameraRequest::None;
 };
 

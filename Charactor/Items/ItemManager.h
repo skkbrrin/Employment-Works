@@ -9,7 +9,7 @@ using namespace DirectX::SimpleMath;
 class ItemManager
 {
 public:
-    void Spawn(Item::Type type, const Matrix& world);
+    void Initialize(ID3D11Device* device, ID3D11DeviceContext* context);
 
     void Update(float elapsedTime, Player* player);
 
@@ -19,7 +19,10 @@ public:
 
     void SpawnWithVelocity(Item::Type type, const Vector3& pos, const Vector3& vel);
     
+    void CollectAll(Player* player);
 private:
     std::vector<std::unique_ptr<Item>> items;
+    ID3D11Device* m_device = nullptr;
+    ID3D11DeviceContext* m_context = nullptr;
 };
 

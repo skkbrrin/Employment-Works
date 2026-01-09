@@ -13,12 +13,12 @@ void HPUI::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, const 
         m_texture.ReleaseAndGetAddressOf()
     );
 
-    m_pos = { 50.0f, 50.0f };
+    m_pos = { 23.5f, 25.0f };
 }
 
 void HPUI::Render( DirectX::SpriteBatch* spriteBatch, int currentHP, int maxHP)
 {
-    float scale = 3.0f;
+    float scale = 2.0f;
     float radius = 50.0f;
 
     // HP0‚È‚ç‰f‚³‚È‚¢

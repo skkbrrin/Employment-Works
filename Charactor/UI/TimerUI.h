@@ -1,39 +1,55 @@
 #pragma once
+
 #include "StepTimer.h"
-#include <SimpleMath.h>
-#include <Effects.h>
-#include <PrimitiveBatch.h>
-#include <VertexTypes.h>
+#include "GameObject/UserInterface.h"
 #include <WICTextureLoader.h>
 #include <CommonStates.h>
-#include <vector>
 #include "Keyboard.h"
-#include <DeviceResources.h>
-
-struct TimerCB
-{
-    float ratio;
-    DirectX::SimpleMath::Vector3 padding; // 16byte境界
-};
 
 
 class TimerUI
 {
 public:
-    void Initialize(ID3D11Device* device);
-    void Update(float dt);
-    void Render(DirectX::SpriteBatch* spriteBatch);
 
-    void Start(float time);
-    bool IsTimeUp() const { return m_timer <= 0.0f; }
-
+	//変数
 private:
-    float m_timer = 0.0f;
-    float m_maxTime = 1.0f;
 
-    Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	unsigned int m_menuIndex;
+	DX::DeviceResources* m_pDR;
 
-    // シェーダ関連
-    Microsoft::WRL::ComPtr<ID3D11PixelShader> m_pixelShader;
-    Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
+	std::unique_ptr<kHorikawa::UserInterface> m_gauge;
+	std::unique_ptr<kHorikawa::UserInterface> m_frame;
+	std::unique_ptr<kHorikawa::UserInterface> m_base;
+
+
+	const wchar_t* m_baseTexturePath;
+
+	std::unique_ptr<kHorikawa::UserInterface> m_baseWindow;
+
+	int m_windowWidth, m_windowHeight;
+
+	bool m_isRunning = true;
+
+
+	//関数
+public:
+	TimerUI();
+	~TimerUI();
+
+	void Initialize(DX::DeviceResources* pDR, int width, int height);
+	void Update(float dt);
+	void Render();
+
+	void Add(const wchar_t* path
+		, DirectX::SimpleMath::Vector2 position
+		, DirectX::SimpleMath::Vector2 scale
+		, kHorikawa::ANCHOR anchor);
+
+	float GetRemainingTime() const;
+
+	bool IsTimeUp() const
+	{
+		return m_gauge->GetRenderRatio() <= 1.0f;
+	}
 };
+

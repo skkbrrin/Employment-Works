@@ -53,6 +53,11 @@ void PlayerPowerAttackState::UpdateStart(Player* player, float elapsedTime)
     m_angle -= m_anglarVelocity * elapsedTime;
 
     // カメラ
+    if (m_phase == SpinPhase::Spin && m_timer < elapsedTime)
+    {
+        player->RequestCamera(CameraRequest::SpinMain);
+        player->GetSpinWindParticle()->Start();
+    }
 
     // 切り替え
     if (m_timer >= START_TIME)
@@ -75,6 +80,10 @@ void PlayerPowerAttackState::UpdateSpin(Player* player, float elapsedTime)
     // カメラ
 
     // エフェクト
+    if (!player->GetSpinWindParticle()->IsActive())
+    {
+        player->GetSpinWindParticle()->Burst(player->GetPosition());
+    }
 
     if (m_timer >= SPIN_TIME)
     {
@@ -94,6 +103,16 @@ void PlayerPowerAttackState::UpdateEnd(Player* player, float elapsedTime)
     if (m_timer >= END_TIME)
     {
         // カメラ
+        if (m_phase == SpinPhase::End && m_timer < elapsedTime)
+        {
+            player->GetSpinWindParticle()->Stop();
+            
+            auto pos = player->GetPosition();
+            auto right = player->GetRight();
+
+            player->GetSpinDustParticle()->Burst(pos, right);
+            player->GetSpinDustParticle()->Burst(pos, -right);
+        }
 
         // 土埃
 

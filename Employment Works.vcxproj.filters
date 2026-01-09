@@ -102,12 +102,6 @@
     <ClInclude Include="ItoLib\UserResources.h">
       <Filter>ItoLib</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Menu.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Particle.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\UserInterface.h">
       <Filter>GameObject</Filter>
     </ClInclude>
@@ -173,12 +167,6 @@
       <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\TextureAlpha.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\Gauge.h">
-      <Filter>GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\BinaryFile.h">
       <Filter>GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Charactor\Player\PlayerIdleState.h">
@@ -250,9 +238,6 @@
     <ClInclude Include="ResourceManager\Resource.h">
       <Filter>ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="Charactor\UI\TimerUI.h">
-      <Filter>Charactors\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor\UI\HPUI.h">
       <Filter>Charactors\UI</Filter>
     </ClInclude>
@@ -261,6 +246,24 @@
     </ClInclude>
     <ClInclude Include="Charactor\Player\PlayerDashAttackState.h">
       <Filter>Charactors\Player\State</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\UI\DashParticle.h">
+      <Filter>Charactors\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\UI\TimerUI.h">
+      <Filter>Charactors\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\UI\DustParticle.h">
+      <Filter>Charactors\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\UI\WindParticle.h">
+      <Filter>Charactors\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="WoodManager.h">
+      <Filter>Charactors\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Charactor\UI\ShadowSprite.h">
+      <Filter>Charactors\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -296,12 +299,6 @@
     </ClCompile>
     <ClCompile Include="ItoLib\TaskManager.cpp">
       <Filter>ItoLib</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Menu.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\Particle.cpp">
-      <Filter>GameObject</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\UserInterface.cpp">
       <Filter>GameObject</Filter>
@@ -351,12 +348,6 @@
     <ClCompile Include="GameObject\TextureAlpha.cpp">
       <Filter>GameObject</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\Gauge.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\BinaryFile.cpp">
-      <Filter>GameObject</Filter>
-    </ClCompile>
     <ClCompile Include="Charactor\Player\PlayerIdleState.cpp">
       <Filter>Charactors\Player\State</Filter>
     </ClCompile>
@@ -399,9 +390,6 @@
     <ClCompile Include="ResourceManager\TextureManager.cpp">
       <Filter>ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="Charactor\UI\TimerUI.cpp">
-      <Filter>Charactors\UI</Filter>
-    </ClCompile>
     <ClCompile Include="Charactor\UI\HPUI.cpp">
       <Filter>Charactors\UI</Filter>
     </ClCompile>
@@ -410,6 +398,21 @@
     </ClCompile>
     <ClCompile Include="Charactor\Player\PlayerDashAttackState.cpp">
       <Filter>Charactors\Player\State</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\UI\DashParticle.cpp">
+      <Filter>Charactors\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\UI\TimerUI.cpp">
+      <Filter>Charactors\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\UI\DustParticle.cpp">
+      <Filter>Charactors\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\UI\WindParticle.cpp">
+      <Filter>Charactors\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Charactor\UI\ShadowSprite.cpp">
+      <Filter>Charactors\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -430,12 +433,21 @@
     <None Include="Resources\Shaders\UI.hlsli">
       <Filter>Resources\Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\Particle.hlsli">
+      <Filter>Resources\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
+    <FxCompile Include="Resources\Shaders\DashParticleVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
+    <FxCompile Include="Resources\Shaders\DashParticleGS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\DashParticlePS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\UIVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\UIGS.hlsl">
@@ -444,10 +456,25 @@
     <FxCompile Include="Resources\Shaders\UIPS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\UIVS.hlsl">
+    <FxCompile Include="Resources\Shaders\TimerUIPS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\PixelShader.hlsl">
+    <FxCompile Include="Resources\Shaders\DustParticlePS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\DustParticleVS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\DustParticleGS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\WindParticleGS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\WindParticlePS.hlsl">
+      <Filter>Resources\Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\WindParticleVS.hlsl">
       <Filter>Resources\Shaders</Filter>
     </FxCompile>
   </ItemGroup>

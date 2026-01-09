@@ -2,6 +2,7 @@
 #include <SimpleMath.h>
 #include <CommonStates.h>
 #include "Model.h"
+#include "Charactor/UI/ShadowSprite.h"
 
 class Item
 {
@@ -12,10 +13,12 @@ public:
 
     Item(Type type,
         const DirectX::SimpleMath::Vector3& position,
-        const DirectX::SimpleMath::Vector3& velocity);
+        const DirectX::SimpleMath::Vector3& velocity
+        );
     
     static void LoadModels(ID3D11Device* device);
     
+    void Initialize(ID3D11Device* device, ID3D11DeviceContext* context);
     void Update(float dt);
     void Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, const DirectX::SimpleMath::Matrix view, const DirectX::SimpleMath::Matrix proj);
 
@@ -36,4 +39,6 @@ private:
     DirectX::SimpleMath::Vector3 m_velocity;
     float   m_time = 0.0f;
     bool pickedUp = false;
+
+    std::unique_ptr<ShadowSprite> m_shadow;
 };

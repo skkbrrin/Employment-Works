@@ -9,10 +9,6 @@ using namespace DirectX::SimpleMath;
 
 std::shared_ptr<DirectX::DX11::Model> Item::m_woodModel = nullptr;
 
-void Item::LoadModels(ID3D11Device* device)
-{
-    m_woodModel = Resource::Model().Load(L"Resources/Models/Wood.sdkmesh");
-}
 
 Item::Item(Type type, const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& velocity)
 {
@@ -22,6 +18,18 @@ Item::Item(Type type, const DirectX::SimpleMath::Vector3& position, const Direct
     pickedUp = false;
 
     m_world = Matrix::CreateTranslation(position);
+}
+
+void Item::LoadModels(ID3D11Device* device)
+{
+    m_woodModel = Resource::Model().Load(L"Resources/Models/Wood.sdkmesh");
+}
+
+void Item::Initialize(ID3D11Device* device, ID3D11DeviceContext* context)
+{
+    m_shadow = std::make_unique<ShadowSprite>(device, context);
+    m_shadow->SetSize(1.0f, 1.0f);
+    m_shadow->SetOffset(0.0f, 0.0f);
 }
 
 void Item::Update(float dt)
@@ -51,7 +59,10 @@ void Item::Render(ID3D11DeviceContext* context, CommonStates* states, Matrix vie
     if (m_type == Type::Wood)
     {
         if (m_woodModel)
+        {
             m_woodModel->Draw(context, *states, m_world, view, proj);
+            //m_shadow->Render(DirectX::SimpleMath::Vector2(m_position.x, m_position.z), 2.0f, view, proj);
+        }
         return;
     }
 }

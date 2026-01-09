@@ -8,7 +8,7 @@
 #include "pch.h"
 #include "UserInterface.h"
 
-#include "BinaryFile.h"
+#include "MyBinalyFile.h"
 #include "DeviceResources.h"
 #include <SimpleMath.h>
 #include <Effects.h>
@@ -105,6 +105,28 @@ void kHorikawa::UserInterface::Create(DX::DeviceResources* pDR
 
 }
 
+void kHorikawa::UserInterface::Create(DX::DeviceResources* pDR
+	, const wchar_t* path
+	, DirectX::SimpleMath::Vector2 position
+	, DirectX::SimpleMath::Vector2 scale)
+{
+	m_pDR = pDR;
+	ID3D11Device1* device = pDR->GetD3DDevice();
+	m_position = position;
+	m_baseScale = m_scale = scale;
+
+	//	シェーダーの作成
+	CreateShader();
+
+	//	画像の読み込み
+	LoadTexture(path);
+
+	//	プリミティブバッチの作成
+	m_batch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(pDR->GetD3DDeviceContext());
+
+	m_states = std::make_unique<CommonStates>(device);
+}
+
 void kHorikawa::UserInterface::SetScale(DirectX::SimpleMath::Vector2 scale)
 {
 	m_scale = scale;
@@ -133,9 +155,9 @@ void kHorikawa::UserInterface::CreateShader()
 	ID3D11Device1* device = m_pDR->GetD3DDevice();
 
 	//	コンパイルされたシェーダファイルを読み込み
-	std::unique_ptr<kHorikawa::BinaryFile> VSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIVS.cso");
-	std::unique_ptr<kHorikawa::BinaryFile> GSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIGS.cso");
-	std::unique_ptr<kHorikawa::BinaryFile> PSData = kHorikawa::BinaryFile::LoadFile(L"Resources/Shaders/UIPS.cso");
+	std::unique_ptr<MyBinaryFile> VSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIVS.cso");
+	std::unique_ptr<MyBinaryFile> GSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIGS.cso");
+	std::unique_ptr<MyBinaryFile> PSData = MyBinaryFile::LoadFile(L"Resources/Shaders/UIPS.cso");
 
 	//	インプットレイアウトの作成
 	device->CreateInputLayout(&INPUT_LAYOUT[0],

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PlayScene.h"
 #include "ResultScene.h"
+#include "WoodManager.h"
 
 using namespace DirectX;
 
@@ -12,6 +13,11 @@ void PlayScene::Initialize()
 
 	auto DR = GetUserResources()->GetDeviceResources();
 	auto windowSize = GetUserResources()->GetDeviceResources()->GetWindow();
+	auto WH = GetUserResources()->GetDeviceResources()->GetScreenViewport();
+	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
+	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
+
+	m_field->Initialize(device, context, DR);
 
 	// カメラ
 	m_camera.SetPlayer(&m_field->GetPlayer()->GetPosition(), &m_field->GetPlayer()->GetRotation());
@@ -28,6 +34,13 @@ void PlayScene::Initialize()
 	catch (const std::exception& e) {
 		OutputDebugStringA(e.what());
 	}
+
+	m_number = m_taskManager.AddTask<Number>(&m_spriteBatch, m_numberSRV.GetAddressOf());
+	m_number->SetNumber(WoodManager::Instance().Get());
+	m_number->SetScale(2.0f);
+	m_number->SetPosition(DirectX::SimpleMath::Vector2(450.0f, 650.0f));
+
+	m_timerUI->Initialize(DR, (int)WH.Width, (int)WH.Height);
 }
 
 void PlayScene::Update(float elapsedTime)
@@ -35,8 +48,12 @@ void PlayScene::Update(float elapsedTime)
 	auto kb = GetUserResources()->GetKeyboardStateTracker();
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 
+	m_number->Update(elapsedTime);
+	m_number->SetNumber(WoodManager::Instance().Get());
+	m_taskManager.Update(elapsedTime);
+
 	// リザルト切り替え条件
-	if (kb->pressed.Q || m_field->GetPlayer()->GetHP() <= 0)
+	if (kb->pressed.Q || m_field->GetPlayer()->GetHP() <= 0 || m_timerUI->IsTimeUp())
 	{
 		ChangeScene<ResultScene>();
 	}
@@ -46,10 +63,34 @@ void PlayScene::Update(float elapsedTime)
 	m_debugCamera->Update();
 	m_camera.Update(elapsedTime);
 
+	switch (m_field->GetPlayer()->GetCameraRequest())
+	{
+	case CameraRequest::SpinPrepare:
+		m_camera.SetOffset(
+			m_field->GetPlayer()->GetRight() * 1.5f + DirectX::SimpleMath::Vector3(0, 7.0f, -3.0f),
+			DirectX::SimpleMath::Vector3(0.0f, 6.5f, -5.0f)                     
+		);
+		break;
+
+	case CameraRequest::SpinMain:
+		m_camera.SetOffset(
+			DirectX::SimpleMath::Vector3(0.0f, 7.0f, -6.5f),
+			DirectX::SimpleMath::Vector3(0.0f, 6.5f, -5.0f) 
+		);
+		break;
+
+	case CameraRequest::SpinEnd:
+		m_camera.Reset();
+		break;
+	}
+
 	// フィールド
 	m_field->Update(elapsedTime);
 
 	//タイマー
+	m_timerUI->Update(elapsedTime);
+
+	
 
 	//シーンチェンジの時に、白い板を画面に出して、透明度を0→１に徐々にしてフェードアウト
 	//白フェードアウト→リザルトバンっとだす。(「大神」常闇之皇戦、戦績風)
@@ -99,18 +140,23 @@ void PlayScene::Render()
 	// フィールド
 	m_field->Render(context, states, m_view, m_proj);
 
-	std::wostringstream oss;
-	oss << "WoodCount::" << m_field->GetPlayer()->GetWoodCount();
-	debugFont->AddString(oss.str().c_str(), SimpleMath::Vector2(0.0f, 20.0f), DirectX::Colors::Black);
+	// HP　タイマー
+	m_timerUI->Render();
 
-	std::wostringstream os;
-	os << "PlayerHP::" << m_field->GetPlayer()->GetHP();
-	debugFont->AddString(os.str().c_str(), SimpleMath::Vector2(0.0f, 40.0f), DirectX::Colors::Black);
-
-	// HP
 	m_spriteBatch->Begin();
 	m_hp->Render(m_spriteBatch.get(), m_field->GetPlayer()->GetHP(), m_field->GetPlayer()->GetMaxHP());
+	m_taskManager.Render();
+	m_spriteBatch->Draw(
+		m_woodTexture.Get(),
+		DirectX::XMFLOAT2(520, 650), // 位置
+		nullptr,                    // 切り抜き
+		DirectX::Colors::White,     // 色（Whiteで元の色）
+		0.0f,                       // 回転
+		DirectX::XMFLOAT2(0, 0),    // 原点
+		0.13f                        // 拡大率
+	);
 	m_spriteBatch->End();
+
 }
 
 void PlayScene::Finalize()
@@ -124,7 +170,7 @@ void PlayScene::CreateDeviceDependentResources()
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
 	auto context = GetUserResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto state = GetUserResources()->GetCommonStates();
-
+	auto DR = GetUserResources()->GetDeviceResources();
 
 	// ベーシックエフェクトの作成
 	m_basicEffect = std::make_unique<BasicEffect>(device);
@@ -146,7 +192,7 @@ void PlayScene::CreateDeviceDependentResources()
 
 	// フィールド
 	m_field = std::make_unique<Field>();
-	m_field->Initialize(device, context);
+	m_field->Initialize(device, context, DR);
 
 	// スプライトバッチ
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
@@ -154,6 +200,23 @@ void PlayScene::CreateDeviceDependentResources()
 	// HP
 	m_hp = std::make_unique<HPUI>();
 	m_hp->Initialize(device, context, L"Resources/Textures/Tomoe.png");
+
+	// タイマー
+	m_timerUI = std::make_unique<TimerUI>();
+
+	DirectX::CreateWICTextureFromFile(
+		device,
+		L"Resources/Textures/numberW.png",
+		nullptr,
+		m_numberSRV.ReleaseAndGetAddressOf()
+	);
+
+	DirectX::CreateWICTextureFromFile(
+		device,
+		L"Resources/Textures/Wood.png",
+		nullptr,
+		m_woodTexture.ReleaseAndGetAddressOf()
+	);
 }
 
 
