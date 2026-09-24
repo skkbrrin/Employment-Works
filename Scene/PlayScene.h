@@ -91,9 +91,18 @@ private:
 	std::unique_ptr<TimerUI> m_timerUI;
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
+	// –Ú•W
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_quest1;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_quest2;
+
 	Number* m_number;
+	Number* m_countdownNumber;
 	Ito::TaskManager m_taskManager;
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_numberSRV; // ”š
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_woodTexture;
+
+	float m_countdownScale = 6.0f;
+	float m_countdownTimer = 0.0f;
+	int m_previousCount = 0;
 };
 

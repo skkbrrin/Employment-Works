@@ -15,7 +15,7 @@ void EnemyDeathState::Update(Enemy* enemy, float elapsedTime)
     
     if (m_timer >= 1.0f)
     {
-        enemy->RequestDrop(); 
+        //enemy->RequestDrop(); 
         enemy->SetDeleteFlag(true);
     }
 }

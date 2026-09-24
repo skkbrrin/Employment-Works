@@ -57,6 +57,9 @@ private:
 	// スプライトフレーム
 	const SpriteSheet::SpriteFrame* m_frame[10];
 
+	// 表示するかどうか
+	bool m_vis;
+
 public:
 
 	void SetPosition(DirectX::SimpleMath::Vector2 pos) { m_pos = pos; }
@@ -66,4 +69,6 @@ public:
 	void SetScale(float scale) { m_scale = scale; }
 
 	void SetNumber(uint32_t number) { m_number = number; }
+
+	void SetVisible(bool vis) { m_vis = vis; }
 };

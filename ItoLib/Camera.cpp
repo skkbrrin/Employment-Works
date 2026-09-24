@@ -13,7 +13,7 @@ using namespace Ito;
 
 // 一応ディフォルト値を定義するけど調整して下さい
 const float Camera::EYE_SPEED_RATE = 0.1f;		// カメラの位置への距離の差分に対する割合
-const float Camera::TARGET_SPEED_RATE = 0.1f;	// 注視点への距離の差分に対する割合
+const float Camera::TARGET_SPEED_RATE = 10.0f;	// 注視点への距離の差分に対する割合
 
 // コンストラクタ
 Camera::Camera()

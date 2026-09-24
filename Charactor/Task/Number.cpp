@@ -16,6 +16,7 @@ Number::Number(std::unique_ptr<DirectX::SpriteBatch>* pSpriteBatch, ID3D11Shader
 	, m_number(0)
 	, m_frame{}
 	, m_color(color)
+	, m_vis(true)
 {
 	m_sprites = std::make_unique<SpriteSheet>();
 
@@ -42,6 +43,11 @@ bool Number::Update(float elapsedTime)
 
 void Number::Render()
 {
+	if (!m_vis)
+	{
+		return;
+	}
+
 	uint32_t number = m_number;
 	DirectX::SimpleMath::Vector2 pos = m_pos;
 

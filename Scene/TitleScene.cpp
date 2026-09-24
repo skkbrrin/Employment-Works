@@ -9,6 +9,7 @@
 
 using namespace DirectX;
 
+// 初期化
 void TitleScene::Initialize()
 {
 	CreateDeviceDependentResources();
@@ -30,12 +31,14 @@ void TitleScene::Initialize()
 	WoodManager::Instance().Reset();
 }
 
+// 更新
 void TitleScene::Update(float elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
 	auto kb = GetUserResources()->GetKeyboardStateTracker();
 
+	// スペースキーでシーンチェンジ
 	if (kb->pressed.Space)
 	{
 		bgmInstance->Stop();
@@ -45,6 +48,7 @@ void TitleScene::Update(float elapsedTime)
 	m_tectureAlpha->Update(elapsedTime);
 }
 
+// 描画
 void TitleScene::Render()
 {
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();
@@ -54,6 +58,7 @@ void TitleScene::Render()
 	m_tectureAlpha->Render({ 320.0f, 450.0f });
 }
 
+// 終了
 void TitleScene::Finalize()
 {
 	// 終了処理
@@ -63,6 +68,7 @@ void TitleScene::Finalize()
 
 }
 
+// デバイスリソース
 void TitleScene::CreateDeviceDependentResources()
 {
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();

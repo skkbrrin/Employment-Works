@@ -19,20 +19,25 @@ public:
     Enemy();
     ~Enemy();
 
+    // 状態変化
     void ChangeState(std::unique_ptr<EnemyState> newState);
 
+    // 初期化
     void Initialize(ID3D11Device* device);
+    // 更新
     void Update(float dt) override;
+    // 描画
     void RenderE(
         ID3D11DeviceContext* ctx,
         DirectX::CommonStates* states,
         DirectX::SimpleMath::Matrix view,
         DirectX::SimpleMath::Matrix proj);
 
+    // 動き
     void MoveForward(float dist);
     void RotateY(float deg);
-    void RotatePlayer(float deg);
 
+    // 座標
     void SetPosition(const DirectX::SimpleMath::Vector3& pos)
     {
         m_position = pos;
@@ -44,6 +49,7 @@ public:
     }
     DirectX::SimpleMath::Vector3& GetPosition() { return m_position; }
 
+    // 回転
     void SetRotation(const DirectX::SimpleMath::Quaternion& rot)
     {
         m_rotation = rot;
@@ -55,14 +61,17 @@ public:
     }
     DirectX::SimpleMath::Quaternion GetRotation() { return m_rotation; }
 
+    // ワールド座標
     DirectX::SimpleMath::Matrix GetWorldMatrix() const
     {
         return m_root ? m_root->GetWorldMatrix() : DirectX::SimpleMath::Matrix::Identity;
     }
 
+    // 消去フラグ
     void SetDeleteFlag(bool v) { m_deleteFlag = v; }
     bool GetDeleteFlag() const { return m_deleteFlag; }
 
+    // 当たり判定
     std::vector<HitBoxPart> GetHitBoxes() const override;
 
     void TakeDamage(float dt) override;

@@ -5,6 +5,7 @@
 #include <vector>
 #include "TransformNode.h"
 
+// キャラクターの土台設定
 class CharacterBase
 {
 public:

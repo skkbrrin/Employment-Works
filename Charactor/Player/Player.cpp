@@ -126,10 +126,32 @@ void Player::Update(float dt)
 			m_invincibleTimer = 0.0f;
 	}
 
+	// ジャンプ更新
+	if (m_isJumping)
+	{
+		float gravity = 9.8f;
+
+		m_jumpVelocity -= gravity * dt;
+
+		Vector3 pos = GetPosition();
+
+		pos.y += m_jumpVelocity * dt;
+
+		// 地面
+		if (pos.y <= 0.0f)
+		{
+			pos.y = 0.0f;
+			m_jumpVelocity = 0.0f;
+			m_isJumping = false;
+		}
+
+		SetPosition(pos);
+	}
+
 	// ノックバック処理
 	if (m_isNockBack)
 	{
-		m_NockBackVelocity.y -= 9.8f * dt;
+		m_NockBackVelocity.y -= 12.5f * dt;
 		m_position += m_NockBackVelocity * dt;
 
 		// 地面に着地したら止める
@@ -190,6 +212,17 @@ void Player::RotateY(float deg)
 	m_rotation = m_rotation *
 		Quaternion::CreateFromAxisAngle(Vector3::UnitY,
 			XMConvertToRadians(deg));
+}
+
+// ジャンプ
+void Player::Jump()
+{
+	if (m_isJumping)
+		return;
+
+	m_isJumping = true;
+
+	m_jumpVelocity = 8.0f;
 }
 
 // 当たり判定

@@ -2,7 +2,6 @@
 #include "PlayerWalkState.h"
 #include "PlayerIdleState.h"
 #include "PlayerAttackState.h"
-#include "PlayerDashAttackState.h"
 #include "Player.h"
 
 using namespace DirectX::SimpleMath;
@@ -24,17 +23,22 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
     bool bottom = kb.S || kb.Down || kb.NumPad2;
     bool left = kb.A || kb.Left || kb.NumPad4;
     bool right = kb.D || kb.Right || kb.NumPad6;
-
-    if (kb.Up)    OutputDebugStringA("Up\n");
-    if (kb.Down)  OutputDebugStringA("Down\n");
-    if (kb.Left)  OutputDebugStringA("Left\n");
-    if (kb.Right) OutputDebugStringA("Right\n");
-
+    bool jump = m_kbTracker.pressed.Space;
+    bool dash = kb.LeftShift || kb.RightShift;
+  
+    // ダッシュ速度
+    float moveDist = m_movedist;
+    if (dash)
+    {
+        moveDist *= 2.5f;
+    }
+    
     // 移動処理
-    if (top) player->MoveForward(m_movedist);
+    if (top) player->MoveForward(moveDist);
     if (left) player->RotateY(2.0f);
     if (right) player->RotateY(-2.0f);
-    if (bottom) player->MoveForward(-m_movedist);
+    if (bottom) player->MoveForward(-moveDist);
+    if (jump) player->Jump();
 
     // 歩行アニメーション用サイン波
     float swing = sinf(m_timer * 8.0f); // 周期早めにすると歩いてる感UP
@@ -58,9 +62,9 @@ void PlayerWalkState::Update(Player* player, float elapsedTime)
         Quaternion::CreateFromAxisAngle(Vector3::UnitZ, tailAngle);
 
     // キーを離したらIdleに戻す
-    if (m_kbTracker.pressed.Space)
+    if (m_kbTracker.pressed.Z)
     {
-        player->ChangeState(std::make_unique<PlayerDashAttackState>());
+        player->ChangeState(std::make_unique<PlayerAttackState>());
         return;
     }
     if (!top && !left && !right && !bottom)

@@ -197,7 +197,7 @@ void Enemy::TakeDamage(float dmg)
 
 void Enemy::Damaging()
 {
-	if (!m_isAlive) return;   // © •ÛŒ¯
+	if (!m_isAlive) return;
 	ChangeState(std::make_unique<EnemyAttackState>());
 }
 
@@ -206,7 +206,7 @@ void Enemy::Die()
 	if (!m_isAlive) return;
 	m_isAlive = false;
 
-	m_shouldDropItem = true;   // © ƒtƒ‰ƒO‚¾‚¯
+	//m_shouldDropItem = true;
 	ChangeState(std::make_unique<EnemyDeathState>());
 }
 

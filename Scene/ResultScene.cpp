@@ -7,6 +7,7 @@
 
 using namespace DirectX;
 
+// 初期化
 void ResultScene::Initialize()
 {
 	CreateDeviceDependentResources();
@@ -34,7 +35,7 @@ void ResultScene::Initialize()
 	m_number->SetPosition(DirectX::SimpleMath::Vector2(150.0f, 230.0f));
 }
 
-
+// 更新
 void ResultScene::Update(float elapsedTime)
 {
 	auto kb = DirectX::Keyboard::Get().GetState();
@@ -43,12 +44,14 @@ void ResultScene::Update(float elapsedTime)
 	m_number->Update(elapsedTime);
 	m_taskManager.Update(elapsedTime);
 
+	// シーンチェンジ
 	if (kbState->pressed.Space)
 	{
 		ChangeScene<TitleScene>();
 	}
 }
 
+// 描画
 void ResultScene::Render()
 {
 	auto debugFont = GetUserResources()->GetDebugFont();
@@ -95,10 +98,12 @@ void ResultScene::Render()
 	// 一番右下にpress enterの文字をタイトルと同じように描画
 }
 
+// 終了
 void ResultScene::Finalize()
 {
 }
 
+// デバイスリソース
 void ResultScene::CreateDeviceDependentResources()
 {
 	auto device = GetUserResources()->GetDeviceResources()->GetD3DDevice();

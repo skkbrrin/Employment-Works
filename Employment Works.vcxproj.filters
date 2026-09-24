@@ -244,9 +244,6 @@
     <ClInclude Include="Charactor\Player\PlayerPowerAttackState.h">
       <Filter>Charactors\Player\State</Filter>
     </ClInclude>
-    <ClInclude Include="Charactor\Player\PlayerDashAttackState.h">
-      <Filter>Charactors\Player\State</Filter>
-    </ClInclude>
     <ClInclude Include="Charactor\UI\DashParticle.h">
       <Filter>Charactors\UI</Filter>
     </ClInclude>
@@ -394,9 +391,6 @@
       <Filter>Charactors\UI</Filter>
     </ClCompile>
     <ClCompile Include="Charactor\Player\PlayerPowerAttackState.cpp">
-      <Filter>Charactors\Player\State</Filter>
-    </ClCompile>
-    <ClCompile Include="Charactor\Player\PlayerDashAttackState.cpp">
       <Filter>Charactors\Player\State</Filter>
     </ClCompile>
     <ClCompile Include="Charactor\UI\DashParticle.cpp">

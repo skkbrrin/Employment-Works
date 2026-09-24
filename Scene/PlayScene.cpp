@@ -29,7 +29,7 @@ void PlayScene::Initialize()
 	try {
 		m_bgm = std::make_unique<SoundEffect>(m_audioE.get(), L"Resources/Sounds/毘沙門.wav");
 		m_bgmInstance = m_bgm->CreateInstance();
-		m_bgmInstance->Play(true);
+		//m_bgmInstance->Play(true);
 	}
 	catch (const std::exception& e) {
 		OutputDebugStringA(e.what());
@@ -39,6 +39,21 @@ void PlayScene::Initialize()
 	m_number->SetNumber(WoodManager::Instance().Get());
 	m_number->SetScale(2.0f);
 	m_number->SetPosition(DirectX::SimpleMath::Vector2(450.0f, 650.0f));
+
+	m_countdownNumber = m_taskManager.AddTask<Number>(
+		&m_spriteBatch,
+		m_numberSRV.GetAddressOf()
+	);
+
+	m_countdownNumber->SetNumber(3);
+	m_countdownNumber->SetDigit(1);
+	m_countdownNumber->SetScale(6.0f);
+
+	m_countdownNumber->SetPosition(
+		DirectX::SimpleMath::Vector2(600.0f, 200.0f)
+	);
+
+	m_countdownNumber->SetVisible(true);
 
 	m_timerUI->Initialize(DR, (int)WH.Width, (int)WH.Height);
 }
@@ -52,8 +67,54 @@ void PlayScene::Update(float elapsedTime)
 	m_number->SetNumber(WoodManager::Instance().Get());
 	m_taskManager.Update(elapsedTime);
 
+	// フィールド
+	m_field->Update(elapsedTime);
+
+	//タイマー
+	m_timerUI->Update(elapsedTime);
+
+	float remainingTime = m_timerUI->GetRemainingTime();
+
+	if (remainingTime <= 3.0f && remainingTime > 0.0f)
+	{
+		int count = static_cast<int>(std::ceil(remainingTime));
+
+		// 数字が切り替わった瞬間
+		if (count != m_previousCount)
+		{
+			m_previousCount = count;
+
+			m_countdownTimer = 0.0f;
+			m_countdownScale = 6.0f;
+
+			m_countdownNumber->SetNumber(count);
+			m_countdownNumber->SetScale(m_countdownScale);
+			m_countdownNumber->SetVisible(true);
+		}
+
+		// 拡大する時間
+		m_countdownTimer += elapsedTime;
+
+		// 0.2秒かけて6.0 → 8.0
+		float rate = m_countdownTimer / 0.2f;
+
+		if (rate > 1.0f)
+		{
+			rate = 1.0f;
+		}
+
+		float scale = 6.0f + 2.0f * rate;
+
+		m_countdownNumber->SetScale(scale);
+	}
+	else
+	{
+		m_countdownNumber->SetVisible(false);
+		m_previousCount = 0;
+	}
+
 	// リザルト切り替え条件
-	if (kb->pressed.Q || m_field->GetPlayer()->GetHP() <= 0 || m_timerUI->IsTimeUp())
+	if (m_field->GetClear() || m_field->GetPlayer()->GetHP() <= 0 || m_timerUI->IsTimeUp())
 	{
 		ChangeScene<ResultScene>();
 	}
@@ -84,12 +145,6 @@ void PlayScene::Update(float elapsedTime)
 		break;
 	}
 
-	// フィールド
-	m_field->Update(elapsedTime);
-
-	//タイマー
-	m_timerUI->Update(elapsedTime);
-
 	
 
 	//シーンチェンジの時に、白い板を画面に出して、透明度を0→１に徐々にしてフェードアウト
@@ -119,7 +174,7 @@ void PlayScene::Render()
 		auto playerPos = m_field->GetPlayer()->GetPosition();
 
 		// プレイヤーの位置からのカメラオフセット
-		SimpleMath::Vector3 cameraOffset(0.0f, 10.0f, -30.0f); // Yが上方向、Zが後ろ方向
+		SimpleMath::Vector3 cameraOffset(0.0f, 10.0f, -40.0f); // Yが上方向、Zが後ろ方向
 		SimpleMath::Vector3 eyePos = playerPos + cameraOffset;
 
 		m_view = SimpleMath::Matrix::CreateLookAt(
@@ -146,6 +201,15 @@ void PlayScene::Render()
 	m_spriteBatch->Begin();
 	m_hp->Render(m_spriteBatch.get(), m_field->GetPlayer()->GetHP(), m_field->GetPlayer()->GetMaxHP());
 	m_taskManager.Render();
+	// クエスト
+	if (m_field->GetLakeAppeared()) {
+		m_spriteBatch->Draw(m_quest2.Get(), DirectX::XMFLOAT2(400, 10), nullptr, DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0, 0), 1.0f);
+	}
+	else
+	{
+		m_spriteBatch->Draw(m_quest1.Get(), DirectX::XMFLOAT2(400, 10), nullptr, DirectX::Colors::White, 0.0f, DirectX::XMFLOAT2(0, 0), 1.0f);
+	}
+
 	m_spriteBatch->Draw(
 		m_woodTexture.Get(),
 		DirectX::XMFLOAT2(520, 650), // 位置
@@ -156,7 +220,6 @@ void PlayScene::Render()
 		0.13f                        // 拡大率
 	);
 	m_spriteBatch->End();
-
 }
 
 void PlayScene::Finalize()
@@ -216,6 +279,20 @@ void PlayScene::CreateDeviceDependentResources()
 		L"Resources/Textures/Wood.png",
 		nullptr,
 		m_woodTexture.ReleaseAndGetAddressOf()
+	);
+
+	DirectX::CreateWICTextureFromFile(
+		device,
+		L"Resources/Textures/Quest1.png",
+		nullptr,
+		m_quest1.ReleaseAndGetAddressOf()
+	);
+
+	DirectX::CreateWICTextureFromFile(
+		device,
+		L"Resources/Textures/Quest2.png",
+		nullptr,
+		m_quest2.ReleaseAndGetAddressOf()
 	);
 }
 

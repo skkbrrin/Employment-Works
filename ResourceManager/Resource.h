@@ -5,6 +5,7 @@
 class Resource
 {
 public:
+    // ‰Šú‰»
     static void Initialize(ID3D11Device* device)
     {
         Model().Initialize(device);

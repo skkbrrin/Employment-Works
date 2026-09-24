@@ -1,15 +1,18 @@
 #include "pch.h"
 #include "Field.h"
+#include "ResourceManager/Resource.h"
 
-int Field::ENEMY_COUNT = 35;
-int Field::TREE_COUNT = 45;
+int Field::ENEMY_COUNT = 35; //< 敵の数
+int Field::TREE_COUNT = 45; //< 木の数
 
+// 当たり判定ボックス
 inline DirectX::SimpleMath::Matrix MakeBoxMatrix(const DirectX::BoundingBox& box)
 {
     using namespace DirectX::SimpleMath;
     return Matrix::CreateScale(box.Extents * 2.0f) * Matrix::CreateTranslation(box.Center.x, box.Center.y + 0.7f, box.Center.z - 0.3f);
 }
 
+// 初期化
 void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, DX::DeviceResources* dr)
 {
     // プレイヤーの初期状態
@@ -62,6 +65,14 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, DX::D
 
     m_itemManager.Initialize(device, context);
 
+    // 目標数の表示
+    WoodManager::Instance().SetClearCount(30);
+
+    // 出口の湖の初期化
+    std::unique_ptr<DirectX::EffectFactory> fx = std::make_unique<DirectX::EffectFactory>(device);
+    fx->SetDirectory(L"Resources/Models");
+    m_lake = DirectX::Model::CreateFromSDKMESH(device, L"Resources/Models/Lake.sdkmesh", *fx);
+
     // コライダー
     m_debugOBB = DirectX::GeometricPrimitive::CreateBox(context, DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f));
 
@@ -73,10 +84,13 @@ void Field::Initialize(ID3D11Device* device, ID3D11DeviceContext* context, DX::D
         );
 }
 
+// 更新
 void Field::Update(float elapsedTime)
 {
     auto kb = DirectX::Keyboard::Get().GetState();
 
+    // デバッグ用
+    // オブジェクトの全消去
     if (kb.F1)
     {
         for (auto& enemy : m_enemies)
@@ -90,6 +104,7 @@ void Field::Update(float elapsedTime)
         }
 
     }
+    // アイテムの全回収
     if (kb.F9)
     {
         m_itemManager.CollectAll(m_player);
@@ -114,8 +129,30 @@ void Field::Update(float elapsedTime)
 
     DirectX::SimpleMath::Matrix ItemWorld = DirectX::SimpleMath::Matrix::CreateTranslation(DirectX::SimpleMath::Vector3(0, 1, 0));
 
+    // もし材木が一定数あつまったら
+    if (!m_lakeAppeared && WoodManager::Instance().IsComplete())
+    {
+        // 出現許可
+        m_lakeAppeared = true;
+    }
+
+    // 湖に入ったらクリア
+    if (m_lakeAppeared)
+    {
+        DirectX::SimpleMath::Vector3 playerPos = m_player->GetPosition();
+        DirectX::SimpleMath::Vector3 lakePos = DirectX::SimpleMath::Vector3::Zero;
+
+        float distance =
+            (playerPos - lakePos).Length();
+
+        if (distance < 5.0f)
+        {
+            m_canChangeScene = true;
+        }
+    }
+
     // アイテムドロップ
-    for (auto& enemy : m_enemies)
+    /*for (auto& enemy : m_enemies)
     {
         if (enemy->GetDeleteFlag() && enemy->ShouldDropItem())
         {
@@ -133,7 +170,7 @@ void Field::Update(float elapsedTime)
                 m_itemManager.SpawnWithVelocity(Item::Type::Wood, pos, vel);
             }
         }
-    }
+    }*/
     for (auto& tree : m_tries)
     {
         if (tree->GetDeleteFlag() && tree->ShouldDropItem())
@@ -175,17 +212,32 @@ void Field::Update(float elapsedTime)
     );
 }
 
+// 描画
 void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, DirectX::SimpleMath::Matrix view, DirectX::SimpleMath::Matrix proj)
 {
+    // プレイヤー描画
     m_player->RenderP(context, states, view, proj);
 
+    // 敵の描画
     for (auto& e : m_enemies)
         e->RenderE(context, states, view, proj);
 
+    // 木の描画
     for (auto& t : m_tries)
         t->RenderT(context, states, view, proj);
 
+    // アイテムの描画
     m_itemManager.Render(context, states, view, proj);
+
+    // 湖の描画
+    if (m_lakeAppeared)
+    {
+        DirectX::SimpleMath::Matrix world_L =
+            DirectX::SimpleMath::Matrix::CreateScale(10.0f) *
+            DirectX::SimpleMath::Matrix::CreateTranslation( DirectX::SimpleMath::Vector3( 0.0f, -0.5f, 0.0f ));
+
+        m_lake->Draw(context, *states, world_L, view, proj);
+    }
 
     //当たり判定ボックスの描画
 #if defined(_DEBUG)
@@ -234,6 +286,7 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
     }
 #endif
 
+    // プレイヤー当たり判定の描画（攻撃の際に見えるようにするため）
     if (m_player->GetPowerAttacking())
     {
         using namespace DirectX::SimpleMath;
@@ -252,28 +305,28 @@ void Field::Render(ID3D11DeviceContext* context, DirectX::CommonStates* states, 
         );
     }
 
-#if defined(_DEBUG)
-    if (m_player->GetDashAttacking())
-    {
-        using namespace DirectX::SimpleMath;
-
-        float r = m_player->GetPowerAttackRadius();
-
-        Matrix world =
-            Matrix::CreateScale(r) *
-            Matrix::CreateTranslation(m_player->GetPosition());
-
-        m_debugSphere->Draw(
-            world,
-            view,
-            proj,
-            DirectX::XMVECTORF32{ 1, 1, 1, 0.5f }
-        );
-    }
-#endif
+//#if defined(_DEBUG)
+//    if (m_player->GetDashAttacking())
+//    {
+//        using namespace DirectX::SimpleMath;
+//
+//        float r = m_player->GetPowerAttackRadius();
+//
+//        Matrix world =
+//            Matrix::CreateScale(r) *
+//            Matrix::CreateTranslation(m_player->GetPosition());
+//
+//        m_debugSphere->Draw(
+//            world,
+//            view,
+//            proj,
+//            DirectX::XMVECTORF32{ 1, 1, 1, 0.5f }
+//        );
+//    }
+//#endif
 }
 
-
+//　当たったかどうかの判定
 void Field::CheckCollision()
 {
     auto playerBoxes = m_player->GetHitBoxes();
@@ -363,42 +416,43 @@ void Field::CheckCollision()
         }
     }
 
-    if (m_player->GetDashAttacking())
-    {
-        const float radius = m_player->GetPowerAttackRadius();
-        Vector3 center = m_player->GetPosition();
+    //if (m_player->GetDashAttacking())
+    //{
+    //    const float radius = m_player->GetPowerAttackRadius();
+    //    Vector3 center = m_player->GetPosition();
 
-        for (auto& enemy : m_enemies)
-        {
-            Vector3 toEnemy = enemy->GetPosition() - center;
-            float distSq = toEnemy.LengthSquared();
+    //    for (auto& enemy : m_enemies)
+    //    {
+    //        Vector3 toEnemy = enemy->GetPosition() - center;
+    //        float distSq = toEnemy.LengthSquared();
 
-            if (distSq <= radius * radius)
-            {
-                // ダメージ
-                enemy->TakeDamage(20);
+    //        if (distSq <= radius * radius)
+    //        {
+    //            // ダメージ
+    //            enemy->TakeDamage(20);
 
-                // ノックバック
-                toEnemy.Normalize();
-            }
-        }
+    //            // ノックバック
+    //            toEnemy.Normalize();
+    //        }
+    //    }
 
-        // 木も同様
-        for (auto& tree : m_tries)
-        {
-            Vector3 toTree = tree->GetPosition() - center;
-            float distSq = toTree.LengthSquared();
+    //    // 木も同様
+    //    for (auto& tree : m_tries)
+    //    {
+    //        Vector3 toTree = tree->GetPosition() - center;
+    //        float distSq = toTree.LengthSquared();
 
-            if (distSq <= radius * radius)
-            {
-                // ダメージ
-                tree->TakeDamage(20);
-            }
-        }
-    }
+    //        if (distSq <= radius * radius)
+    //        {
+    //            // ダメージ
+    //            tree->TakeDamage(20);
+    //        }
+    //    }
+    //}
 }
 
 
+// 当たり判定の更新
 void Field::UpdateHitBox()
 {
     auto playerBoxes = m_player->GetHitBoxes();

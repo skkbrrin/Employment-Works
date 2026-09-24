@@ -3,6 +3,7 @@
 #include <DirectXCollision.h>
 #include <string>
 
+// ƒp[ƒc“–‚½‚è”»’è
 struct HitBoxPart
 {
     std::string name;
@@ -17,3 +18,5 @@ class IHitBoxProvider
 public:
     virtual std::vector<HitBoxPart> GetHitBoxes() const = 0;
 };
+
+

@@ -23,21 +23,6 @@ void EnemyIdleState::Update(Enemy* enemy, float elapsedTime)
         enemy->GetPart("Body")->m_rotation =
             Quaternion::CreateFromAxisAngle(Vector3::UnitY, sin(m_timer*9) / 8);
     }
-
-
-    //// •à‚«‚Ö
-    //if (kb.Up || kb.Down || kb.Left || kb.Right)
-    //{
-    //    enemy->ChangeState(std::make_unique<EnemyWalkState>());
-    //    return;
-    //}
-
-    //// UŒ‚‚Ö
-    //if (kb.Space)
-    //{
-    //    enemy->ChangeState(std::make_unique<EnemyAttackState>());
-    //    return;
-    //}
 }
 
 void EnemyIdleState::Exit(Enemy* enemy)

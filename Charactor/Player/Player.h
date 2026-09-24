@@ -37,7 +37,9 @@ public:
 
     void MoveForward(float dist);
     void RotateY(float deg);
+    void Jump();
 
+    // ˆÚ“®
     DirectX::SimpleMath::Vector3 GetForward() const
     {
         // Z+ ‚ğ‘O‚Æ‚·‚é
@@ -47,6 +49,7 @@ public:
         );
     }
 
+    // ‰E•ûŒü‚Ìæ“¾
     DirectX::SimpleMath::Vector3 GetRight() const
     {
         // ‰ñ“]‚©‚ç‰E•ûŒü‚ğæ“¾
@@ -72,10 +75,6 @@ public:
     // ”ÍˆÍUŒ‚‚Ì”¼Œa
     void SetPowerAttackRadius(float r) { m_powerAttackRadius = r; }
     float GetPowerAttackRadius() const { return m_powerAttackRadius; }
-
-    // ƒ_ƒbƒVƒ…UŒ‚’†‚©‚Ç‚¤‚©
-    bool GetDashAttacking() const { return m_isDashAttacking; }
-    void SetDashAttacking(bool v) { m_isDashAttacking = v; }
 
     // –³“GŠÔ
     bool IsInvincible() const { return m_invincibleTimer > 0.0f; }
@@ -111,8 +110,9 @@ private:
     // ”ÍˆÍUŒ‚‚Ì”¼Œa
     float m_powerAttackRadius = 0.0f;
 
-    // ƒ_ƒbƒVƒ…UŒ‚’†‚©‚Ç‚¤‚©
-    bool m_isDashAttacking = false;
+    // ƒWƒƒƒ“ƒv
+    bool m_isJumping = false;
+    float m_jumpVelocity = 0.0f;
 
     // –³“GŠÔ
     float m_invincibleTimer = 0.0f;

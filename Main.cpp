@@ -24,7 +24,7 @@ namespace
                              WS_SYSMENU        | \
                              WS_MINIMIZEBOX)
 
-LPCWSTR g_szAppName = L"èAêEçÏïi";
+LPCWSTR g_szAppName = L"éƒéÎÇË";
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void ExitGame() noexcept;
